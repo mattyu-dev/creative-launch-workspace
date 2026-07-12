@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v3",
-  "tested_at": "2026-07-11T17:58:23.670Z",
+  "tested_at": "2026-07-12T12:33:44.061Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {

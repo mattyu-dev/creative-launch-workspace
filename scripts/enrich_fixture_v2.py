@@ -75,7 +75,7 @@ def main() -> int:
         enriched.append(row)
 
     with TARGET.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(enriched)
 
@@ -109,7 +109,7 @@ def write_asset_metadata(rows: list[dict[str, str]]) -> None:
         metadata_rows.append(asset_metadata_for(row))
 
     with ASSET_METADATA.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(metadata_rows)
 
