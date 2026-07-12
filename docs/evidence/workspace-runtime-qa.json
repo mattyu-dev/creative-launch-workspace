@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v3",
-  "tested_at": "2026-07-12T13:30:03.673Z",
+  "tested_at": "2026-07-12T13:59:32.922Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -9,8 +9,8 @@
       "scrollWidth": 320,
       "tableScrollWidth": 320,
       "tableClientWidth": 320,
-      "summaryHeight": 303,
-      "firstRowTop": 1017,
+      "focusHeight": 417,
+      "firstRowTop": 840,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -20,8 +20,8 @@
       "scrollWidth": 375,
       "tableScrollWidth": 375,
       "tableClientWidth": 375,
-      "summaryHeight": 296,
-      "firstRowTop": 988,
+      "focusHeight": 398,
+      "firstRowTop": 822,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -31,8 +31,8 @@
       "scrollWidth": 390,
       "tableScrollWidth": 390,
       "tableClientWidth": 390,
-      "summaryHeight": 296,
-      "firstRowTop": 988,
+      "focusHeight": 398,
+      "firstRowTop": 822,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -42,8 +42,8 @@
       "scrollWidth": 760,
       "tableScrollWidth": 760,
       "tableClientWidth": 760,
-      "summaryHeight": 256,
-      "firstRowTop": 859,
+      "focusHeight": 352,
+      "firstRowTop": 704,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -53,8 +53,8 @@
       "scrollWidth": 1023,
       "tableScrollWidth": 1023,
       "tableClientWidth": 1023,
-      "summaryHeight": 256,
-      "firstRowTop": 859,
+      "focusHeight": 352,
+      "firstRowTop": 704,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -62,10 +62,10 @@
       "width": 1024,
       "innerWidth": 1024,
       "scrollWidth": 1024,
-      "tableScrollWidth": 784,
-      "tableClientWidth": 772,
-      "summaryHeight": 145,
-      "firstRowTop": 545,
+      "tableScrollWidth": 982,
+      "tableClientWidth": 982,
+      "focusHeight": 209,
+      "firstRowTop": 529,
       "rowMode": "table-row-group",
       "noDocumentOverflow": true
     },
@@ -73,10 +73,10 @@
       "width": 1440,
       "innerWidth": 1440,
       "scrollWidth": 1440,
-      "tableScrollWidth": 784,
-      "tableClientWidth": 783,
-      "summaryHeight": 129,
-      "firstRowTop": 513,
+      "tableScrollWidth": 997,
+      "tableClientWidth": 997,
+      "focusHeight": 214,
+      "firstRowTop": 535,
       "rowMode": "table-row-group",
       "noDocumentOverflow": true
     }
@@ -90,14 +90,14 @@
     },
     "closed": {
       "open": false,
-      "focusedRow": "2",
+      "focusedRow": "8",
       "inert": true,
       "ariaHidden": "true"
     }
   },
   "keyboard": {
-    "focusedRow": "3",
-    "selectedRow": "3",
+    "focusedRow": "18",
+    "selectedRow": "18",
     "tabStopCount": 1
   },
   "bulk": {
@@ -122,7 +122,7 @@
     }
   },
   "empty_filter": {
-    "caption": "0 review rows",
+    "caption": "0 creatives in this view",
     "title": "No row selected",
     "detailFields": 0,
     "issueCount": 0,

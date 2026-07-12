@@ -1,6 +1,6 @@
 # Editorial Operations design system
 
-Status: implemented v1
+Status: implemented v2
 
 Product: Creative Launch Workspace for Meta Ads
 
@@ -48,7 +48,7 @@ Signature colors create atmosphere. Semantic colors communicate state. They neve
 
 - Stack: Inter when locally available, then the system UI stack. No external font request.
 - Page title: 16px / 500 inside the utility bar.
-- Editorial summary: 23px / 400 desktop, 20px mobile.
+- Task focus: 24-36px / 400 desktop, 25px mobile.
 - Panel title: 18px / 500.
 - Body: 14px / 400.
 - Operational cells: 12px / 400-550.
@@ -73,42 +73,39 @@ Desktop at 1300px and above:
 
 ```text
 56px utility bar
-116px editorial run summary
+task-first review focus
+collapsed batch context
 workspace shell
-├── 224px context rail
-├── fluid creative review queue
-└── 340-390px decision inspector
+├── fluid four-column review queue
+└── 340-400px decision inspector
 ```
 
 Below 1024px, the queue becomes structured row cards and the inspector opens as a focused decision sheet. DOM and visual priority are:
 
-1. readiness summary;
-2. filters and bulk actions;
+1. one explicit human-review task;
+2. filters with `To review` selected by default;
 3. creative queue rendered as structured row-cards;
-4. selected-row inspector and sticky decision bar;
-5. owner, issue, and guardrail context.
+4. selected-row issue, reviewer and decision controls;
+5. creative preview, technical mapping, export and batch context on demand.
 
 There is no horizontally compressed desktop table on mobile.
 
 ## Components
 
-### Editorial run summary
+### Task-first review focus
 
-One forest surface combines the decision sentence, the three decisive counts, supporting counts, and a proportional readiness strip. It replaces six interchangeable metric cards.
+One forest surface answers the operator's first question: what needs me now? It opens on the ten ambiguous rows and explains that clean rows need no action while blocked rows are already routed for fixes. Two explicit actions switch to the human-review or blocker queues. Counts support the instruction instead of competing with it.
 
 ### Creative row
 
-The queue exposes only the fields needed to decide which row to open:
+The queue exposes only four decision-oriented columns:
 
 - synthetic proof thumbnail and creative ID;
-- readiness state;
-- campaign and ad set;
-- placement and format;
-- owner;
-- issue and proposed fix;
+- offline status;
+- issue, owner and proposed fix;
 - review state.
 
-UTM, post, source, idempotency, and destination details belong in the inspector.
+Campaign, ad set, delivery, UTM, post, source, idempotency, and destination details belong in the inspector.
 
 ### Synthetic proof thumbnail
 
@@ -116,7 +113,14 @@ Thumbnails are deterministic CSS proof tiles, not fake customer creative. Peach,
 
 ### Decision inspector
 
-The inspector preserves row context, exposes a paper-toned proof, groups issues, captures role and note, and presents one dark primary decision. Export remains visually secondary and local-only.
+The inspector starts with the issue, assigned reviewer, note and three decisions. The reviewer role defaults to the issue owner. Creative preview, technical mapping and local export are collapsed disclosures below the decision. This preserves depth without placing every control on the critical path.
+
+### Progressive disclosure
+
+- owner queue, issue mix, guardrails and AI evidence live under `Batch details`;
+- bulk changes and state import live under `Batch actions`;
+- preview, mapping and export live under separate inspector disclosures;
+- persisted review receipts and exports never become authorization inputs.
 
 ### Status
 
@@ -133,7 +137,7 @@ The inspector preserves row context, exposes a paper-toned proof, groups issues,
 - `aria-selected` on the active row.
 - `aria-pressed` on filters.
 - Captions and labels remain present when table headers are visually hidden on mobile.
-- Queue precedes secondary context in DOM reading order.
+- Task focus precedes the queue in DOM reading order.
 - Reduced-motion mode removes press translation and smooth scrolling.
 - Status never relies on color alone: every status includes text and a marker.
 
@@ -150,6 +154,6 @@ The inspector preserves row context, exposes a paper-toned proof, groups issues,
 - no external network dependency;
 - no hidden live-mutation path;
 - no horizontal table scroll on mobile;
-- first mobile viewport reaches queue controls;
-- first selected creative is visible immediately after controls;
+- default view contains only the ten rows needing a decision;
+- the first selected creative and its issue are understandable without opening technical details;
 - all existing persistence, import, export, filter, bulk decision, and keyboard contracts pass.

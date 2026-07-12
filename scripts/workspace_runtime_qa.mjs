@@ -96,7 +96,7 @@ for (const width of [320, 375, 390, 760, 1023, 1024, 1440]) {
     scrollWidth: document.documentElement.scrollWidth,
     tableScrollWidth: document.querySelector(".table-wrap").scrollWidth,
     tableClientWidth: document.querySelector(".table-wrap").clientWidth,
-    summaryHeight: Math.round(document.querySelector(".run-summary").getBoundingClientRect().height),
+    focusHeight: Math.round(document.querySelector(".focus-panel").getBoundingClientRect().height),
     firstRowTop: Math.round(document.querySelector("#review-rows tr")?.getBoundingClientRect().top || 0),
     rowMode: getComputedStyle(document.querySelector("#review-rows")).display
   }));
@@ -109,7 +109,7 @@ if (viewports.some((item) => !item.noDocumentOverflow)) {
 
 await page.setViewport({ width: 390, height: 844 });
 await page.goto(url, { waitUntil: "load" });
-await page.click('tr[data-source-row="2"]');
+await page.click('tr[data-source-row="8"]');
 await page.waitForFunction(() => {
   const shell = document.querySelector(".detail-shell");
   return shell.classList.contains("open") && getComputedStyle(shell).opacity === "1" && shell.getBoundingClientRect().top === 0;
@@ -133,7 +133,7 @@ const drawerClosed = await page.evaluate(() => ({
   ariaHidden: document.querySelector(".detail-shell").getAttribute("aria-hidden")
 }));
 
-await page.focus('tr[data-source-row="2"]');
+await page.focus('tr[data-source-row="8"]');
 await page.keyboard.press("ArrowDown");
 const keyboard = await page.evaluate(() => ({
   focusedRow: document.activeElement?.dataset?.sourceRow,
@@ -141,6 +141,8 @@ const keyboard = await page.evaluate(() => ({
   tabStopCount: document.querySelectorAll('#review-rows tr[tabindex="0"]').length
 }));
 
+await page.click('button[data-filter="all"]');
+await page.click(".secondary-actions > summary");
 await page.click("#bulk-ready");
 const bulkDialog = await page.evaluate(() => ({
   open: document.querySelector("#confirm-panel").open,
@@ -199,6 +201,7 @@ await page.click('button[data-filter="all"]');
 await page.click('tr[data-source-row="2"]');
 await page.$eval("#mark-ready", (element) => element.click());
 await page.reload({ waitUntil: "load" });
+await page.click('button[data-filter="all"]');
 const persistence = await page.evaluate(() => ({
   rowTwoDecision: document.querySelector('tr[data-source-row="2"] td:last-child')?.textContent.trim(),
   readyState: document.readyState
@@ -211,6 +214,8 @@ const reset = await page.evaluate(() => ({
   status: document.querySelector("#status-line").textContent
 }));
 await page.click("#close-detail");
+await page.click('button[data-filter="needs_review"]');
+await page.evaluate(() => window.scrollTo(0, 0));
 await page.screenshot({ path: join(assetsDir, "workspace-mobile.png") });
 
 await page.setViewport({ width: 1440, height: 1000 });
