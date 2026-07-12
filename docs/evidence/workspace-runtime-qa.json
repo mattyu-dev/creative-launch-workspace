@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v3",
-  "tested_at": "2026-07-12T13:59:32.922Z",
+  "tested_at": "2026-07-12T14:30:35.560Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -9,8 +9,8 @@
       "scrollWidth": 320,
       "tableScrollWidth": 320,
       "tableClientWidth": 320,
-      "focusHeight": 417,
-      "firstRowTop": 840,
+      "focusHeight": 136,
+      "firstRowTop": 409,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -20,8 +20,8 @@
       "scrollWidth": 375,
       "tableScrollWidth": 375,
       "tableClientWidth": 375,
-      "focusHeight": 398,
-      "firstRowTop": 822,
+      "focusHeight": 103,
+      "firstRowTop": 375,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -31,8 +31,8 @@
       "scrollWidth": 390,
       "tableScrollWidth": 390,
       "tableClientWidth": 390,
-      "focusHeight": 398,
-      "firstRowTop": 822,
+      "focusHeight": 103,
+      "firstRowTop": 375,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -42,8 +42,8 @@
       "scrollWidth": 760,
       "tableScrollWidth": 760,
       "tableClientWidth": 760,
-      "focusHeight": 352,
-      "firstRowTop": 704,
+      "focusHeight": 70,
+      "firstRowTop": 343,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -53,8 +53,8 @@
       "scrollWidth": 1023,
       "tableScrollWidth": 1023,
       "tableClientWidth": 1023,
-      "focusHeight": 352,
-      "firstRowTop": 704,
+      "focusHeight": 70,
+      "firstRowTop": 343,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -65,7 +65,7 @@
       "tableScrollWidth": 982,
       "tableClientWidth": 982,
       "focusHeight": 209,
-      "firstRowTop": 529,
+      "firstRowTop": 587,
       "rowMode": "table-row-group",
       "noDocumentOverflow": true
     },
@@ -76,7 +76,7 @@
       "tableScrollWidth": 997,
       "tableClientWidth": 997,
       "focusHeight": 214,
-      "firstRowTop": 535,
+      "firstRowTop": 593,
       "rowMode": "table-row-group",
       "noDocumentOverflow": true
     }
@@ -142,6 +142,37 @@
   "reset": {
     "rowTwoDecision": "Pending",
     "status": "Browser review state reset."
+  },
+  "portfolio_page": {
+    "title": "Catch launch errors before they reach Ads Manager.",
+    "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card.png",
+    "hasWorkspaceCta": true,
+    "hasLabCta": true,
+    "ownership": true,
+    "noDocumentOverflow": true
+  },
+  "portfolio_mobile": {
+    "noDocumentOverflow": true,
+    "headingVisible": true
+  },
+  "fix_lab": {
+    "initial": {
+      "state": "blocked",
+      "issues": 3,
+      "rulePack": true,
+      "noDocumentOverflow": true
+    },
+    "fixed": {
+      "state": "launch ready",
+      "issues": 0,
+      "clean": true,
+      "audit": true
+    },
+    "reset": {
+      "state": "blocked",
+      "issues": 3
+    }
   },
   "evidence_page": {
     "title": "A proposal you can inspect before you trust it.",

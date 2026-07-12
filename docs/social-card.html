@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1200, initial-scale=1">
+  <title>Creative Launch Workspace social card</title>
+  <style>
+    :root { --canvas:#f7f5ef;--ink:#1c211e;--body:#48504b;--muted:#6e756f;--line:#d8d3c8;--forest:#113e31;--oxide:#a9472e;--serif:"Iowan Old Style",Charter,Georgia,serif; }
+    * { box-sizing:border-box; }
+    body { width:1200px; height:630px; margin:0; overflow:hidden; color:var(--ink); background:var(--canvas); font:400 16px/1.45 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { height:100%; display:grid; grid-template-rows:auto 1fr auto; padding:46px 64px 42px; }
+    header { display:flex; align-items:center; justify-content:space-between; padding-bottom:20px; border-bottom:1px solid var(--line); font-size:15px; font-weight:700; }
+    .brand { display:flex; align-items:center; gap:11px; }
+    .mark { width:24px; height:24px; position:relative; border-left:2px solid var(--oxide); border-top:2px solid var(--oxide); }
+    .mark::after { content:""; width:8px; height:8px; position:absolute; right:1px; bottom:1px; background:var(--forest); }
+    header span:last-child { color:var(--muted); font-weight:500; }
+    .hero { align-self:center; padding:24px 0 18px; }
+    .eyebrow { color:var(--oxide); font-size:12px; font-weight:800; letter-spacing:.11em; text-transform:uppercase; }
+    h1 { max-width:990px; margin:9px 0 13px; font:500 72px/.94 var(--serif); letter-spacing:-.045em; }
+    p { max-width:900px; margin:0; color:var(--body); font-size:20px; }
+    .proof { display:grid; grid-template-columns:repeat(3,1fr); border-block:1px solid var(--line); }
+    .proof div { padding:13px 20px 12px 0; border-right:1px solid var(--line); }
+    .proof div + div { padding-left:20px; } .proof div:last-child { border-right:0; }
+    .proof strong { display:inline-block; margin-right:9px; font:500 32px/1 var(--serif); }
+    .proof span { color:var(--muted); font-size:13px; }
+  </style>
+</head>
+<body><main>
+  <header><span class="brand"><span class="mark"></span>Creative Launch Workspace</span><span>Built by Mathieu Petroni</span></header>
+  <section class="hero"><div class="eyebrow">AI automation case study · Creative operations</div><h1>Catch launch errors before they reach Ads Manager.</h1><p>AI proposes the mapping. Deterministic rules verify every row. A person decides every ambiguous case.</p></section>
+  <section class="proof"><div><strong>100</strong><span>synthetic creatives</span></div><div><strong>70</strong><span>seeded issues routed</span></div><div><strong>0</strong><span>external writes</span></div></section>
+</main></body>
+</html>

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.0 — 2026-07-12
+
+- Added an editorial, recruiter-facing case study as the GitHub Pages entry point, with explicit ownership, scope and social sharing metadata.
+- Moved the full operator experience to `workspace.html` and tightened its mobile review flow, claim language and decision labels.
+- Added a Fix & Revalidate Lab backed by eight versioned Python golden scenarios and a committed rule pack.
+- Reframed the AI evidence page around source evidence and guardrail behavior instead of visually dominant, uncalibrated confidence.
+- Added portfolio and lab contract tests and expanded browser QA coverage for the new public surfaces.
+
 ## 1.2.0 — 2026-07-12
 
 - Rebuilt the workspace around one explicit operator task: review the ten ambiguous creatives first.

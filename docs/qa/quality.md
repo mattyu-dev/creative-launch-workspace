@@ -17,6 +17,8 @@ The repository treats evidence as build output, not README decoration.
 
 The generated workspace is exercised in Chrome at seven widths. QA covers filtering, row selection, bulk confirmation, undo, local persistence, guarded state import, keyboard navigation, the mobile decision sheet, and no-network behavior.
 
+The same runtime suite checks the portfolio entry metadata and responsive layout, replays the Fix & Revalidate Lab from blocked to launch-ready and back, and verifies the field-level evidence page contract. Social, desktop and mobile screenshots are generated from those tested pages.
+
 Lighthouse accessibility must remain 100/100 on desktop and mobile. The committed screenshots and JSON reports are rebuilt by the same script used in CI.
 
 ## Media fixtures

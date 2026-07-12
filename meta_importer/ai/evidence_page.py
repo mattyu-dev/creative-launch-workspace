@@ -30,11 +30,11 @@ def render_evidence_page(
         rows.append(
             "<tr>"
             f"<th scope='row'>{html.escape(LABELS[name])}</th>"
-            f"<td><code>{html.escape(field['value'])}</code></td>"
-            f"<td>&ldquo;{html.escape(field['evidence_quote'])}&rdquo;</td>"
-            f"<td><span class='band'>{html.escape(field['confidence_band'])}</span>"
-            "<small>uncalibrated</small></td>"
-            f"<td><span class='accepted'>{html.escape(field['review_status'])}</span></td>"
+            f"<td data-label='Value'><code>{html.escape(field['value'])}</code></td>"
+            f"<td data-label='Verbatim evidence'>&ldquo;{html.escape(field['evidence_quote'])}&rdquo;</td>"
+            "<td data-label='Evidence'><span class='evidence-strength'>Direct</span>"
+            f"<small>{html.escape(field['confidence_band']).title()} &middot; uncalibrated</small></td>"
+            f"<td data-label='Decision'><span class='accepted'>&#10003; {html.escape(field['review_status']).title()}</span></td>"
             "</tr>"
         )
     summary = materialization["validation_summary"]["batch_states"]
@@ -44,6 +44,13 @@ def render_evidence_page(
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
+  <meta name="description" content="Inspect the field-level evidence, policy boundary and human decisions behind a synthetic brief mapping proposal.">
+  <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/brief-evidence.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Governed intake evidence · Creative Launch Workspace">
+  <meta property="og:description" content="Source evidence, bounded proposals, policy checks and explicit human decisions.">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
   <title>Brief mapping evidence · Creative Launch Workspace</title>
   <style>
     :root {{ --ink:#1c211e; --body:#48504b; --muted:#6e756f; --canvas:#f7f5ef; --paper:#fffefa; --line:#d8d3c8; --forest:#164a3b; --mint:#cfe2d7; --oxide:#a9472e; --peach:#f4ead4; }}
@@ -53,32 +60,52 @@ def render_evidence_page(
     header a {{ color:var(--forest); text-decoration:none; font-weight:700; }}
     main {{ width:min(1180px,calc(100% - 32px)); margin:0 auto; padding:48px 0 64px; }}
     .eyebrow {{ color:var(--oxide); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }}
-    h1 {{ max-width:850px; margin:10px 0 14px; font:500 clamp(34px,5vw,62px)/1.02 Georgia,serif; letter-spacing:-.035em; }}
+    h1 {{ max-width:850px; margin:10px 0 14px; font:500 clamp(34px,5vw,62px)/1.02 "Iowan Old Style",Charter,Georgia,serif; letter-spacing:-.035em; }}
     .lead {{ max-width:760px; color:var(--body); font-size:18px; }}
-    .flow {{ display:flex; gap:8px; align-items:center; margin:28px 0; overflow:auto; }}
-    .flow span {{ padding:9px 11px; border:1px solid var(--line); border-radius:8px; background:var(--paper); font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace; white-space:nowrap; }}
-    .flow i {{ color:var(--oxide); font-style:normal; }}
-    .grid {{ display:grid; grid-template-columns:minmax(260px,.8fr) minmax(0,1.6fr); gap:18px; }}
+    .flow {{ display:grid; grid-template-columns:repeat(4,1fr); margin:28px 0; border-block:1px solid var(--line); }}
+    .flow div {{ min-width:0; padding:13px 14px 13px 0; border-right:1px solid var(--line); }}
+    .flow div + div {{ padding-left:14px; }} .flow div:last-child {{ border-right:0; }}
+    .flow b {{ display:block; color:var(--oxide); font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }}
+    .flow span {{ display:block; margin-top:3px; font-size:12px; font-weight:700; }}
+    .grid {{ display:grid; grid-template-columns:360px minmax(0,1fr); align-items:start; gap:20px; }}
     section {{ border:1px solid var(--line); border-radius:12px; background:var(--paper); overflow:hidden; }}
+    .source-rail {{ position:sticky; top:84px; }}
     section h2 {{ margin:0; padding:15px 18px; border-bottom:1px solid var(--line); font-size:14px; }}
     pre {{ margin:0; padding:18px; overflow:auto; color:var(--body); white-space:pre-wrap; font:500 12px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace; }}
+    .metadata {{ margin:0; padding:12px 18px 16px; border-top:1px solid var(--line); }}
+    .metadata div {{ display:grid; grid-template-columns:76px minmax(0,1fr); gap:8px; padding:5px 0; }}
+    .metadata dt {{ color:var(--muted); font-size:10px; text-transform:uppercase; }}
+    .metadata dd {{ margin:0; overflow-wrap:anywhere; font:600 10px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace; }}
     .table-wrap {{ overflow:auto; }}
     table {{ width:100%; border-collapse:collapse; font-size:12px; }}
     th,td {{ padding:12px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }}
     th {{ min-width:100px; font-weight:700; }}
     code {{ color:var(--forest); font-weight:700; }}
     small {{ display:block; margin-top:4px; color:var(--muted); }}
-    .band,.accepted {{ display:inline-block; padding:3px 7px; border-radius:999px; font-size:10px; font-weight:800; text-transform:uppercase; }}
-    .band {{ color:var(--oxide); background:var(--peach); }}
-    .accepted {{ color:var(--forest); background:var(--mint); }}
-    .proof {{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:18px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--line); }}
-    .proof div {{ padding:18px; background:var(--paper); }}
+    .evidence-strength {{ display:inline-block; padding:3px 7px; border-radius:999px; color:var(--forest); background:#e9f0eb; font-size:10px; font-weight:800; text-transform:uppercase; }}
+    .accepted {{ color:var(--forest); font-size:11px; font-weight:750; }}
+    .guardrail-behavior {{ margin-top:18px; border:1px solid var(--line); background:var(--paper); }}
+    .guardrail-behavior h2 {{ margin:0; padding:14px 18px; border-bottom:1px solid var(--line); font-size:13px; }}
+    .guardrail-grid {{ display:grid; grid-template-columns:repeat(3,1fr); }}
+    .guardrail-grid div {{ padding:15px 18px; border-right:1px solid var(--line); }} .guardrail-grid div:last-child {{ border-right:0; }}
+    .guardrail-grid strong {{ display:block; margin-bottom:4px; font-size:12px; }} .guardrail-grid span {{ color:var(--muted); font-size:11px; }}
+    .proof {{ display:grid; grid-template-columns:repeat(3,1fr); margin-top:18px; border-block:1px solid var(--line); }}
+    .proof div {{ padding:18px; border-right:1px solid var(--line); }} .proof div:last-child {{ border-right:0; }}
     .proof strong {{ display:block; font-size:24px; }}
     .proof span {{ color:var(--muted); font-size:12px; }}
     .boundary {{ margin:20px 0 0; padding:14px 16px; border-left:3px solid var(--oxide); background:var(--peach); color:var(--body); }}
     .links {{ display:flex; flex-wrap:wrap; gap:14px; margin-top:20px; }}
     .links a {{ color:var(--forest); font-weight:700; }}
-    @media(max-width:760px) {{ main {{ padding-top:30px; }} .grid {{ grid-template-columns:1fr; }} .proof {{ grid-template-columns:1fr; }} h1 {{ font-size:38px; }} }}
+    @media(max-width:760px) {{
+      main {{ padding-top:30px; }} .grid {{ grid-template-columns:1fr; }} .source-rail {{ position:static; }} h1 {{ font-size:38px; }}
+      .flow {{ grid-template-columns:1fr 1fr; }} .flow div:nth-child(2) {{ border-right:0; }} .flow div:nth-child(-n+2) {{ border-bottom:1px solid var(--line); }}
+      .proof,.guardrail-grid {{ grid-template-columns:1fr; }} .proof div,.guardrail-grid div {{ border-right:0; border-bottom:1px solid var(--line); }} .proof div:last-child,.guardrail-grid div:last-child {{ border-bottom:0; }}
+    }}
+    @media(max-width:700px) {{
+      thead {{ display:none; }} tbody,tr,td,th {{ display:block; }} tbody tr {{ padding:13px 0; border-bottom:1px solid var(--line); }} tbody tr:last-child {{ border-bottom:0; }}
+      tbody th {{ padding:5px 14px; border:0; font-size:14px; }} tbody td {{ display:grid; grid-template-columns:104px minmax(0,1fr); gap:12px; padding:5px 14px; border:0; }}
+      tbody td::before {{ content:attr(data-label); color:var(--muted); font-size:9px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }}
+    }}
   </style>
 </head>
 <body>
@@ -87,11 +114,12 @@ def render_evidence_page(
     <div class="eyebrow">Versioned synthetic evidence</div>
     <h1>A proposal you can inspect before you trust it.</h1>
     <p class="lead">The provider suggests mappings. Policy code checks the schema, source evidence, allowlists and risks. A person decides field by field. Only then can a synthetic manifest be materialized and validated.</p>
-    <div class="flow"><span>Proposal</span><i>&rarr;</i><span>Policy checks</span><i>&rarr;</i><span>Human review</span><i>&rarr;</i><span>Manifest QA</span></div>
+    <div class="flow"><div><b>01</b><span>Proposal</span></div><div><b>02</b><span>Policy checks</span></div><div><b>03</b><span>Human review</span></div><div><b>04</b><span>Manifest QA</span></div></div>
     <div class="grid">
-      <section><h2>Source brief</h2><pre>{html.escape(brief)}</pre></section>
-      <section><h2>Field-level review</h2><div class="table-wrap"><table><thead><tr><th>Field</th><th>Value</th><th>Verbatim evidence</th><th>Confidence</th><th>Decision</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></section>
+      <section class="source-rail"><h2>Source brief</h2><pre>{html.escape(brief)}</pre><dl class="metadata"><div><dt>Provider</dt><dd>{html.escape(proposal['provider'])}</dd></div><div><dt>Model</dt><dd>{html.escape(proposal['model'])}</dd></div><div><dt>Contract</dt><dd>{html.escape(proposal['contract_version'])}</dd></div><div><dt>Prompt hash</dt><dd>{html.escape(proposal['prompt_sha256'][:12])}&hellip;</dd></div><div><dt>Schema hash</dt><dd>{html.escape(proposal['schema_sha256'][:12])}&hellip;</dd></div></dl></section>
+      <section><h2>Field-level review</h2><div class="table-wrap"><table><colgroup><col style="width:14%"><col style="width:25%"><col style="width:31%"><col style="width:15%"><col style="width:15%"></colgroup><thead><tr><th>Field</th><th>Value</th><th>Verbatim evidence</th><th>Evidence</th><th>Decision</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></section>
     </div>
+    <section class="guardrail-behavior"><h2>Guardrail behavior</h2><div class="guardrail-grid"><div><strong>Missing critical field</strong><span>Abstain instead of inventing a value.</span></div><div><strong>Real destination or sensitive signal</strong><span>Block before a provider call.</span></div><div><strong>Rejected critical field</strong><span>Refuse materialization.</span></div></div></section>
     <div class="proof">
       <div><strong>{len(FIELD_NAMES)}/8</strong><span>fields grounded and reviewed</span></div>
       <div><strong>{materialization['row_count']}</strong><span>synthetic rows materialized</span></div>

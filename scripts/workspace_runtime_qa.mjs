@@ -175,6 +175,7 @@ const bulkUndone = await page.evaluate(() => ({
 }));
 await page.click("#close-detail");
 
+await page.click("#filter-disclosure > summary");
 await page.type("#search", "no-row-can-match-this-query");
 const emptyFilter = await page.evaluate(() => ({
   caption: document.querySelector("#table-caption").textContent,
@@ -184,10 +185,21 @@ const emptyFilter = await page.evaluate(() => ({
   approveDisabled: document.querySelector("#mark-ready").disabled,
   previewHeadline: document.querySelector("#preview-headline").textContent
 }));
+if (
+  emptyFilter.caption !== "0 creatives in this view"
+  || emptyFilter.title !== "No row selected"
+  || emptyFilter.detailFields !== 0
+  || emptyFilter.issueCount !== 0
+  || !emptyFilter.approveDisabled
+  || emptyFilter.previewHeadline !== "No row selected"
+) {
+  throw new Error(`Empty filter contract failed: ${JSON.stringify(emptyFilter)}`);
+}
 await page.$eval("#search", (element) => {
   element.value = "";
   element.dispatchEvent(new Event("input", { bubbles: true }));
 });
+await page.click("#filter-disclosure > summary");
 
 await page.click('button[data-filter="blocked"]');
 const filterReconciliation = await page.evaluate(() => ({
@@ -215,14 +227,96 @@ const reset = await page.evaluate(() => ({
 }));
 await page.click("#close-detail");
 await page.click('button[data-filter="needs_review"]');
-await page.evaluate(() => window.scrollTo(0, 0));
+await page.evaluate(() => {
+  document.documentElement.style.scrollBehavior = "auto";
+  window.scrollTo(0, 0);
+});
+await new Promise((resolve) => setTimeout(resolve, 100));
 await page.screenshot({ path: join(assetsDir, "workspace-mobile.png") });
 
 await page.setViewport({ width: 1440, height: 1000 });
 await page.goto(url, { waitUntil: "load" });
 await page.screenshot({ path: join(assetsDir, "workspace-desktop.png") });
 
+const portfolioUrl = `${baseUrl}/docs/index.html`;
+await page.goto(portfolioUrl, { waitUntil: "load" });
+const portfolioPage = await page.evaluate(() => ({
+  title: document.querySelector("h1")?.textContent,
+  canonical: document.querySelector('link[rel="canonical"]')?.href,
+  ogImage: document.querySelector('meta[property="og:image"]')?.content,
+  hasWorkspaceCta: Boolean(document.querySelector('a[href="workspace.html"]')),
+  hasLabCta: Boolean(document.querySelector('a[href="fix-lab.html"]')),
+  ownership: document.body.textContent.includes("Designed and built end to end by Mathieu Petroni"),
+  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
+}));
+if (
+  !portfolioPage.title?.includes("Catch launch errors")
+  || !portfolioPage.canonical?.endsWith("/creative-launch-workspace/")
+  || !portfolioPage.ogImage?.endsWith("/assets/social-card.png")
+  || !portfolioPage.hasWorkspaceCta
+  || !portfolioPage.hasLabCta
+  || !portfolioPage.ownership
+  || !portfolioPage.noDocumentOverflow
+) {
+  throw new Error(`Portfolio entry contract failed: ${JSON.stringify(portfolioPage)}`);
+}
+await page.screenshot({ path: join(assetsDir, "portfolio-desktop.png"), fullPage: true });
+
+await page.setViewport({ width: 390, height: 844 });
+await page.goto(portfolioUrl, { waitUntil: "load" });
+const portfolioMobile = await page.evaluate(() => ({
+  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
+  headingVisible: document.querySelector("h1")?.getBoundingClientRect().top < innerHeight
+}));
+if (!portfolioMobile.noDocumentOverflow || !portfolioMobile.headingVisible) {
+  throw new Error(`Portfolio mobile contract failed: ${JSON.stringify(portfolioMobile)}`);
+}
+await page.screenshot({ path: join(assetsDir, "portfolio-mobile.png"), fullPage: true });
+
+const socialCardUrl = `${baseUrl}/docs/social-card.html`;
+await page.setViewport({ width: 1200, height: 630 });
+await page.goto(socialCardUrl, { waitUntil: "load" });
+await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+
+const labUrl = `${baseUrl}/docs/fix-lab.html`;
+await page.setViewport({ width: 1280, height: 900 });
+await page.goto(labUrl, { waitUntil: "load" });
+const labInitial = await page.evaluate(() => ({
+  state: document.querySelector("#state")?.textContent.trim(),
+  issues: document.querySelectorAll("#issues .issue").length,
+  rulePack: document.querySelector("#rule-pack")?.textContent.includes("fix_lab_rule_pack.v1"),
+  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
+}));
+await page.click("#fix-all");
+const labFixed = await page.evaluate(() => ({
+  state: document.querySelector("#state")?.textContent.trim(),
+  issues: document.querySelectorAll("#issues .issue").length,
+  clean: document.querySelector("#issues .clean")?.textContent.includes("All three blockers cleared"),
+  audit: document.querySelector("#audit")?.textContent.includes('"external_write": false')
+}));
+await page.click("#reset");
+const labReset = await page.evaluate(() => ({
+  state: document.querySelector("#state")?.textContent.trim(),
+  issues: document.querySelectorAll("#issues .issue").length
+}));
+if (
+  labInitial.state !== "blocked"
+  || labInitial.issues !== 3
+  || !labInitial.rulePack
+  || !labInitial.noDocumentOverflow
+  || labFixed.state !== "launch ready"
+  || labFixed.issues !== 0
+  || !labFixed.clean
+  || !labFixed.audit
+  || labReset.state !== "blocked"
+  || labReset.issues !== 3
+) {
+  throw new Error(`Fix lab contract failed: ${JSON.stringify({ labInitial, labFixed, labReset })}`);
+}
+await page.screenshot({ path: join(assetsDir, "fix-lab.png"), fullPage: true });
+
 const evidenceUrl = `${baseUrl}/docs/brief-evidence.html`;
+await page.setViewport({ width: 1440, height: 1000 });
 await page.goto(evidenceUrl, { waitUntil: "load" });
 const evidencePage = await page.evaluate(() => ({
   title: document.querySelector("h1")?.textContent,
@@ -289,6 +383,9 @@ const report = {
   filter_reconciliation: filterReconciliation,
   persistence,
   reset,
+  portfolio_page: portfolioPage,
+  portfolio_mobile: portfolioMobile,
+  fix_lab: { initial: labInitial, fixed: labFixed, reset: labReset },
   evidence_page: evidencePage,
   console_errors: consoleErrors,
   lighthouse_accessibility: accessibility,
