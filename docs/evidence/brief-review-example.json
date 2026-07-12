@@ -1,0 +1,116 @@
+{
+  "blocked_reasons": [],
+  "brief_sha256": "18bf2c03b37c50f42a81c840ffc32440728be4d4558f04a8c1ad6a469fb0b122",
+  "contract_version": "brief_mapping_review.v1",
+  "deterministic_validation": {
+    "checks": [
+      "critical_fields_present",
+      "field_allowlists",
+      "synthetic_destination_hostname",
+      "no_unknown_fields"
+    ],
+    "contract_version": "brief_mapping_deterministic_validation.v1",
+    "issues": [],
+    "status": "pass"
+  },
+  "deterministic_validation_required": true,
+  "fields": {
+    "adset_key": {
+      "confidence_band": "high",
+      "confidence_calibrated": false,
+      "evidence_quote": "as_prospecting_us",
+      "evidence_strength": "direct",
+      "reason_code": "explicit_label",
+      "review_status": "accepted",
+      "status": "proposed",
+      "value": "as_prospecting_us"
+    },
+    "campaign_key": {
+      "confidence_band": "high",
+      "confidence_calibrated": false,
+      "evidence_quote": "camp_summer_us",
+      "evidence_strength": "direct",
+      "reason_code": "explicit_label",
+      "review_status": "accepted",
+      "status": "proposed",
+      "value": "camp_summer_us"
+    },
+    "country": {
+      "confidence_band": "high",
+      "confidence_calibrated": false,
+      "evidence_quote": "US",
+      "evidence_strength": "direct",
+      "reason_code": "explicit_label",
+      "review_status": "accepted",
+      "status": "proposed",
+      "value": "US"
+    },
+    "destination_url": {
+      "confidence_band": "high",
+      "confidence_calibrated": false,
+      "evidence_quote": "https://example.invalid/summer-us",
+      "evidence_strength": "direct",
+      "reason_code": "explicit_label",
+      "review_status": "accepted",
+      "status": "proposed",
+      "value": "https://example.invalid/summer-us"
+    },
+    "language": {
+      "confidence_band": "high",
+      "confidence_calibrated": false,
+      "evidence_quote": "en",
+      "evidence_strength": "direct",
+      "reason_code": "explicit_label",
+      "review_status": "accepted",
+      "status": "proposed",
+      "value": "en"
+    },
+    "objective": {
+      "confidence_band": "high",
+      "confidence_calibrated": false,
+      "evidence_quote": "traffic",
+      "evidence_strength": "direct",
+      "reason_code": "explicit_label",
+      "review_status": "accepted",
+      "status": "proposed",
+      "value": "traffic"
+    },
+    "placement": {
+      "confidence_band": "high",
+      "confidence_calibrated": false,
+      "evidence_quote": "feed",
+      "evidence_strength": "direct",
+      "reason_code": "explicit_label",
+      "review_status": "accepted",
+      "status": "proposed",
+      "value": "feed"
+    },
+    "utm_campaign": {
+      "confidence_band": "high",
+      "confidence_calibrated": false,
+      "evidence_quote": "camp_summer_us",
+      "evidence_strength": "direct",
+      "reason_code": "explicit_label",
+      "review_status": "accepted",
+      "status": "proposed",
+      "value": "camp_summer_us"
+    }
+  },
+  "manifest_draft": {
+    "adset_key": "as_prospecting_us",
+    "campaign_key": "camp_summer_us",
+    "country": "US",
+    "destination_url": "https://example.invalid/summer-us",
+    "language": "en",
+    "objective": "traffic",
+    "placement": "feed",
+    "utm_campaign": "camp_summer_us"
+  },
+  "mutation_allowed": false,
+  "proposal_id": "proposal_c17429eb148e0d9e9354",
+  "proposal_output_sha256": "8b9c5af3967b5a52423cc0a14d90c8420db02d7a7031f2fff68db1ec7c95a03f",
+  "receipt_payload_sha256": "a5a80202ad303cf5d274504cf2205bb4d0850b8def69711a8137f30c19d49422",
+  "review_id": "review_a5a80202ad303cf5d274",
+  "reviewer": "Synthetic Approver",
+  "status": "accepted_for_manifest_draft"
+}

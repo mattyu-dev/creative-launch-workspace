@@ -7,6 +7,7 @@ from pathlib import Path
 
 from meta_importer.asset_validation import validate_asset_metadata
 from meta_importer.browser_qa import audit_workspace_browser_contract
+from meta_importer.cli import main
 from meta_importer.html_quality import audit_workspace_html
 from meta_importer.launch_workspace import (
     ManifestSchemaError,
@@ -14,15 +15,13 @@ from meta_importer.launch_workspace import (
     build_launch_plan,
     export_plan_dict,
     read_manifest,
-    render_markdown_review,
     render_html_workspace,
+    render_markdown_review,
 )
-from meta_importer.cli import main
 from meta_importer.local_store import write_batch_store
 from meta_importer.platform_payload_preview import build_platform_payload_preview
 from meta_importer.sqlite_store import SQLiteStoreError, SQLiteWorkspaceStore
 from meta_importer.workspace_state import export_workspace_state_dict
-
 
 FIXTURE = Path("fixtures/fake_agency_creatives/manifest.csv")
 V2_FIXTURE = Path("fixtures/fake_agency_creatives/manifest_v2.csv")
@@ -110,6 +109,8 @@ class LaunchWorkspaceTests(unittest.TestCase):
 
         self.assertIn('content="Editorial Operations v1"', html)
         self.assertIn('class="run-summary"', html)
+        self.assertIn("AI-assisted brief intake", html)
+        self.assertIn("No model runs in this browser", html)
         self.assertIn('thumb.className = "creative-thumb format-"', html)
         self.assertIn('content: attr(data-label)', html)
         self.assertIn('@media (prefers-reduced-motion: reduce)', html)
@@ -278,7 +279,7 @@ class LaunchWorkspaceTests(unittest.TestCase):
                     2,
                     review_status="confirmed_ready",
                     decision="approved_for_dry_run_export",
-                    actor_role="QA / Evidence Lead",
+                    actor_role="Approver",
                     note="fixture approval",
                 )
                 exported = store.export_batch_state(manifest["batch_id"])
@@ -305,6 +306,32 @@ class LaunchWorkspaceTests(unittest.TestCase):
             try:
                 with self.assertRaises(SQLiteStoreError):
                     store.upsert_batch(plan, tenant_id="real_agency")
+            finally:
+                store.close()
+
+    def test_sqlite_store_rejects_invalid_roles_and_blocked_approvals(self) -> None:
+        rows = read_manifest(V2_FIXTURE)
+        plan = build_launch_plan(rows, source_manifest=str(V2_FIXTURE))
+        with tempfile.TemporaryDirectory() as temp_dir:
+            store = SQLiteWorkspaceStore(Path(temp_dir) / "workspace.sqlite3")
+            try:
+                manifest = store.upsert_batch(plan)
+                with self.assertRaisesRegex(SQLiteStoreError, "unknown reviewer role"):
+                    store.record_row_decision(
+                        manifest["batch_id"],
+                        2,
+                        review_status="confirmed_ready",
+                        decision="approved_for_dry_run_export",
+                        actor_role="Arbitrary Role",
+                    )
+                with self.assertRaisesRegex(SQLiteStoreError, "blocked rows cannot"):
+                    store.record_row_decision(
+                        manifest["batch_id"],
+                        4,
+                        review_status="confirmed_ready",
+                        decision="approved_for_dry_run_export",
+                        actor_role="Approver",
+                    )
             finally:
                 store.close()
 

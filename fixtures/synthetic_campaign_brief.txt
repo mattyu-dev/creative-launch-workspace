@@ -1,0 +1,9 @@
+Data classification: synthetic_fixture_only
+Campaign: camp_summer_us
+Adset: as_prospecting_us
+Objective: traffic
+Country: US
+Language: en
+Placement: feed
+Destination: https://example.invalid/summer-us
+UTM: camp_summer_us

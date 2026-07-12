@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import asdict
-from datetime import date
 from urllib.parse import parse_qsl, urlparse
 
+from .clock import today_iso
 from .launch_workspace import AdCandidate, LaunchPlan
-
 
 OBJECTIVE_MAP = {
     "awareness": "OUTCOME_AWARENESS",
@@ -63,7 +62,7 @@ def build_platform_payload_preview(plan: LaunchPlan) -> dict[str, object]:
         "contract_version": "meta_platform_payload_preview.v1",
         "source_contract_version": "offline_launch_plan.v2",
         "mode": "offline_platform_payload_preview_only",
-        "generated_at": date.today().isoformat(),
+        "generated_at": today_iso(),
         "mutation_allowed": False,
         "meta_api_compatibility": "mapped_not_executed",
         "data_classification": "synthetic_fixture_only",

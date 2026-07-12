@@ -63,6 +63,15 @@ def audit_workspace_html(html: str) -> dict[str, object]:
         ),
         "has_responsive_css": "@media (max-width:" in html,
         "has_design_system_contract": 'content="Editorial Operations v1"' in html,
+        "has_ai_assist_trace": all(
+            token in html
+            for token in (
+                "AI-assisted brief intake",
+                "Policy checks",
+                "Human decision",
+                "No model runs in this browser",
+            )
+        ),
         "has_skip_link": 'class="skip-link"' in html and 'href="#review-workspace"' in html,
         "has_active_row_semantics": 'setAttribute("aria-selected"' in html,
         "has_mobile_row_cards": 'td.dataset.label' in html and 'content: attr(data-label)' in html,
@@ -179,6 +188,11 @@ def _check_messages(checks: dict[str, bool]) -> list[tuple[str, bool, str]]:
             "has_design_system_contract",
             checks["has_design_system_contract"],
             "Editorial Operations design-system metadata is missing.",
+        ),
+        (
+            "has_ai_assist_trace",
+            checks["has_ai_assist_trace"],
+            "The bounded AI-to-human decision path is not visible.",
         ),
         ("has_skip_link", checks["has_skip_link"], "Skip-to-queue navigation is missing."),
         (

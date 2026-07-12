@@ -3,49 +3,88 @@ name: Creative Launch Workspace CI
 on:
   pull_request:
   push:
-    branches:
-      - main
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SOURCE_DATE_EPOCH: "1783814400"
 
 jobs:
-  validate:
+  python-quality:
+    name: Python ${{ matrix.python }}
     runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.11", "3.13"]
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
-          python-version: "3.12"
-      - name: Generate v2 fixture
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: Install package and quality tools
+        run: python -m pip install --disable-pip-version-check -e '.[dev]'
+      - name: Static checks
         run: |
-          python3 scripts/enrich_fixture_v2.py
-          python3 scripts/materialize_synthetic_assets.py
-      - name: Run tests
-        run: python3 -m unittest discover -s tests -q
-      - name: Compile Python
-        run: python3 -m py_compile meta_importer/*.py scripts/*.py
+          ruff check .
+          mypy meta_importer/ai meta_importer/clock.py meta_importer/review_policy.py
+      - name: Tests and branch coverage
+        run: |
+          coverage run -m unittest discover -s tests -q
+          coverage report
+
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.13"
+      - name: Install package
+        run: python -m pip install --disable-pip-version-check -e .
+      - name: Regenerate fixtures and AI evidence
+        run: |
+          python scripts/enrich_fixture_v2.py
+          python scripts/materialize_synthetic_assets.py
+          python evals/brief_mapping/build_dataset.py
+          python scripts/rebuild_ai_evidence.py
       - name: Rehearse v1 launch workspace
-        run: python3 -m meta_importer.cli plan fixtures/fake_agency_creatives/manifest.csv --out runs/fake_agency_creatives/launch_plan.json --review runs/fake_agency_creatives/review_packet.md --html runs/fake_agency_creatives/workspace.html --html-audit runs/fake_agency_creatives/workspace_audit.json --state runs/fake_agency_creatives/review_state.json --platform-preview runs/fake_agency_creatives/platform_preview.json --store-dir runs/fake_agency_creatives/store
+        run: creative-launch plan fixtures/fake_agency_creatives/manifest.csv --out runs/fake_agency_creatives/launch_plan.json --review runs/fake_agency_creatives/review_packet.md --html runs/fake_agency_creatives/workspace.html --html-audit runs/fake_agency_creatives/workspace_audit.json --state runs/fake_agency_creatives/review_state.json --platform-preview runs/fake_agency_creatives/platform_preview.json --store-dir runs/fake_agency_creatives/store
       - name: Rehearse v2 launch workspace
-        run: python3 -m meta_importer.cli plan fixtures/fake_agency_creatives/manifest_v2.csv --out runs/fake_agency_creatives_v2/launch_plan.json --review runs/fake_agency_creatives_v2/review_packet.md --html runs/fake_agency_creatives_v2/workspace.html --html-audit runs/fake_agency_creatives_v2/workspace_audit.json --state runs/fake_agency_creatives_v2/review_state.json --platform-preview runs/fake_agency_creatives_v2/platform_preview.json --store-dir runs/fake_agency_creatives_v2/store --sqlite-db runs/fake_agency_creatives_v2/workspace.sqlite3 --asset-metadata fixtures/fake_agency_creatives/asset_metadata.csv
+        run: creative-launch plan fixtures/fake_agency_creatives/manifest_v2.csv --out runs/fake_agency_creatives_v2/launch_plan.json --review runs/fake_agency_creatives_v2/review_packet.md --html runs/fake_agency_creatives_v2/workspace.html --html-audit runs/fake_agency_creatives_v2/workspace_audit.json --state runs/fake_agency_creatives_v2/review_state.json --platform-preview runs/fake_agency_creatives_v2/platform_preview.json --store-dir runs/fake_agency_creatives_v2/store --sqlite-db runs/fake_agency_creatives_v2/workspace.sqlite3 --asset-metadata fixtures/fake_agency_creatives/asset_metadata.csv
       - name: Check GitHub Pages demo freshness
         run: |
-          python3 -m meta_importer.cli plan fixtures/fake_agency_creatives/manifest_v2.csv --out /tmp/pages/launch_plan.json --review /tmp/pages/review_packet.md --html /tmp/pages/index.html --html-audit /tmp/pages/workspace_audit.json --state /tmp/pages/review_state.json --platform-preview /tmp/pages/platform_preview.json
+          creative-launch plan fixtures/fake_agency_creatives/manifest_v2.csv --out /tmp/pages/launch_plan.json --review /tmp/pages/review_packet.md --html /tmp/pages/index.html --html-audit /tmp/pages/workspace_audit.json --state /tmp/pages/review_state.json --platform-preview /tmp/pages/platform_preview.json
           cmp docs/index.html /tmp/pages/index.html
-      - name: Check browser QA contract
-        run: python3 scripts/workspace_browser_qa.py runs/fake_agency_creatives_v2/workspace.html --out runs/browser_qa/workspace_v2_browser_qa.json
-      - name: Check golden artifacts
-        run: python3 scripts/check_golden_artifacts.py
-      - name: Check start-selling readiness report
-        run: python3 -m meta_importer.cli sales-readiness --out runs/sales_readiness/sales_readiness.json --markdown runs/sales_readiness/sales_readiness.md
-      - name: Check whitespace
-        run: git diff --check
-      - name: Check generated files are current
+      - name: Check browser and golden contracts
+        run: |
+          python scripts/workspace_browser_qa.py runs/fake_agency_creatives_v2/workspace.html --out runs/browser_qa/workspace_v2_browser_qa.json
+          python scripts/check_golden_artifacts.py
+      - name: Check every generated artifact is current
         run: git diff --exit-code
-      - uses: actions/setup-node@v6
+
+  frontend-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: "22"
           cache: npm
-      - name: Install frontend QA dependencies
+      - name: Install locked frontend QA dependencies
         run: npm ci
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
       - name: Run browser and accessibility QA
         env:
           QA_ASSETS_DIR: /tmp/creative-launch-workspace/assets

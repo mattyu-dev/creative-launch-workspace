@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v3",
-  "tested_at": "2026-07-12T12:33:44.061Z",
+  "tested_at": "2026-07-12T13:30:03.673Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -10,7 +10,7 @@
       "tableScrollWidth": 320,
       "tableClientWidth": 320,
       "summaryHeight": 303,
-      "firstRowTop": 811,
+      "firstRowTop": 1017,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -21,7 +21,7 @@
       "tableScrollWidth": 375,
       "tableClientWidth": 375,
       "summaryHeight": 296,
-      "firstRowTop": 804,
+      "firstRowTop": 988,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -32,7 +32,7 @@
       "tableScrollWidth": 390,
       "tableClientWidth": 390,
       "summaryHeight": 296,
-      "firstRowTop": 804,
+      "firstRowTop": 988,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -43,7 +43,7 @@
       "tableScrollWidth": 760,
       "tableClientWidth": 760,
       "summaryHeight": 256,
-      "firstRowTop": 693,
+      "firstRowTop": 859,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -54,7 +54,7 @@
       "tableScrollWidth": 1023,
       "tableClientWidth": 1023,
       "summaryHeight": 256,
-      "firstRowTop": 693,
+      "firstRowTop": 859,
       "rowMode": "block",
       "noDocumentOverflow": true
     },
@@ -65,7 +65,7 @@
       "tableScrollWidth": 784,
       "tableClientWidth": 772,
       "summaryHeight": 145,
-      "firstRowTop": 436,
+      "firstRowTop": 545,
       "rowMode": "table-row-group",
       "noDocumentOverflow": true
     },
@@ -76,7 +76,7 @@
       "tableScrollWidth": 784,
       "tableClientWidth": 783,
       "summaryHeight": 129,
-      "firstRowTop": 420,
+      "firstRowTop": 513,
       "rowMode": "table-row-group",
       "noDocumentOverflow": true
     }
@@ -142,6 +142,13 @@
   "reset": {
     "rowTwoDecision": "Pending",
     "status": "Browser review state reset."
+  },
+  "evidence_page": {
+    "title": "A proposal you can inspect before you trust it.",
+    "fieldRows": 8,
+    "acceptedFields": 8,
+    "noDocumentOverflow": true,
+    "launchReadyProof": "2"
   },
   "console_errors": [],
   "lighthouse_accessibility": {

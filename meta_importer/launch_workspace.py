@@ -5,10 +5,10 @@ import hashlib
 import json
 from collections import Counter, defaultdict
 from dataclasses import dataclass
-from datetime import date
 from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
+from .clock import today_iso
 
 SUPPORTED_FORMATS = {"image", "video", "carousel", "story"}
 APPROVAL_STATUSES = {"approved", "pending", "rejected"}
@@ -275,7 +275,7 @@ def export_plan_dict(plan: LaunchPlan) -> dict[str, object]:
         "mode": "offline_dry_run_only",
         "contract_version": "offline_launch_plan.v2",
         "contract_status": "local_adapter_draft",
-        "generated_at": date.today().isoformat(),
+        "generated_at": today_iso(),
         "source_manifest_sha256": _source_manifest_sha256(plan.source_manifest),
         "data_classification": _data_classification(plan.rows),
         "mutation_allowed": False,
@@ -644,6 +644,37 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       color: #fff;
       background: var(--forest);
     }
+    .intelligence-strip {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.1fr) minmax(340px, 1.9fr) auto;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 18px;
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      background: var(--paper);
+    }
+    .intelligence-strip .eyebrow { color: var(--oxide); }
+    .intelligence-strip > * { min-width: 0; }
+    .intelligence-strip strong { display: block; margin-top: 3px; font-size: 15px; }
+    .intelligence-strip p { margin: 0; color: var(--muted); font-size: 12px; }
+    .intelligence-flow {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      color: var(--body);
+      font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .intelligence-flow span {
+      padding: 7px 9px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--canvas);
+      white-space: nowrap;
+    }
+    .intelligence-flow i { color: var(--oxide); font-style: normal; }
+    .evidence-link { color: var(--forest); font-size: 12px; font-weight: 650; white-space: nowrap; }
     .summary-copy {
       padding: 16px 22px;
       display: grid;
@@ -1159,6 +1190,8 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       .local-signal { display: none; }
       main { grid-template-columns: minmax(0, 1fr); padding: 10px 0 86px; gap: 10px; }
       .run-summary { margin: 0 10px; grid-template-columns: 1fr; border-radius: 10px; }
+      .intelligence-strip { margin: 0 10px; grid-template-columns: 1fr; gap: 10px; }
+      .intelligence-flow { width: 100%; max-width: 100%; overflow-x: auto; padding-bottom: 2px; }
       .summary-copy { padding: 16px; border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, .16); }
       .summary-copy strong { font-size: 20px; }
       .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1295,6 +1328,19 @@ def render_html_workspace(plan: LaunchPlan) -> str:
           <span title="Ready"></span><span title="Needs review"></span><span title="Blocked"></span>
         </div>
       </div>
+    </section>
+    <section class="intelligence-strip" aria-label="AI-assisted brief intake proof">
+      <div>
+        <div class="eyebrow">AI-assisted brief intake</div>
+        <strong>8 grounded fields &middot; human review required</strong>
+      </div>
+      <div>
+        <div class="intelligence-flow" aria-label="Proposal, policy checks, human decision, deterministic validation">
+          <span>Proposal</span><i>&rarr;</i><span>Policy checks</span><i>&rarr;</i><span>Human decision</span><i>&rarr;</i><span>Launch QA</span>
+        </div>
+        <p>Versioned synthetic example. No model runs in this browser and no output can publish.</p>
+      </div>
+      <a class="evidence-link" href="brief-evidence.html">Inspect evidence &rarr;</a>
     </section>
     <div class="workspace" id="review-workspace" tabindex="-1">
       <section class="table-shell" aria-label="Creative review queue">
@@ -1457,7 +1503,8 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     let persisted = loadPersistedState();
     let rows = mergeRows();
     let activeFilter = "all";
-    let activeRow = rows.length ? rows[0].source_row : null;
+    let activeRow = rows.find((row) => row.batch_state === "blocked")?.source_row
+      || (rows.length ? rows[0].source_row : null);
     let lastFocusedRow = activeRow;
     let pendingAction = null;
     let undoSnapshot = null;
@@ -2501,7 +2548,11 @@ def _candidate_for(row: ManifestRow, row_issues: list[Issue]) -> AdCandidate:
     batch_state = "blocked" if has_blocker else "needs_review" if issue_count else "launch_ready"
     name = f"{row.campaign_key}::{row.adset_key}::{row.creative_id}::{row.format}"
     idempotency_key = _idempotency_key_for(row)
-    operation_intent = "reuse_existing_post" if row.post_id else "create_new_ad"
+    operation_intent = (
+        "reuse_existing_post"
+        if row.post_id_type == "existing" and row.post_id
+        else "create_new_ad"
+    )
     final_url_preview = _final_url_preview(row)
     return AdCandidate(
         source_row=row.source_row,

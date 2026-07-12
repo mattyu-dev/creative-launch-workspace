@@ -217,6 +217,25 @@ await page.setViewport({ width: 1440, height: 1000 });
 await page.goto(url, { waitUntil: "load" });
 await page.screenshot({ path: join(assetsDir, "workspace-desktop.png") });
 
+const evidenceUrl = `${baseUrl}/docs/brief-evidence.html`;
+await page.goto(evidenceUrl, { waitUntil: "load" });
+const evidencePage = await page.evaluate(() => ({
+  title: document.querySelector("h1")?.textContent,
+  fieldRows: document.querySelectorAll("tbody tr").length,
+  acceptedFields: document.querySelectorAll(".accepted").length,
+  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
+  launchReadyProof: Array.from(document.querySelectorAll(".proof strong")).at(-1)?.textContent
+}));
+if (
+  evidencePage.fieldRows !== 8
+  || evidencePage.acceptedFields !== 8
+  || !evidencePage.noDocumentOverflow
+  || evidencePage.launchReadyProof !== "2"
+) {
+  throw new Error(`Brief evidence page contract failed: ${JSON.stringify(evidencePage)}`);
+}
+await page.screenshot({ path: join(assetsDir, "brief-evidence.png"), fullPage: true });
+
 await browser.close();
 
 const lighthouseBin = join(root, "node_modules/.bin/lighthouse");
@@ -265,6 +284,7 @@ const report = {
   filter_reconciliation: filterReconciliation,
   persistence,
   reset,
+  evidence_page: evidencePage,
   console_errors: consoleErrors,
   lighthouse_accessibility: accessibility,
   mutation_allowed: false,

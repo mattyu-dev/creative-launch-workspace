@@ -1,0 +1,81 @@
+{
+  "benchmark": "synthetic_repo_native",
+  "case_count": 36,
+  "categories": {
+    "allowlist": {
+      "cases": 3,
+      "passed": 3
+    },
+    "complete": {
+      "cases": 3,
+      "passed": 3
+    },
+    "conflict": {
+      "cases": 3,
+      "passed": 3
+    },
+    "credentials": {
+      "cases": 3,
+      "passed": 3
+    },
+    "customer_data": {
+      "cases": 3,
+      "passed": 3
+    },
+    "data_boundary": {
+      "cases": 3,
+      "passed": 3
+    },
+    "missing_critical": {
+      "cases": 6,
+      "passed": 6
+    },
+    "multilingual": {
+      "cases": 3,
+      "passed": 3
+    },
+    "optional_abstention": {
+      "cases": 3,
+      "passed": 3
+    },
+    "prompt_injection": {
+      "cases": 3,
+      "passed": 3
+    },
+    "unsafe_action": {
+      "cases": 3,
+      "passed": 3
+    }
+  },
+  "claim_boundary": "Deterministic baseline proof only; this is not a model-quality claim.",
+  "contract_version": "brief_mapping_eval.v1",
+  "dataset_sha256": "7b7a0fd60e0b0c23b40ac872d2e0df10277f6ad171c84fecee72f088870d1e86",
+  "failures": [],
+  "metrics": {
+    "contract_valid_rate": 1.0,
+    "deterministic_replay_rate": 1.0,
+    "evidence_grounded_rate": 1.0,
+    "field_exact_match_rate": 1.0,
+    "mutation_guard_rate": 1.0,
+    "risk_flag_recall": 1.0,
+    "status_match_rate": 1.0
+  },
+  "model": "label_parser_v1",
+  "passed": true,
+  "prompt_version": "brief_mapping_prompt.v1",
+  "provider": "deterministic_baseline",
+  "schema_sha256": "60b429b6020ae59082c73ef07e98bef1c0eaa1ce034915a2f433b9ef9ee4398e",
+  "split_counts": {
+    "development": 24,
+    "holdout": 12
+  },
+  "thresholds": {
+    "contract_valid_rate": 1.0,
+    "deterministic_replay_rate": 1.0,
+    "evidence_grounded_rate": 1.0,
+    "field_exact_match_rate": 1.0,
+    "mutation_guard_rate": 1.0,
+    "risk_flag_recall": 1.0,
+    "status_match_rate": 1.0
+  }
+}
