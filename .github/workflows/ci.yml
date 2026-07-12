@@ -35,7 +35,7 @@ jobs:
       - name: Static checks
         run: |
           ruff check .
-          mypy meta_importer/ai meta_importer/clock.py meta_importer/review_policy.py
+          mypy meta_importer/ai meta_importer/clock.py meta_importer/review_policy.py meta_importer/fix_lab.py meta_importer/portfolio_page.py
       - name: Tests and branch coverage
         run: |
           coverage run -m unittest discover -s tests -q
@@ -57,14 +57,16 @@ jobs:
           python scripts/materialize_synthetic_assets.py
           python evals/brief_mapping/build_dataset.py
           python scripts/rebuild_ai_evidence.py
+          python scripts/rebuild_fix_lab.py
+          python scripts/rebuild_portfolio_page.py
       - name: Rehearse v1 launch workspace
         run: creative-launch plan fixtures/fake_agency_creatives/manifest.csv --out runs/fake_agency_creatives/launch_plan.json --review runs/fake_agency_creatives/review_packet.md --html runs/fake_agency_creatives/workspace.html --html-audit runs/fake_agency_creatives/workspace_audit.json --state runs/fake_agency_creatives/review_state.json --platform-preview runs/fake_agency_creatives/platform_preview.json --store-dir runs/fake_agency_creatives/store
       - name: Rehearse v2 launch workspace
         run: creative-launch plan fixtures/fake_agency_creatives/manifest_v2.csv --out runs/fake_agency_creatives_v2/launch_plan.json --review runs/fake_agency_creatives_v2/review_packet.md --html runs/fake_agency_creatives_v2/workspace.html --html-audit runs/fake_agency_creatives_v2/workspace_audit.json --state runs/fake_agency_creatives_v2/review_state.json --platform-preview runs/fake_agency_creatives_v2/platform_preview.json --store-dir runs/fake_agency_creatives_v2/store --sqlite-db runs/fake_agency_creatives_v2/workspace.sqlite3 --asset-metadata fixtures/fake_agency_creatives/asset_metadata.csv
       - name: Check GitHub Pages demo freshness
         run: |
-          creative-launch plan fixtures/fake_agency_creatives/manifest_v2.csv --out /tmp/pages/launch_plan.json --review /tmp/pages/review_packet.md --html /tmp/pages/index.html --html-audit /tmp/pages/workspace_audit.json --state /tmp/pages/review_state.json --platform-preview /tmp/pages/platform_preview.json
-          cmp docs/index.html /tmp/pages/index.html
+          creative-launch plan fixtures/fake_agency_creatives/manifest_v2.csv --out /tmp/pages/launch_plan.json --review /tmp/pages/review_packet.md --html /tmp/pages/workspace.html --html-audit /tmp/pages/workspace_audit.json --state /tmp/pages/review_state.json --platform-preview /tmp/pages/platform_preview.json
+          cmp docs/workspace.html /tmp/pages/workspace.html
       - name: Check browser and golden contracts
         run: |
           python scripts/workspace_browser_qa.py runs/fake_agency_creatives_v2/workspace.html --out runs/browser_qa/workspace_v2_browser_qa.json

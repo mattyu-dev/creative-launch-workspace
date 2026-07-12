@@ -482,6 +482,13 @@ def render_html_workspace(plan: LaunchPlan) -> str:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="design-system" content="Editorial Operations v2">
+  <meta name="description" content="Review a 100-row synthetic Meta creative batch, inspect routed launch issues and record local human decisions.">
+  <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/workspace.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Interactive review workspace · Creative Launch Workspace">
+  <meta property="og:description" content="A task-first review queue for approval, destination, placement, mapping and duplicate issues.">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card.png">
+  <meta name="twitter:card" content="summary_large_image">
   <title>Creative Launch Workspace for Meta Ads</title>
   <style>
     :root {
@@ -827,6 +834,8 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       font-weight: 500;
     }
     .toolbar label { width: min(190px, 100%); }
+    .mobile-filters, .filter-controls { display: contents; }
+    .mobile-filters > summary { display: none; }
     input, select, textarea {
       min-height: 38px;
       border: 1px solid var(--line-strong);
@@ -1195,12 +1204,11 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       .local-signal { display: none; }
       main { grid-template-columns: minmax(0, 1fr); padding: 10px 0 86px; gap: 10px; }
       .header-proof { display: none; }
-      .focus-panel { margin: 0 10px; grid-template-columns: 1fr; gap: 16px; padding: 18px; border-radius: 10px; }
-      .focus-copy strong { font-size: 25px; }
-      .focus-actions { align-items: stretch; flex-direction: column; }
-      .focus-actions button { width: 100%; }
-      .status-legend { align-items: flex-start; flex-direction: column; }
-      .status-chip + .status-chip::before { display: none; }
+      .focus-panel { margin: 0 10px; grid-template-columns:minmax(0,1fr) auto; gap: 10px 14px; padding: 14px 16px; border-radius: 10px; }
+      .focus-copy .eyebrow,.focus-copy p,.status-legend { display:none; }
+      .focus-copy strong { margin:0; font-size:21px; }
+      .focus-actions { align-items:center; flex-direction:row; }
+      .focus-actions button { min-height:40px; width:auto; padding-inline:11px; font-size:12px; }
       .batch-disclosure { margin: 0 10px; }
       .batch-context-grid { grid-template-columns: 1fr; }
       .context-block { border-right: 0; border-bottom: 1px solid var(--line); }
@@ -1226,10 +1234,16 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       .detail-shell.open { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
       .detail-close { display: inline-flex; margin-left: auto; }
       body.detail-open { overflow: hidden; }
-      .toolbar { min-width: 0; align-items: stretch; padding: 10px; }
-      .filter-set { width: 100%; min-width: 0; max-width: 100%; padding: 0; overflow-x: auto; }
+      .toolbar { min-width:0; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; padding:6px 10px; position:sticky; top:0; z-index:7; }
+      .filter-set { width:auto; min-width:0; max-width:100%; padding:0; margin:0; overflow-x:auto; }
       .filter-set button { min-width: max-content; min-height: 44px; }
-      .toolbar label { flex: 1 1 140px; width: auto; min-width: 0; }
+      .mobile-filters { display:block; position:relative; }
+      .mobile-filters > summary { min-height:38px; display:inline-flex; align-items:center; padding:7px 9px; border:1px solid var(--line-strong); border-radius:6px; cursor:pointer; list-style:none; font-size:12px; font-weight:600; }
+      .mobile-filters > summary::-webkit-details-marker { display:none; }
+      .mobile-filters > summary::after { content:" +"; margin-left:5px; color:var(--muted); }
+      .mobile-filters[open] > summary::after { content:" −"; }
+      .filter-controls { min-width:250px; display:grid; grid-template-columns:1fr; gap:8px; position:absolute; right:0; top:44px; z-index:10; padding:12px; border:1px solid var(--line-strong); background:var(--surface); }
+      .toolbar label { width:auto; min-width:0; }
       .toolbar input, .toolbar select { width: 100%; min-width: 0; }
       input, select, button, .file-label { min-height: 44px; }
       .bulkbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 8px 10px; }
@@ -1282,7 +1296,8 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       .detail-grid, .export-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 480px) {
-      .toolbar label { flex-basis: 100%; }
+      .focus-panel { grid-template-columns:1fr; }
+      .focus-actions button { flex:1 1 0; }
       .confirm-panel { align-items: stretch; flex-direction: column; }
       .confirm-panel button { width: 100%; }
     }
@@ -1310,7 +1325,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       </div>
     </div>
     <div class="header-status">
-      <a class="header-proof" href="brief-evidence.html">View AI evidence</a>
+      <a class="header-proof" href="brief-evidence.html">Governed intake evidence</a>
       <span class="local-signal">Stored locally</span>
       <span class="badge">Dry run only</span>
     </div>
@@ -1327,7 +1342,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
         <button class="button-secondary" data-quick-filter="blocked">Inspect __BLOCKED_COUNT__ blockers</button>
       </div>
       <div class="status-legend" aria-label="Batch status">
-        <span class="status-chip"><strong>__LAUNCH_READY__</strong> cleared automatically</span>
+        <span class="status-chip"><strong>__LAUNCH_READY__</strong> pass offline checks</span>
         <span class="status-chip"><strong>__REVIEW_COUNT__</strong> need your decision</span>
         <span class="status-chip"><strong>__BLOCKED_COUNT__</strong> routed for fixes</span>
       </div>
@@ -1368,14 +1383,19 @@ def render_html_workspace(plan: LaunchPlan) -> str:
             <button data-filter="launch_ready" aria-pressed="false">Cleared</button>
             <button data-filter="all" aria-pressed="false">All rows</button>
           </div>
-          <label>
-            Search
-            <input id="search" type="search" autocomplete="off" placeholder="Creative, campaign, issue">
-          </label>
-          <label>
-            Owner
-            <select id="owner-filter"></select>
-          </label>
+          <details class="mobile-filters" id="filter-disclosure" open>
+            <summary>Filters</summary>
+            <div class="filter-controls">
+              <label>
+                Search
+                <input id="search" type="search" autocomplete="off" placeholder="Creative, campaign, issue">
+              </label>
+              <label>
+                Owner
+                <select id="owner-filter"></select>
+              </label>
+            </div>
+          </details>
         </div>
         <div class="bulkbar">
           <span id="visible-count" class="subtle grow" aria-live="polite"></span>
@@ -1438,7 +1458,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
         <div class="actions">
           <button id="mark-ready" class="button-primary">Approve locally</button>
           <button id="mark-fix">Needs fix</button>
-          <button id="mark-blocked" class="danger">Blocked</button>
+          <button id="mark-blocked" class="danger">Block launch</button>
         </div>
         <details class="detail-disclosure">
           <summary>Creative preview</summary>
@@ -1505,6 +1525,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     const approveButton = document.getElementById("mark-ready");
     const fixButton = document.getElementById("mark-fix");
     const blockButton = document.getElementById("mark-blocked");
+    const filterDisclosure = document.getElementById("filter-disclosure");
     const filterButtons = Array.from(document.querySelectorAll("button[data-filter]"));
     const quickFilterButtons = Array.from(document.querySelectorAll("button[data-quick-filter]"));
     const workspaceRowsBySource = new Map(workspaceData.review_statuses.map((row) => [String(row.source_row), row]));
@@ -1526,6 +1547,16 @@ def render_html_workspace(plan: LaunchPlan) -> str:
 
     function isPlainObject(value) {
       return Boolean(value) && typeof value === "object" && !Array.isArray(value) && Object.getPrototypeOf(value) === Object.prototype;
+    }
+
+    function syncFilterDisclosure() {
+      if (window.matchMedia("(max-width: 1023px)").matches) {
+        if (!filterDisclosure.dataset.mobileInitialized) filterDisclosure.removeAttribute("open");
+        filterDisclosure.dataset.mobileInitialized = "true";
+      } else {
+        filterDisclosure.setAttribute("open", "");
+        delete filterDisclosure.dataset.mobileInitialized;
+      }
     }
 
     function validString(value, maxLength) {
@@ -2195,7 +2226,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       trapDetailFocus(event);
       if (event.key === "Escape" && !confirmPanel.open && detailShell.classList.contains("open")) closeRowDetail();
     });
-    window.addEventListener("resize", syncDetailInteractivity);
+    window.addEventListener("resize", () => { syncDetailInteractivity(); syncFilterDisclosure(); });
     stateImport.addEventListener("change", () => {
       const file = stateImport.files && stateImport.files[0];
       if (!file) return;
@@ -2212,6 +2243,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     });
 
     renderOwnerOptions();
+    syncFilterDisclosure();
     syncDetailInteractivity();
     if (persistedLoadError) {
       statusLine.textContent = "Saved browser state could not be read; using seeded review state.";

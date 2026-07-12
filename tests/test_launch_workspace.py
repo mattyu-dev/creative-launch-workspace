@@ -174,7 +174,7 @@ class LaunchWorkspaceTests(unittest.TestCase):
         html = render_html_workspace(plan)
 
         self.assertIn("0 creatives need a human decision", html)
-        self.assertIn("<strong>1</strong> cleared automatically", html)
+        self.assertIn("<strong>1</strong> pass offline checks", html)
         self.assertIn("<strong>0</strong> need your decision", html)
         self.assertIn("<strong>0</strong> routed for fixes", html)
 
