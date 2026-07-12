@@ -1,0 +1,276 @@
+{
+  "contract_version": "reviewed_mapping_materialization.v1",
+  "manifest_path": "docs/evidence/reviewed-manifest-example.csv",
+  "manifest_sha256": "a01a03bf39e4fc25e004972b5b0eeb16535b24a2026e561263b0ed8cf9020842",
+  "mutation_allowed": false,
+  "offline_launch_plan": {
+    "ads": [
+      {
+        "account_mapping": {
+          "account_id_alias": "acct_fixture_us"
+        },
+        "adset_key": "as_prospecting_us",
+        "approval_record": {
+          "approved_at": "2026-07-12",
+          "reviewer": "Synthetic Approver"
+        },
+        "batch_state": "launch_ready",
+        "campaign_key": "camp_summer_us",
+        "creative": {
+          "asset_hash": "",
+          "asset_path": "fixtures/fake_agency_creatives/assets/launch_static_001.jpg",
+          "format": "image",
+          "headline": "Summer proof",
+          "hook": "hook_a",
+          "primary_text": "Synthetic summer proof",
+          "variant_group": "summer_a"
+        },
+        "creative_id": "brief_cr_001",
+        "destination_url": "https://example.invalid/summer-us",
+        "format": "image",
+        "idempotency": {
+          "collision_policy": "block_unless_explicit_reuse_intent",
+          "key": "181d23ca3b780ad4",
+          "key_components": [
+            "account_id_alias",
+            "campaign_key",
+            "adset_key",
+            "creative_id",
+            "asset_path",
+            "destination_url",
+            "placement",
+            "post_id"
+          ],
+          "namespace": "offline_launch_plan.v2",
+          "scope": "account_alias_campaign_adset_creative_asset_destination_placement_post"
+        },
+        "idempotency_key": "181d23ca3b780ad4",
+        "issue_count": 0,
+        "name": "camp_summer_us::as_prospecting_us::brief_cr_001::image",
+        "operation": "dry_run_create_ad_candidate",
+        "operation_contract": {
+          "execution_status": "not_executable",
+          "intent": "create_new_ad",
+          "mutation_allowed": false,
+          "object_type": "ad_candidate"
+        },
+        "operation_intent": "create_new_ad",
+        "placement_mapping": {
+          "adset_key": "as_prospecting_us",
+          "campaign_key": "camp_summer_us",
+          "country": "US",
+          "language": "en",
+          "objective": "traffic",
+          "placement": "feed"
+        },
+        "post_lineage": {
+          "operation_intent": "create_new_ad",
+          "post_id": "",
+          "post_id_type": "new"
+        },
+        "preflight": {
+          "placement_checks": {
+            "codes": [],
+            "status": "pass"
+          },
+          "post_ref_checks": {
+            "codes": [],
+            "status": "pass"
+          },
+          "source_lineage_checks": {
+            "codes": [],
+            "status": "pass"
+          },
+          "utm_checks": {
+            "codes": [],
+            "status": "pass"
+          }
+        },
+        "source_lineage": {
+          "asset_hash": "",
+          "asset_path": "fixtures/fake_agency_creatives/assets/launch_static_001.jpg",
+          "source_manifest": "docs/evidence/reviewed-manifest-example.csv",
+          "source_row": 2,
+          "source_row_id": "brief_row_001",
+          "source_system": "synthetic_brief"
+        },
+        "source_row": 2,
+        "tracking": {
+          "destination_url": "https://example.invalid/summer-us",
+          "final_url_preview": "https://example.invalid/summer-us?utm_source=facebook&utm_medium=paid_social&utm_campaign=camp_summer_us&utm_content=brief_cr_001",
+          "utm_campaign": "camp_summer_us",
+          "utm_content": "brief_cr_001",
+          "utm_medium": "paid_social",
+          "utm_source": "facebook",
+          "utm_term": ""
+        }
+      },
+      {
+        "account_mapping": {
+          "account_id_alias": "acct_fixture_us"
+        },
+        "adset_key": "as_prospecting_us",
+        "approval_record": {
+          "approved_at": "2026-07-12",
+          "reviewer": "Synthetic Approver"
+        },
+        "batch_state": "launch_ready",
+        "campaign_key": "camp_summer_us",
+        "creative": {
+          "asset_hash": "",
+          "asset_path": "fixtures/fake_agency_creatives/assets/launch_video_002.mp4",
+          "format": "video",
+          "headline": "Summer motion",
+          "hook": "hook_b",
+          "primary_text": "Synthetic summer motion",
+          "variant_group": "summer_b"
+        },
+        "creative_id": "brief_cr_002",
+        "destination_url": "https://example.invalid/summer-us",
+        "format": "video",
+        "idempotency": {
+          "collision_policy": "block_unless_explicit_reuse_intent",
+          "key": "59babe5b81b61983",
+          "key_components": [
+            "account_id_alias",
+            "campaign_key",
+            "adset_key",
+            "creative_id",
+            "asset_path",
+            "destination_url",
+            "placement",
+            "post_id"
+          ],
+          "namespace": "offline_launch_plan.v2",
+          "scope": "account_alias_campaign_adset_creative_asset_destination_placement_post"
+        },
+        "idempotency_key": "59babe5b81b61983",
+        "issue_count": 0,
+        "name": "camp_summer_us::as_prospecting_us::brief_cr_002::video",
+        "operation": "dry_run_create_ad_candidate",
+        "operation_contract": {
+          "execution_status": "not_executable",
+          "intent": "create_new_ad",
+          "mutation_allowed": false,
+          "object_type": "ad_candidate"
+        },
+        "operation_intent": "create_new_ad",
+        "placement_mapping": {
+          "adset_key": "as_prospecting_us",
+          "campaign_key": "camp_summer_us",
+          "country": "US",
+          "language": "en",
+          "objective": "traffic",
+          "placement": "feed"
+        },
+        "post_lineage": {
+          "operation_intent": "create_new_ad",
+          "post_id": "",
+          "post_id_type": "new"
+        },
+        "preflight": {
+          "placement_checks": {
+            "codes": [],
+            "status": "pass"
+          },
+          "post_ref_checks": {
+            "codes": [],
+            "status": "pass"
+          },
+          "source_lineage_checks": {
+            "codes": [],
+            "status": "pass"
+          },
+          "utm_checks": {
+            "codes": [],
+            "status": "pass"
+          }
+        },
+        "source_lineage": {
+          "asset_hash": "",
+          "asset_path": "fixtures/fake_agency_creatives/assets/launch_video_002.mp4",
+          "source_manifest": "docs/evidence/reviewed-manifest-example.csv",
+          "source_row": 3,
+          "source_row_id": "brief_row_002",
+          "source_system": "synthetic_brief"
+        },
+        "source_row": 3,
+        "tracking": {
+          "destination_url": "https://example.invalid/summer-us",
+          "final_url_preview": "https://example.invalid/summer-us?utm_source=facebook&utm_medium=paid_social&utm_campaign=camp_summer_us&utm_content=brief_cr_002",
+          "utm_campaign": "camp_summer_us",
+          "utm_content": "brief_cr_002",
+          "utm_medium": "paid_social",
+          "utm_source": "facebook",
+          "utm_term": ""
+        }
+      }
+    ],
+    "contract_status": "local_adapter_draft",
+    "contract_version": "offline_launch_plan.v2",
+    "data_classification": "synthetic_fixture_only",
+    "fix_queue": [],
+    "generated_at": "2026-07-12",
+    "guardrails": [
+      "No Meta API calls are made.",
+      "No credentials, OAuth tokens, or live ad account identifiers are loaded.",
+      "The export is a review artifact, not a live publish action.",
+      "Live Meta mutation requires explicit HITL approval and separate platform proof."
+    ],
+    "meta_api_compatibility": "not_claimed",
+    "mode": "offline_dry_run_only",
+    "mutation_allowed": false,
+    "product": "Creative Launch Workspace for Meta Ads",
+    "source_manifest": "docs/evidence/reviewed-manifest-example.csv",
+    "source_manifest_sha256": "a01a03bf39e4fc25e004972b5b0eeb16535b24a2026e561263b0ed8cf9020842",
+    "summary": {
+      "adset_count": 1,
+      "batch_states": {
+        "launch_ready": 2
+      },
+      "campaign_count": 1,
+      "formats": [
+        "image",
+        "video"
+      ],
+      "issue_codes": {},
+      "issue_severity": {},
+      "launch_contract": {
+        "account_alias_rows": 2,
+        "placement_rows": 2,
+        "post_decision_rows": 2,
+        "post_id_rows": 0,
+        "source_lineage_rows": 2,
+        "utm_rows": 2
+      },
+      "owner_queue": {},
+      "row_count": 2
+    }
+  },
+  "review_id": "review_a5a80202ad303cf5d274",
+  "row_count": 2,
+  "template_sha256": "39bb0881490bd7c8bb4a425aa3e238e9390841e910d8481980a965559eeeedcb",
+  "validation_summary": {
+    "adset_count": 1,
+    "batch_states": {
+      "launch_ready": 2
+    },
+    "campaign_count": 1,
+    "formats": [
+      "image",
+      "video"
+    ],
+    "issue_codes": {},
+    "issue_severity": {},
+    "launch_contract": {
+      "account_alias_rows": 2,
+      "placement_rows": 2,
+      "post_decision_rows": 2,
+      "post_id_rows": 0,
+      "source_lineage_rows": 2,
+      "utm_rows": 2
+    },
+    "owner_queue": {},
+    "row_count": 2
+  }
+}

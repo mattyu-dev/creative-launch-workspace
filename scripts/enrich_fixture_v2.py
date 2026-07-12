@@ -5,7 +5,6 @@ import csv
 import hashlib
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "fixtures/fake_agency_creatives/manifest.csv"
 TARGET = ROOT / "fixtures/fake_agency_creatives/manifest_v2.csv"

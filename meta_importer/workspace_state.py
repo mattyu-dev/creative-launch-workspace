@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import hashlib
 from collections import defaultdict
-from datetime import date
 
+from .clock import today_iso
 from .launch_workspace import (
     AdCandidate,
     Issue,
@@ -12,7 +12,7 @@ from .launch_workspace import (
     _row_by_source,
     _source_manifest_sha256,
 )
-
+from .review_policy import REVIEWER_ROLES
 
 REVIEW_STATUS_BY_BATCH_STATE = {
     "launch_ready": "ready_to_review",
@@ -39,6 +39,8 @@ REVIEW_ROLES = [
     },
 ]
 
+assert {item["role"] for item in REVIEW_ROLES} == REVIEWER_ROLES
+
 
 def workspace_batch_id(plan: LaunchPlan) -> str:
     manifest_hash = _source_manifest_sha256(plan.source_manifest)
@@ -62,7 +64,7 @@ def export_workspace_state_dict(plan: LaunchPlan) -> dict[str, object]:
         "product": "Creative Launch Workspace for Meta Ads",
         "mode": "local_review_state_only",
         "contract_version": "workspace_review_state.v1",
-        "generated_at": date.today().isoformat(),
+        "generated_at": today_iso(),
         "batch_id": batch_id,
         "source_manifest": plan.source_manifest,
         "source_manifest_sha256": manifest_hash,
@@ -167,5 +169,5 @@ def _audit_event(
         "event_type": event_type,
         "actor_role": actor_role,
         "message": message,
-        "occurred_at": date.today().isoformat(),
+        "occurred_at": today_iso(),
     }

@@ -1,0 +1,58 @@
+{
+  "allowed_briefs": [
+    {
+      "id": "standalone_synthetic_campaign_brief",
+      "sha256": "18bf2c03b37c50f42a81c840ffc32440728be4d4558f04a8c1ad6a469fb0b122"
+    },
+    {
+      "id": "model_natural_complete",
+      "sha256": "9921cab8ac22937709b956b5df66b934baa650af1cab3f56253f06cfc4590e6b"
+    },
+    {
+      "id": "model_natural_french",
+      "sha256": "35d3cf4c447be15d4c90f2758da2b3906ba6adbcee64210fb66500baf36b0214"
+    },
+    {
+      "id": "model_missing_destination",
+      "sha256": "b23997b948ac732f8ec16610e5dabd90cdf4e172b5db7613332f929b00b6edaf"
+    },
+    {
+      "id": "model_conflicting_objective",
+      "sha256": "233f2cd89ba54c6575b888e83a680f907ed71ff002f3f9ae0ea3ca42f17e8676"
+    },
+    {
+      "id": "model_prompt_injection",
+      "sha256": "103477a878a965d816d1d43948bbd8055e798397e2346eea724537b5cc30a598"
+    },
+    {
+      "id": "model_live_action",
+      "sha256": "4db057e8a78685d2cc6be157b6a66d93af7f83d9a6f7f6b6de11a392bdacf2a2"
+    },
+    {
+      "id": "model_account_identifier",
+      "sha256": "ae8b663c6444f8f0f54b9b8a15606e4b5b187cf052cabb436dea8bab077ac728"
+    },
+    {
+      "id": "model_customer_data",
+      "sha256": "63f7c9069ed3fdf3aff964786c5bafaf4aac75be253d627a3f99e8c6f2dbb842"
+    },
+    {
+      "id": "model_userinfo_url",
+      "sha256": "1f3d090dbdc13ba8e3b792fd6a3a8552d64d3a14516f5983e8b85531a510d6a0"
+    },
+    {
+      "id": "model_invalid_placement",
+      "sha256": "7faf8586436224fe83a686e2eacfd321f56418e8a48d2455d7510e29fc3bc957"
+    },
+    {
+      "id": "model_optional_missing",
+      "sha256": "b1566f1b05d7c3fa89c6f9b42aa6c8ec1c0547224a2c86d2cd0bd2d44594aa36"
+    },
+    {
+      "id": "model_noisy_holdout",
+      "sha256": "2f8b3bc24743cc6aac786286de15708a8e9513b40b5fdd19806a37a192fee364"
+    }
+  ],
+  "contract_version": "openai_synthetic_fixture_registry.v1",
+  "dataset_sha256": "a1e509dc0391c9b38d890a73eef470952ed4080d64afdfd1702f32a3cfe908c6"
+}

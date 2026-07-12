@@ -1,109 +1,196 @@
-# Creative Launch Workspace for Meta Ads
+# Creative Launch Workspace
 
 [![CI](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml)
 [![Live demo](https://img.shields.io/badge/live_demo-open_workspace-164a3b)](https://mattyu-dev.github.io/creative-launch-workspace/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f4ead4)](LICENSE)
 
-Review a large creative batch, map every row to its campaign and ad set, and resolve launch blockers before anything touches Meta.
+Turn an unstructured campaign brief and a large creative batch into a reviewable launch plan — with AI proposals, deterministic checks, and a human holding the final decision.
 
-**[Open the live synthetic workspace](https://mattyu-dev.github.io/creative-launch-workspace/)**
+**[Open the synthetic workspace](https://mattyu-dev.github.io/creative-launch-workspace/)**
+
+**100 synthetic creatives · 70 seeded issues detected and routed · 48 versioned eval cases · 0 external writes**
 
 ![Creative Launch Workspace desktop](docs/assets/workspace-desktop.png)
 
-The current build is an offline product prototype. It works with a 100-row synthetic agency fixture, stores review decisions locally, and cannot publish ads or call the Meta API.
+## Why this exists
 
-## What the workspace does
+Creative launches rarely fail because a team cannot make another ad. They fail in the handoff: a destination drifts, an approval is missing, a placement is invalid, a duplicate is unexplained, or a brief never becomes a clean campaign map.
 
-1. Reads a CSV manifest of creative rows.
-2. Checks approvals, names, destinations, placements, formats, duplicates, UTMs, source lineage, and post intent.
-3. Routes each issue to the person who can fix it.
-4. Lets an operator review rows, leave notes, approve locally, request fixes, or block export.
-5. Exports a local review state and a non-executable platform payload preview.
+This project makes that last mile inspectable.
 
-The review queue is built for batches, not one-off ads. Filters, owner queues, visible-row actions, keyboard navigation, local persistence, guarded state import, and an inspector remain usable across 100 rows.
-
-## Try it
-
-```bash
-python3 -m meta_importer.cli plan \
-  fixtures/fake_agency_creatives/manifest_v2.csv \
-  --out runs/fake_agency_creatives_v2/launch_plan.json \
-  --review runs/fake_agency_creatives_v2/review_packet.md \
-  --html runs/fake_agency_creatives_v2/workspace.html \
-  --html-audit runs/fake_agency_creatives_v2/workspace_audit.json \
-  --state runs/fake_agency_creatives_v2/review_state.json \
-  --platform-preview runs/fake_agency_creatives_v2/platform_preview.json
-
-open runs/fake_agency_creatives_v2/workspace.html
+```text
+Brief / manifest
+      ↓
+bounded mapping proposal
+      ↓
+schema + evidence + allowlist policy
+      ↓
+field-level human review
+      ↓
+deterministic launch QA
+      ↓
+local review state + non-executable platform preview
 ```
 
-The command writes a standalone HTML workspace. It does not need a server, account, token, or external font.
+The system cannot publish ads, call Meta, load tokens, upload customer files, or change spend.
 
-## What the fixture proves
+## The AI part — without the theatre
 
-The supplied fixture contains 100 synthetic rows across 3 campaigns and 10 ad sets:
+The useful model task is narrow: turn ambiguous prose into a typed mapping proposal. It is not a chatbot and it does not control the workflow.
+
+Every field includes:
+
+- a proposed value or an abstention;
+- a verbatim evidence quote from the brief;
+- evidence strength and an explicitly uncalibrated confidence band;
+- a reason code;
+- a pending human-review state.
+
+Missing critical information, contradictions, prompt injection, credential signals, customer-data signals, real destinations, invalid values, provider errors, refusals, or malformed output all fail closed.
+
+The default provider is a transparent deterministic baseline for CI. An optional OpenAI Responses API provider uses strict Structured Outputs, no tools, `store=False`, a bounded timeout, and synthetic-data preflight. No live model score is claimed without a real versioned run.
+
+Read the [model card](docs/ai/model_card.md), [evaluation protocol](docs/ai/evaluation.md), and [system architecture](docs/architecture/system.md).
+
+![Field-level brief evidence and human review](docs/assets/brief-evidence.png)
+
+## Try the full path
+
+```bash
+git clone https://github.com/mattyu-dev/creative-launch-workspace.git
+cd creative-launch-workspace
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e '.[dev]'
+```
+
+Create a review-only brief proposal:
+
+```bash
+creative-launch brief-propose \
+  fixtures/synthetic_campaign_brief.txt \
+  --out runs/brief/proposal.json
+```
+
+Record an explicit decision for every field, then materialize the accepted mapping into a two-row synthetic manifest and run the existing launch validators:
+
+```bash
+creative-launch brief-review runs/brief/proposal.json \
+  --brief fixtures/synthetic_campaign_brief.txt \
+  --reviewer 'Synthetic Approver' \
+  --decision campaign_key=accepted --decision adset_key=accepted \
+  --decision objective=accepted --decision country=accepted \
+  --decision language=accepted --decision placement=accepted \
+  --decision destination_url=accepted --decision utm_campaign=accepted \
+  --out runs/brief/review.json
+
+creative-launch brief-materialize \
+  runs/brief/proposal.json fixtures/synthetic_creative_template.csv \
+  --brief fixtures/synthetic_campaign_brief.txt \
+  --reviewer 'Synthetic Approver' \
+  --decision campaign_key=accepted --decision adset_key=accepted \
+  --decision objective=accepted --decision country=accepted \
+  --decision language=accepted --decision placement=accepted \
+  --decision destination_url=accepted --decision utm_campaign=accepted \
+  --out-receipt runs/brief/materialization-review.json \
+  --out-manifest runs/brief/reviewed-manifest.csv \
+  --out-plan runs/brief/materialization.json
+```
+
+Materialization performs the review again in the same process. A saved review receipt is inspectable evidence, not an authorization token.
+
+Run the 36-case benchmark:
+
+```bash
+creative-launch brief-eval \
+  --dataset evals/brief_mapping/dataset_v1.jsonl \
+  --out runs/evals/brief-mapping.json
+```
+
+The dataset also contains 12 natural-prose/adversarial cases reserved for a repeated live-provider run:
+
+```bash
+creative-launch brief-eval \
+  --dataset evals/brief_mapping/dataset_v1.jsonl \
+  --provider openai --model gpt-5.6-terra --repetitions 3 \
+  --out runs/evals/openai-live.json
+```
+
+Build the 100-row workspace:
+
+```bash
+creative-launch plan \
+  fixtures/fake_agency_creatives/manifest_v2.csv \
+  --out runs/launch/plan.json \
+  --review runs/launch/review.md \
+  --html runs/launch/workspace.html \
+  --html-audit runs/launch/audit.json \
+  --state runs/launch/state.json \
+  --platform-preview runs/launch/platform-preview.json \
+  --sqlite-db runs/launch/workspace.sqlite3
+```
+
+Open `runs/launch/workspace.html`. Filter blocked rows, inspect the proposed fix, record a decision, then export the reviewed local state.
+
+### Optional live provider
+
+```bash
+pip install -e '.[ai]'
+export OPENAI_API_KEY='...'
+creative-launch brief-propose fixtures/synthetic_campaign_brief.txt \
+  --provider openai \
+  --model gpt-5.6-terra \
+  --out runs/brief/openai-proposal.json
+```
+
+Only versioned synthetic fixtures are supported. The brief must include `Data classification: synthetic_fixture_only`, and its SHA-256 must appear in `evals/brief_mapping/manifest.json`; the registry is also bound to the dataset hash. Credential, account-ID, customer-data, email, phone and real-destination signals are checked again before any request. The key is read from the environment and is never written to an artifact.
+
+## What the evidence says
+
+The included 100-row fixture spans three campaigns and ten ad sets:
 
 - 30 rows pass the current offline checks;
 - 10 need a reviewer decision;
 - 60 are blocked by a concrete issue;
-- every row keeps its mapping, source lineage, idempotency key, owner, issue, and proposed fix.
+- every row retains mapping, lineage, idempotency, owner, issue and proposed fix.
 
-This is fixture and test proof. It does not prove compatibility with a real Meta account.
+The repo-native benchmark contains 36 labelled contract cases for the deterministic baseline plus 12 natural-prose and adversarial cases for repeated live-provider evaluation. The deterministic baseline passes every contract gate. That is harness proof, not model-quality proof; no live model score is committed without an authenticated run.
 
-## Product boundaries
+Browser QA exercises seven viewport widths and real interactions. The committed desktop and mobile Lighthouse accessibility reports score 100/100.
 
-The repository does not:
+- [Brief baseline eval](docs/evidence/brief-mapping-baseline-eval.json)
+- [Reviewed manifest validation](docs/evidence/reviewed-manifest-validation.json)
+- [Runtime browser QA](docs/evidence/workspace-runtime-qa.json)
+- [Desktop accessibility](docs/evidence/workspace-lighthouse-accessibility-desktop.json)
+- [Mobile accessibility](docs/evidence/workspace-lighthouse-accessibility-mobile.json)
 
-- call Meta APIs;
-- handle OAuth or production access tokens;
-- upload customer creative;
-- change campaigns, budgets, or spend;
-- claim that the payload preview is executable against Meta.
+## Engineering choices
 
-The intended production architecture routes approved files into customer-owned Meta creative surfaces and retains lineage metadata, mappings, review state, and audit events. That architecture is documented but has not been executed with customer data or a real account.
+- installable Python package with a console entry point;
+- versioned contracts and deterministic IDs;
+- provider isolation and strict Structured Outputs;
+- field-level evidence grounding, abstention, review and deterministic materialization;
+- a shared fail-closed review policy across browser and SQLite paths;
+- real decodable JPEG/MP4 synthetic fixtures with byte and metadata checks;
+- reproducible generated artifacts through `SOURCE_DATE_EPOCH`;
+- Ruff, mypy on trust boundaries, branch coverage, CodeQL and browser QA in CI;
+- no network dependency in the static workspace.
 
-See [customer data trust gates](docs/security/customer_data_trust_gates.md) and [Meta-native asset handoff](docs/platform/meta_native_asset_handoff.md) for the exact approval boundaries.
+## Scope
 
-## Design
-
-The interface uses an original system called Editorial Operations. It grew from a scored review of all 74 systems in the VoltAgent `awesome-design-md` catalogue.
-
-- [Design-system selection and complete ranking](docs/design/design_system_selection.md)
-- [Editorial Operations specification](docs/design/editorial_operations_design_system.md)
-- [Desktop proof](docs/assets/workspace-desktop.png)
-- [Mobile queue proof](docs/assets/workspace-mobile.png)
-- [Mobile decision-sheet proof](docs/assets/workspace-mobile-detail.png)
-
-The UI has no gradients, glass effects, external assets, or wall of identical metric cards. Desktop uses a queue and decision inspector. Mobile turns rows into cards and opens the inspector as a focused decision sheet.
-
-## Test it
-
-```bash
-python3 -m unittest discover -s tests -q
-python3 -m py_compile meta_importer/*.py scripts/*.py tests/*.py
-npm ci
-npm run qa:frontend
-```
-
-The current suite covers manifest parsing, offline checks, mapping contracts, local state, guarded imports, bulk decisions, SQLite fixture persistence, platform-preview guardrails, HTML quality, keyboard hooks, responsive structure, and the no-network boundary. The frontend command rebuilds the fixture, exercises seven responsive widths in Chrome, checks real interactions, writes versioned screenshots, and requires Lighthouse accessibility 100/100 on desktop and mobile.
-
-- [Runtime QA artifact](docs/evidence/workspace-runtime-qa.json)
-- [Desktop Lighthouse artifact](docs/evidence/workspace-lighthouse-accessibility-desktop.json)
-- [Mobile Lighthouse artifact](docs/evidence/workspace-lighthouse-accessibility-mobile.json)
+This is a synthetic, offline reference implementation. It does not prove Meta API compatibility, production tenancy, customer-data safety, model quality, or business impact. The [platform boundary](docs/platform/boundary.md) and [threat model](docs/security/threat_model.md) name what would have to be proven next.
 
 ## Repository map
 
 ```text
-meta_importer/                     parser, checks, state, storage, HTML workspace
-fixtures/fake_agency_creatives/    synthetic manifests and asset-byte fixtures
-runs/                              generated local review artifacts
-docs/assets/                       versioned frontend screenshots
-docs/evidence/                     versioned runtime and Lighthouse evidence
-docs/architecture/                 application architecture
-docs/product/                      product baseline and PRD
-docs/design/                       design audit and interface system
-docs/platform/                     Meta contract research and blocked preview model
-docs/security/                     data, credential, upload, and mutation gates
-docs/qa/                           fixture and browser-quality contracts
+meta_importer/ai/                  proposal contracts, providers, policy, review, evals
+meta_importer/                     manifest QA, state, storage, preview, HTML workspace
+evals/brief_mapping/               48-case synthetic benchmark and generator
+fixtures/                          synthetic brief, manifests and decodable media
+docs/evidence/                     versioned eval, browser and accessibility evidence
+docs/                              product, architecture, AI, QA, security and design notes
+tests/                             unit, negative-path and contract tests
 ```
+
+MIT licensed. Built by [Mathieu Petroni](https://github.com/mattyu-dev).

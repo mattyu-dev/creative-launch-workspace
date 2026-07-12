@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import json
 import shutil
-from datetime import datetime, timezone
 from pathlib import Path
 
 from .asset_validation import validate_asset_metadata
+from .clock import now_iso
 from .launch_workspace import LaunchPlan, export_plan_dict
 from .workspace_state import export_workspace_state_dict, workspace_batch_id
 
@@ -101,7 +101,7 @@ def _audit_event(
         "event_type": event_type,
         "actor_role": actor_role,
         "message": message,
-        "occurred_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "occurred_at": now_iso(),
     }
 
 

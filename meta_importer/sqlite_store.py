@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import json
 import hashlib
+import json
 import sqlite3
-from datetime import datetime, timezone
 from pathlib import Path
 
+from .clock import now_iso
 from .launch_workspace import LaunchPlan
+from .review_policy import ReviewPolicyError, validate_review_transition
 from .workspace_state import export_workspace_state_dict, workspace_batch_id
-
 
 SCHEMA_VERSION = "sqlite_workspace_store.v1"
 
@@ -196,6 +196,16 @@ class SQLiteWorkspaceStore:
         if row is None:
             raise SQLiteStoreError(f"row {source_row} not found in batch {batch_id}")
         payload = json.loads(row["payload_json"])
+        try:
+            validate_review_transition(
+                batch_state=str(payload["batch_state"]),
+                review_status=review_status,
+                decision=decision,
+                actor_role=actor_role,
+                note=note,
+            )
+        except ReviewPolicyError as exc:
+            raise SQLiteStoreError(f"review transition blocked: {exc}") from exc
         payload.update(
             {
                 "review_status": review_status,
@@ -310,4 +320,4 @@ class SQLiteWorkspaceStore:
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    return now_iso()

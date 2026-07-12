@@ -4,8 +4,7 @@ import csv
 import hashlib
 from pathlib import Path
 
-from .launch_workspace import LaunchPlan, ManifestRow, SUPPORTED_FORMATS
-
+from .launch_workspace import SUPPORTED_FORMATS, LaunchPlan, ManifestRow
 
 ASSET_METADATA_FIELDS = [
     "asset_path",
@@ -282,6 +281,54 @@ def _validate_asset_bytes(
                 "Replace the synthetic asset with video-like bytes.",
             )
         )
+    if expected_kind == "image" and detected_mime == "image/jpeg":
+        dimensions = _jpeg_dimensions(data)
+        expected_dimensions = (
+            int(_number(asset.get("width_px"))),
+            int(_number(asset.get("height_px"))),
+        )
+        if dimensions is None:
+            issues.append(
+                _asset_issue(
+                    row,
+                    "blocker",
+                    "asset_image_decode_failed",
+                    "JPEG bytes do not contain a decodable dimensions frame.",
+                    "Regenerate the synthetic media template as a valid JPEG.",
+                )
+            )
+        elif dimensions != expected_dimensions:
+            issues.append(
+                _asset_issue(
+                    row,
+                    "blocker",
+                    "asset_image_dimensions_mismatch",
+                    "Decoded JPEG dimensions do not match synthetic metadata.",
+                    "Regenerate metadata from the decoded media dimensions.",
+                )
+            )
+    if expected_kind == "video" and detected_mime == "video/mp4":
+        duration = _mp4_duration_seconds(data)
+        if duration is None:
+            issues.append(
+                _asset_issue(
+                    row,
+                    "blocker",
+                    "asset_video_decode_failed",
+                    "MP4 bytes are missing the ftyp, moov, mdat, or duration contract.",
+                    "Regenerate the synthetic media template as a valid MP4.",
+                )
+            )
+        elif abs(duration - _number(asset.get("duration_seconds"))) > 0.01:
+            issues.append(
+                _asset_issue(
+                    row,
+                    "blocker",
+                    "asset_video_duration_mismatch",
+                    "Decoded MP4 duration does not match synthetic metadata.",
+                    "Regenerate metadata from the decoded MP4 duration.",
+                )
+            )
     return issues
 
 
@@ -295,6 +342,43 @@ def _detect_mime(data: bytes) -> str:
     if len(data) >= 12 and data[4:8] == b"ftyp":
         return "video/mp4"
     return "application/octet-stream"
+
+
+def _jpeg_dimensions(data: bytes) -> tuple[int, int] | None:
+    index = 2
+    while index + 9 < len(data):
+        if data[index] != 0xFF:
+            index += 1
+            continue
+        marker = data[index + 1]
+        if marker in {0xD8, 0xD9}:
+            index += 2
+            continue
+        if index + 4 > len(data):
+            return None
+        segment_length = int.from_bytes(data[index + 2 : index + 4], "big")
+        if marker in {0xC0, 0xC1, 0xC2} and index + 9 < len(data):
+            height = int.from_bytes(data[index + 5 : index + 7], "big")
+            width = int.from_bytes(data[index + 7 : index + 9], "big")
+            return width, height
+        if segment_length < 2:
+            return None
+        index += 2 + segment_length
+    return None
+
+
+def _mp4_duration_seconds(data: bytes) -> float | None:
+    if not all(box in data for box in (b"ftyp", b"moov", b"mdat")):
+        return None
+    marker = data.find(b"mdhd")
+    if marker < 0 or marker + 24 > len(data):
+        return None
+    version = data[marker + 4]
+    if version != 0:
+        return None
+    timescale = int.from_bytes(data[marker + 16 : marker + 20], "big")
+    duration = int.from_bytes(data[marker + 20 : marker + 24], "big")
+    return duration / timescale if timescale else None
 
 
 def _asset_issue(

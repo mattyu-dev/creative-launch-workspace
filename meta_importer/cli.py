@@ -1,9 +1,15 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
+from .ai.evaluation import evaluate, evaluate_live_provider, load_cases
+from .ai.materialize import review_and_materialize
+from .ai.orchestration import propose_brief
+from .ai.providers import DeterministicBaselineProvider
+from .ai.review import review_proposal
 from .html_quality import audit_workspace_html
 from .launch_workspace import (
     ManifestSchemaError,
@@ -16,13 +22,12 @@ from .launch_workspace import (
 )
 from .local_store import write_batch_store
 from .platform_payload_preview import build_platform_payload_preview
-from .sales_readiness import write_start_selling_report
 from .sqlite_store import SQLiteWorkspaceStore
 from .workspace_state import export_workspace_state_dict
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Meta Importer offline launch workspace")
+    parser = argparse.ArgumentParser(description="Creative Launch Workspace offline review system")
     sub = parser.add_subparsers(dest="command", required=True)
 
     plan = sub.add_parser("plan", help="Build a dry-run launch plan from a manifest CSV")
@@ -51,12 +56,71 @@ def build_parser() -> argparse.ArgumentParser:
         help="Allow non-fixture data. This still does not call Meta or publish anything.",
     )
 
-    readiness = sub.add_parser(
-        "sales-readiness",
-        help="Write a start-selling readiness report without external calls",
+    brief_propose = sub.add_parser(
+        "brief-propose",
+        help="Turn a synthetic unstructured brief into a review-only mapping proposal",
     )
-    readiness.add_argument("--out", type=Path, help="Write readiness report JSON")
-    readiness.add_argument("--markdown", type=Path, help="Write readiness report Markdown")
+    brief_propose.add_argument("brief", type=Path)
+    brief_propose.add_argument("--out", type=Path, required=True)
+    brief_propose.add_argument(
+        "--provider", choices=("deterministic", "openai"), default="deterministic"
+    )
+    brief_propose.add_argument("--model", default="gpt-5.6-terra")
+    brief_propose.add_argument(
+        "--fixture-registry",
+        type=Path,
+        default=Path("evals/brief_mapping/manifest.json"),
+    )
+
+    brief_eval = sub.add_parser(
+        "brief-eval", help="Run the repo-native synthetic brief-mapping benchmark"
+    )
+    brief_eval.add_argument("--dataset", type=Path, required=True)
+    brief_eval.add_argument("--out", type=Path, required=True)
+    brief_eval.add_argument(
+        "--provider", choices=("deterministic", "openai"), default="deterministic"
+    )
+    brief_eval.add_argument("--model", default="gpt-5.6-terra")
+    brief_eval.add_argument("--repetitions", type=int, default=3)
+    brief_eval.add_argument(
+        "--fixture-registry",
+        type=Path,
+        default=Path("evals/brief_mapping/manifest.json"),
+    )
+
+    brief_review = sub.add_parser(
+        "brief-review", help="Record field-level human decisions for a proposal"
+    )
+    brief_review.add_argument("proposal", type=Path)
+    brief_review.add_argument("--brief", type=Path, required=True)
+    brief_review.add_argument("--reviewer", required=True)
+    brief_review.add_argument(
+        "--decision",
+        action="append",
+        default=[],
+        metavar="FIELD=accepted|rejected",
+        help="Repeat once for every proposal field",
+    )
+    brief_review.add_argument("--out", type=Path, required=True)
+
+    brief_materialize = sub.add_parser(
+        "brief-materialize",
+        help="Apply an accepted mapping receipt to a synthetic manifest template",
+    )
+    brief_materialize.add_argument("proposal", type=Path)
+    brief_materialize.add_argument("--brief", type=Path, required=True)
+    brief_materialize.add_argument("template", type=Path)
+    brief_materialize.add_argument("--reviewer", required=True)
+    brief_materialize.add_argument(
+        "--decision",
+        action="append",
+        default=[],
+        metavar="FIELD=accepted|rejected",
+        help="Repeat once for every proposal field",
+    )
+    brief_materialize.add_argument("--out-receipt", type=Path, required=True)
+    brief_materialize.add_argument("--out-manifest", type=Path, required=True)
+    brief_materialize.add_argument("--out-plan", type=Path, required=True)
     return parser
 
 
@@ -64,8 +128,14 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "plan":
         return _plan(args)
-    if args.command == "sales-readiness":
-        return _sales_readiness(args)
+    if args.command == "brief-propose":
+        return _brief_propose(args)
+    if args.command == "brief-eval":
+        return _brief_eval(args)
+    if args.command == "brief-review":
+        return _brief_review(args)
+    if args.command == "brief-materialize":
+        return _brief_materialize(args)
     raise AssertionError(args.command)
 
 
@@ -156,19 +226,123 @@ def _default_asset_metadata(manifest: Path) -> Path:
     return manifest.parent / "asset_metadata.csv"
 
 
-def _sales_readiness(args: argparse.Namespace) -> int:
-    report = write_start_selling_report(out_path=args.out, markdown_path=args.markdown)
-    summary = report["summary"]
+def _brief_propose(args: argparse.Namespace) -> int:
+    brief = args.brief.read_text()
+    if args.provider == "openai":
+        from .ai.providers.openai_responses import OpenAIResponsesProvider
+
+        provider = OpenAIResponsesProvider(
+            model=args.model,
+            allowed_brief_sha256=_load_fixture_registry(args.fixture_registry),
+        )
+    else:
+        provider = DeterministicBaselineProvider()
+    proposal = propose_brief(brief, provider)
+    _write_json(args.out, proposal)
     print(
-        "Built start-selling readiness report: "
-        f"{summary['local_started_count']}/{summary['track_count']} tracks locally started; "
-        f"allowed motion is {report['can_sell_now']}"
+        f"Built {proposal['status']} brief proposal with {proposal['provider']} "
+        f"({len(proposal['risk_flags'])} risk flags; human review required)"
     )
-    if args.out:
-        print(f"Wrote {args.out}")
-    if args.markdown:
-        print(f"Wrote {args.markdown}")
+    print(f"Wrote {args.out}")
     return 0
+
+
+def _brief_eval(args: argparse.Namespace) -> int:
+    if args.provider == "openai":
+        from .ai.providers.openai_responses import OpenAIResponsesProvider
+
+        allowed_hashes = _load_fixture_registry(
+            args.fixture_registry, dataset=args.dataset
+        )
+        report = evaluate_live_provider(
+            load_cases(args.dataset, suite="model_live"),
+            lambda: OpenAIResponsesProvider(
+                model=args.model, allowed_brief_sha256=allowed_hashes
+            ),
+            repetitions=args.repetitions,
+        )
+    else:
+        report = evaluate(
+            load_cases(args.dataset, suite="baseline"), DeterministicBaselineProvider
+        )
+    _write_json(args.out, report)
+    print(
+        f"Evaluated {report['case_count']} synthetic cases: "
+        f"{'PASS' if report['passed'] else 'FAIL'}"
+    )
+    print(f"Wrote {args.out}")
+    return 0 if report["passed"] else 1
+
+
+def _brief_review(args: argparse.Namespace) -> int:
+    decisions = _parse_decisions(args.decision)
+    receipt = review_proposal(
+        json.loads(args.proposal.read_text()),
+        brief=args.brief.read_text(),
+        reviewer=args.reviewer,
+        decisions=decisions,
+    )
+    _write_json(args.out, receipt)
+    print(f"Recorded human review: {receipt['status']}")
+    print(f"Wrote {args.out}")
+    return 0
+
+
+def _brief_materialize(args: argparse.Namespace) -> int:
+    receipt, result = review_and_materialize(
+        json.loads(args.proposal.read_text()),
+        brief=args.brief.read_text(),
+        reviewer=args.reviewer,
+        decisions=_parse_decisions(args.decision),
+        template=args.template,
+        output=args.out_manifest,
+    )
+    _write_json(args.out_receipt, receipt)
+    _write_json(args.out_plan, result)
+    print(
+        f"Materialized {result['row_count']} synthetic rows and passed deterministic launch QA"
+    )
+    print(f"Wrote {args.out_manifest}")
+    print(f"Wrote {args.out_receipt}")
+    print(f"Wrote {args.out_plan}")
+    return 0
+
+
+def _parse_decisions(raw_decisions: list[str]) -> dict[str, str]:
+    decisions = {}
+    for raw in raw_decisions:
+        if "=" not in raw:
+            raise SystemExit(
+                f"Invalid --decision {raw!r}; expected FIELD=accepted|rejected"
+            )
+        field, value = raw.split("=", 1)
+        decisions[field] = value
+    return decisions
+
+
+def _write_json(path: Path, payload: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+
+
+def _load_fixture_registry(
+    path: Path, *, dataset: Path | None = None
+) -> set[str]:
+    registry = json.loads(path.read_text())
+    if registry.get("contract_version") != "openai_synthetic_fixture_registry.v1":
+        raise SystemExit("Invalid OpenAI synthetic fixture registry contract")
+    dataset_path = dataset or path.with_name("dataset_v1.jsonl")
+    actual_dataset_hash = hashlib.sha256(dataset_path.read_bytes()).hexdigest()
+    if registry.get("dataset_sha256") != actual_dataset_hash:
+        raise SystemExit("OpenAI fixture registry does not match the selected dataset")
+    allowed = {
+        str(item["sha256"])
+        for item in registry.get("allowed_briefs", [])
+        if isinstance(item, dict) and len(str(item.get("sha256", ""))) == 64
+    }
+    if not allowed:
+        raise SystemExit("OpenAI fixture registry contains no allowed brief hashes")
+    return allowed
 
 
 if __name__ == "__main__":
