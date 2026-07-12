@@ -1,6 +1,7 @@
 # Creative Launch Workspace for Meta Ads
 
 [![CI](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml)
 [![Live demo](https://img.shields.io/badge/live_demo-open_workspace-164a3b)](https://mattyu-dev.github.io/creative-launch-workspace/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f4ead4)](LICENSE)
 
