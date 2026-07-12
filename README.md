@@ -167,13 +167,15 @@ The included 100-row fixture spans three campaigns and ten ad sets:
 
 The repo-native benchmark contains 36 labelled contract cases for the deterministic baseline plus 12 natural-prose and adversarial cases for repeated live-provider evaluation. The deterministic baseline passes every contract gate. That is harness proof, not model-quality proof; no live model score is committed without an authenticated run.
 
-Browser QA exercises seven viewport widths and real interactions. The committed desktop and mobile Lighthouse accessibility reports score 100/100.
+Browser QA exercises seven viewport widths and real interactions. The committed workspace and portfolio Lighthouse accessibility reports score 100/100 on desktop and mobile.
 
 - [Brief baseline eval](docs/evidence/brief-mapping-baseline-eval.json)
 - [Reviewed manifest validation](docs/evidence/reviewed-manifest-validation.json)
 - [Runtime browser QA](docs/evidence/workspace-runtime-qa.json)
 - [Desktop accessibility](docs/evidence/workspace-lighthouse-accessibility-desktop.json)
 - [Mobile accessibility](docs/evidence/workspace-lighthouse-accessibility-mobile.json)
+- [Portfolio desktop accessibility](docs/evidence/portfolio-lighthouse-accessibility-desktop.json)
+- [Portfolio mobile accessibility](docs/evidence/portfolio-lighthouse-accessibility-mobile.json)
 
 ## Engineering choices
 

@@ -246,6 +246,11 @@ const portfolioPage = await page.evaluate(() => ({
   ogImage: document.querySelector('meta[property="og:image"]')?.content,
   hasWorkspaceCta: Boolean(document.querySelector('a[href="workspace.html"]')),
   hasLabCta: Boolean(document.querySelector('a[href="fix-lab.html"]')),
+  hasOperatingChange: document.body.textContent.includes("From scattered handoffs to one decision queue"),
+  hasBoundaries: document.body.textContent.includes("What this does not prove")
+    && document.body.textContent.includes("live model quality is not claimed")
+    && document.body.textContent.includes("synthetic, local-first and non-executable"),
+  proofPathCount: document.querySelectorAll(".proof-path").length,
   ownership: document.body.textContent.includes("Designed and built end to end by Mathieu Petroni"),
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
 }));
@@ -255,6 +260,9 @@ if (
   || !portfolioPage.ogImage?.endsWith("/assets/social-card.png")
   || !portfolioPage.hasWorkspaceCta
   || !portfolioPage.hasLabCta
+  || !portfolioPage.hasOperatingChange
+  || !portfolioPage.hasBoundaries
+  || portfolioPage.proofPathCount !== 3
   || !portfolioPage.ownership
   || !portfolioPage.noDocumentOverflow
 ) {
@@ -266,9 +274,10 @@ await page.setViewport({ width: 390, height: 844 });
 await page.goto(portfolioUrl, { waitUntil: "load" });
 const portfolioMobile = await page.evaluate(() => ({
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
-  headingVisible: document.querySelector("h1")?.getBoundingClientRect().top < innerHeight
+  headingVisible: document.querySelector("h1")?.getBoundingClientRect().top < innerHeight,
+  bylineVisible: document.querySelector(".hero-byline")?.getBoundingClientRect().top < innerHeight
 }));
-if (!portfolioMobile.noDocumentOverflow || !portfolioMobile.headingVisible) {
+if (!portfolioMobile.noDocumentOverflow || !portfolioMobile.headingVisible || !portfolioMobile.bylineVisible) {
   throw new Error(`Portfolio mobile contract failed: ${JSON.stringify(portfolioMobile)}`);
 }
 await page.screenshot({ path: join(assetsDir, "portfolio-mobile.png"), fullPage: true });
@@ -338,15 +347,16 @@ await page.screenshot({ path: join(assetsDir, "brief-evidence.png"), fullPage: t
 await browser.close();
 
 const lighthouseBin = join(root, "node_modules/.bin/lighthouse");
-const desktopLighthouse = join(evidenceDir, "workspace-lighthouse-accessibility-desktop.json");
-const mobileLighthouse = join(evidenceDir, "workspace-lighthouse-accessibility-mobile.json");
+const lighthouseTargets = [
+  { surface: "workspace", formFactor: "desktop", targetUrl: url, outputPath: join(evidenceDir, "workspace-lighthouse-accessibility-desktop.json") },
+  { surface: "workspace", formFactor: "mobile", targetUrl: url, outputPath: join(evidenceDir, "workspace-lighthouse-accessibility-mobile.json") },
+  { surface: "portfolio", formFactor: "desktop", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-accessibility-desktop.json") },
+  { surface: "portfolio", formFactor: "mobile", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-accessibility-mobile.json") }
+];
 
-for (const [formFactor, outputPath] of [
-  ["desktop", desktopLighthouse],
-  ["mobile", mobileLighthouse]
-]) {
+for (const { formFactor, targetUrl, outputPath } of lighthouseTargets) {
   const args = [
-    url,
+    targetUrl,
     `--chrome-path=${chromePath}`,
     "--only-categories=accessibility",
     `--form-factor=${formFactor}`,
@@ -361,13 +371,12 @@ for (const [formFactor, outputPath] of [
   await runFile(lighthouseBin, args, { cwd: root, maxBuffer: 10 * 1024 * 1024 });
 }
 
-const desktopReport = JSON.parse(await readFile(desktopLighthouse, "utf8"));
-const mobileReport = JSON.parse(await readFile(mobileLighthouse, "utf8"));
-const accessibility = {
-  desktopScore: desktopReport.categories.accessibility.score,
-  mobileScore: mobileReport.categories.accessibility.score
-};
-if (accessibility.desktopScore !== 1 || accessibility.mobileScore !== 1) {
+const accessibility = { workspace: {}, portfolio: {} };
+for (const { surface, formFactor, outputPath } of lighthouseTargets) {
+  const lighthouseReport = JSON.parse(await readFile(outputPath, "utf8"));
+  accessibility[surface][`${formFactor}Score`] = lighthouseReport.categories.accessibility.score;
+}
+if (Object.values(accessibility).some((surface) => Object.values(surface).some((score) => score !== 1))) {
   throw new Error(`Lighthouse accessibility score regressed: ${JSON.stringify(accessibility)}`);
 }
 

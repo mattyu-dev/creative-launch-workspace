@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0 — 2026-07-12
+
+- Sharpened the landing around the launch handoff problem and the operational change, without adding unmeasured ROI claims.
+- Added a clear find, route and decide value narrative for marketing and operations leaders.
+- Added audience-specific proof paths for CMO/Operations, CTO/Engineering and AI/Recruiting visitors.
+- Preserved the editorial proof-sheet direction, explicit boundaries and direct access to every live artifact.
+
 ## 1.3.0 — 2026-07-12
 
 - Added an editorial, recruiter-facing case study as the GitHub Pages entry point, with explicit ownership, scope and social sharing metadata.
