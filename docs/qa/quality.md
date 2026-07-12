@@ -19,7 +19,7 @@ The generated workspace is exercised in Chrome at seven widths. QA covers filter
 
 The same runtime suite checks the portfolio entry metadata and responsive layout, replays the Fix & Revalidate Lab from blocked to launch-ready and back, and verifies the field-level evidence page contract. Social, desktop and mobile screenshots are generated from those tested pages.
 
-Lighthouse accessibility must remain 100/100 on desktop and mobile. The committed screenshots and JSON reports are rebuilt by the same script used in CI.
+Lighthouse accessibility must remain 100/100 on desktop and mobile for both the task-first workspace and the portfolio landing. The committed screenshots and JSON reports are rebuilt by the same script used in CI.
 
 ## Media fixtures
 

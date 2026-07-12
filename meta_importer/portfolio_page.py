@@ -8,11 +8,11 @@ def render_portfolio_page() -> str:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="A governed AI automation case study for catching approval, mapping, destination and placement errors before a large Meta creative launch reaches Ads Manager.">
+  <meta name="description" content="Catch approval, destination, placement and tracking errors before a large Meta creative launch reaches Ads Manager.">
   <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Creative Launch Workspace · AI automation case study">
-  <meta property="og:description" content="AI proposes the mapping. Deterministic rules verify every row. A person decides every ambiguous case.">
+  <meta property="og:description" content="One inspectable review path for a campaign brief and 100-row creative batch. A model can propose; rules verify; a person decides.">
   <meta property="og:url" content="https://mattyu-dev.github.io/creative-launch-workspace/">
   <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card.png">
   <meta property="og:image:width" content="1200">
@@ -26,7 +26,7 @@ def render_portfolio_page() -> str:
   <style>
     :root {
       --canvas:#f7f5ef; --surface:#fffefa; --surface-soft:#f1efe8;
-      --ink:#1c211e; --body:#48504b; --muted:#6e756f;
+      --ink:#1c211e; --body:#48504b; --muted:#626963;
       --line:#d8d3c8; --line-strong:#b8b2a6; --forest:#113e31;
       --forest-dark:#0b2d24; --oxide:#a9472e; --sand:#f2e7d2; --mint:#cfe2d7;
       --font-sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -50,6 +50,7 @@ def render_portfolio_page() -> str:
     main { overflow:hidden; }
     .hero { padding:58px 0 34px; }
     .eyebrow { color:var(--oxide); font-size:11px; font-weight:750; letter-spacing:.11em; text-transform:uppercase; }
+    .hero-byline { margin-top:8px; color:var(--muted); font-size:12px; font-weight:650; }
     h1 { max-width:1020px; margin:13px 0 20px; font:500 clamp(45px,6.6vw,82px)/.96 var(--font-serif); letter-spacing:-.048em; }
     .hero-grid { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(260px,.62fr); gap:42px; align-items:end; }
     .lead { max-width:760px; margin:0; color:var(--body); font-size:clamp(17px,1.7vw,20px); }
@@ -61,16 +62,19 @@ def render_portfolio_page() -> str:
     .button:hover { background:var(--forest-dark); }
     .text-link { color:var(--forest); font-weight:700; text-underline-offset:4px; }
     .boundary-line { margin-top:16px; color:var(--muted); font:600 11px/1.4 var(--font-mono); }
+    .failure-types { display:flex; flex-wrap:wrap; gap:7px 18px; margin-top:17px; padding-top:14px; border-top:1px solid var(--line); color:var(--body); font-size:12px; font-weight:650; }
+    .failure-types span::before { content:""; width:5px; height:5px; display:inline-block; margin:0 7px 2px 0; background:var(--oxide); transform:rotate(45deg); }
     .proof-strip { display:grid; grid-template-columns:repeat(3,1fr); margin-top:35px; border-block:1px solid var(--line); }
     .proof-item { padding:18px 20px 18px 0; border-right:1px solid var(--line); }
     .proof-item + .proof-item { padding-left:20px; }
     .proof-item:last-child { border-right:0; }
     .proof-item strong { display:block; font:500 35px/1 var(--font-serif); }
-    .proof-item span { display:block; max-width:260px; margin-top:7px; color:var(--muted); font-size:12px; }
+    .proof-item span { display:block; max-width:260px; margin-top:7px; color:var(--muted); font-size:13px; }
     .fixture-note { margin:9px 0 0; color:var(--muted); font-size:11px; }
     .product-figure { margin:30px 0 0; border:1px solid var(--line-strong); border-radius:7px; overflow:hidden; background:var(--surface); }
     .product-figure img { display:block; width:100%; height:auto; }
-    .product-figure figcaption { display:flex; justify-content:space-between; gap:20px; padding:11px 14px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+    .product-figure figcaption { display:flex; justify-content:space-between; gap:20px; padding:11px 14px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; }
+    .product-figure figcaption span:first-child { color:var(--body); font-weight:700; }
     .section { padding:74px 0; border-top:1px solid var(--line); }
     .section-grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); column-gap:24px; }
     .section-copy { grid-column:1 / span 5; }
@@ -81,14 +85,22 @@ def render_portfolio_page() -> str:
     .step { display:grid; grid-template-columns:38px minmax(0,1fr); gap:14px; padding:15px 0; border-top:1px solid var(--line); }
     .step b { color:var(--oxide); font:700 11px/1.4 var(--font-mono); }
     .step strong { display:block; margin-bottom:2px; font-weight:650; }
-    .step span { color:var(--muted); font-size:12px; }
-    .lab-band { padding:30px; color:#fff; background:var(--forest); }
-    .lab-grid { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr); gap:36px; align-items:end; }
-    .lab-band .eyebrow { color:#e7b39f; }
-    .lab-band h2 { max-width:760px; margin-bottom:12px; }
-    .lab-band p { max-width:720px; margin:0; color:rgba(255,255,255,.72); }
-    .lab-band .button { border-color:#fff; color:var(--forest); background:#fff; }
-    .lab-band .button:hover { color:#fff; background:transparent; }
+    .step span { color:var(--muted); font-size:13px; }
+    .outcome-list { border-bottom:1px solid var(--line); }
+    .outcome { display:grid; grid-template-columns:105px minmax(0,1fr); gap:16px; padding:17px 0; border-top:1px solid var(--line); }
+    .outcome b { color:var(--oxide); font:700 10px/1.45 var(--font-mono); letter-spacing:.05em; text-transform:uppercase; }
+    .outcome strong { display:block; margin-bottom:3px; font:500 20px/1.2 var(--font-serif); }
+    .outcome span { color:var(--muted); font-size:13px; }
+    .proof-band { padding:30px; color:#fff; background:var(--forest); }
+    .proof-band .eyebrow { color:#e7b39f; }
+    .proof-band h2 { max-width:760px; margin-bottom:12px; }
+    .proof-band > p { max-width:720px; margin:0; color:rgba(255,255,255,.72); }
+    .proof-paths { display:grid; grid-template-columns:repeat(3,1fr); margin-top:26px; border-block:1px solid rgba(255,255,255,.22); }
+    .proof-path { min-width:0; padding:17px 20px 17px 0; border-right:1px solid rgba(255,255,255,.22); }
+    .proof-path + .proof-path { padding-left:20px; } .proof-path:last-child { border-right:0; }
+    .proof-path span { display:block; margin-bottom:7px; color:rgba(255,255,255,.62); font:700 10px/1.3 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; }
+    .proof-path a { color:#fff; font:600 18px/1.25 var(--font-serif); text-underline-offset:5px; }
+    .proof-path p { margin:7px 0 0; color:rgba(255,255,255,.78); font-size:13px; }
     .ownership { display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--line); background:var(--surface); }
     .ownership > div { padding:28px; }
     .ownership > div + div { border-left:1px solid var(--line); }
@@ -106,17 +118,20 @@ def render_portfolio_page() -> str:
       .page { width:calc(100% - 28px); }
       .nav-links span { display:none; }
       .hero { padding-top:40px; }
-      .hero-grid,.lab-grid { grid-template-columns:1fr; }
+      .hero-grid { grid-template-columns:1fr; }
       .hero-side { padding:18px 0 0; border-left:0; border-top:1px solid var(--line); }
       .proof-strip { grid-template-columns:1fr; }
       .proof-item,.proof-item + .proof-item { padding:14px 0; border-right:0; border-bottom:1px solid var(--line); }
       .proof-item:last-child { border-bottom:0; }
       .product-figure img { width:100%; max-width:100%; transform:none; }
       .product-figure figcaption { display:block; }
-      .section { padding:52px 0; }
+      .section { padding:40px 0; }
       .section-copy,.section-detail { grid-column:1 / -1; }
       .section-detail { margin-top:28px; }
-      .lab-band { margin-inline:-14px; padding:28px 20px; }
+      .proof-band { margin-inline:-14px; padding:28px 20px; }
+      .proof-paths { grid-template-columns:1fr; }
+      .proof-path,.proof-path + .proof-path { padding:15px 0; border-right:0; border-bottom:1px solid rgba(255,255,255,.22); }
+      .proof-path:last-child { border-bottom:0; }
       .ownership,.scope { grid-template-columns:1fr; }
       .ownership > div + div,.scope div + div { border-left:0; border-top:1px solid var(--line); }
       .scope div,.scope div + div { padding:18px 0; }
@@ -141,22 +156,35 @@ def render_portfolio_page() -> str:
   <main id="top">
     <section class="page hero">
       <div class="eyebrow">AI automation case study · Creative operations</div>
+      <div class="hero-byline">Designed and built by Mathieu Petroni · AI Automation Lead</div>
       <h1>Catch launch errors before they reach Ads Manager.</h1>
       <div class="hero-grid">
         <div>
-          <p class="lead">Creative Launch Workspace turns a campaign brief and a 100-row creative batch into a review queue. AI can propose the mapping, deterministic rules verify every row, and a person decides every ambiguous case.</p>
+          <p class="lead">Large creative launches fail in the handoff: a missing approval, wrong destination, incompatible placement or tracking drift. Creative Launch Workspace turns a campaign brief and a 100-row batch into one inspectable review path.</p>
           <div class="actions"><a class="button" href="workspace.html">Try the 60-second demo</a><a class="text-link" href="brief-evidence.html">Inspect governed intake evidence &rarr;</a></div>
           <div class="boundary-line">Synthetic data · Local browser state · No Meta API calls</div>
+          <div class="failure-types" aria-label="Launch risks covered"><span>Approvals</span><span>Destinations</span><span>Placements</span><span>Tracking</span><span>Duplicate intent</span></div>
         </div>
-        <aside class="hero-side"><strong>Model proposes.<br>Policy checks.<br>Human decides.</strong><p>Nothing on this site can publish, change spend, load credentials or write to an external system.</p></aside>
+        <aside class="hero-side"><strong>A model can propose.<br>Policy checks.<br>Human decides.</strong><p>Nothing on this site can publish, change spend, load credentials or write to an external system.</p></aside>
       </div>
       <div class="proof-strip" aria-label="Reproducible fixture evidence">
-        <div class="proof-item"><strong>100</strong><span>creative rows in a multi-campaign synthetic stress test</span></div>
-        <div class="proof-item"><strong>70</strong><span>seeded launch issues surfaced and routed to an owner</span></div>
+        <div class="proof-item"><strong>30</strong><span>rows pass the current offline checks</span></div>
+        <div class="proof-item"><strong>60</strong><span>blocked rows routed back with an owner and fix</span></div>
         <div class="proof-item"><strong>10</strong><span>ambiguous cases held for a human decision</span></div>
       </div>
-      <p class="fixture-note">Fixture evidence, not customer, production or business results.</p>
-      <figure class="product-figure"><a href="workspace.html"><picture><source media="(max-width:800px)" srcset="assets/workspace-mobile.png"><img src="assets/workspace-desktop.png" width="1440" height="1000" alt="Interactive creative review queue with a selected decision panel"></picture></a><figcaption><span>Task-first review queue · 100-row synthetic fixture</span><span>Click the image to use the workspace</span></figcaption></figure>
+      <p class="fixture-note">Exclusive states across a 100-row synthetic fixture; not customer, production or business results.</p>
+      <figure class="product-figure"><a href="workspace.html"><picture><source media="(max-width:800px)" srcset="assets/workspace-mobile.png"><img src="assets/workspace-desktop.png" width="1440" height="1000" alt="Interactive creative review queue with a selected decision panel"></picture></a><figcaption><span>30 pass checks · 10 need a decision · 60 routed for fixes</span><span>Click the image to use the workspace</span></figcaption></figure>
+    </section>
+
+    <section class="page section">
+      <div class="section-grid">
+        <div class="section-copy"><div class="eyebrow">The operating change</div><h2>From scattered handoffs to one decision queue.</h2><p>The workspace does not ask an operator to inspect every row. It separates what can proceed, what needs a human call, and what must go back for a concrete fix.</p></div>
+        <div class="section-detail outcome-list">
+          <div class="outcome"><b>Find</b><div><strong>Catch errors before trafficking.</strong><span>Approval, destination, placement, UTM, lineage and reuse checks run before any platform handoff.</span></div></div>
+          <div class="outcome"><b>Route</b><div><strong>Give every issue an owner.</strong><span>Each blocked row names who should act and what should change next.</span></div></div>
+          <div class="outcome"><b>Decide</b><div><strong>Spend human attention only where it matters.</strong><span>Clean rows need no action; ambiguous rows wait for an explicit local decision; blockers cannot be approved around.</span></div></div>
+        </div>
+      </div>
     </section>
 
     <section class="page section">
@@ -166,13 +194,18 @@ def render_portfolio_page() -> str:
           <div class="step"><b>01</b><div><strong>Bounded brief proposal</strong><span>Typed fields carry source evidence or abstain.</span></div></div>
           <div class="step"><b>02</b><div><strong>Schema, evidence and risk policy</strong><span>Contradictions, unsafe inputs and unsupported values fail closed.</span></div></div>
           <div class="step"><b>03</b><div><strong>Deterministic launch QA</strong><span>Approval, destination, placement, UTM and lineage checks route concrete issues.</span></div></div>
-          <div class="step"><b>04</b><div><strong>Human review and local audit</strong><span>Ambiguous rows wait for an accountable decision; no platform mutation exists.</span></div></div>
+          <div class="step"><b>04</b><div><strong>Human review and local audit</strong><span>Ambiguous rows wait for an explicit local decision; no platform mutation exists.</span></div></div>
         </div>
       </div>
     </section>
 
-    <section class="page lab-band" aria-labelledby="lab-title">
-      <div class="lab-grid"><div><div class="eyebrow">Interactive engineering proof</div><h2 id="lab-title">Fix a blocked row. Re-run the exact golden scenarios.</h2><p>A browser rehearsal backed by a versioned synthetic rule pack and cross-checked against the Python validators in CI.</p></div><div><a class="button" href="fix-lab.html">Open Fix &amp; Revalidate Lab</a></div></div>
+    <section class="page proof-band" aria-labelledby="proof-title">
+      <div class="eyebrow">Choose your proof</div><h2 id="proof-title">Choose the evidence you want to challenge.</h2><p>No signup, account, token or setup. Each path opens a real, bounded artifact.</p>
+      <div class="proof-paths">
+        <div class="proof-path"><span>CMO · Operations</span><a href="workspace.html">Review the 100-row batch &rarr;</a><p>See ten human decisions and sixty blockers routed to an owner.</p></div>
+        <div class="proof-path"><span>CTO · Engineering</span><a href="fix-lab.html">Fix and revalidate a row &rarr;</a><p>Replay Python-generated golden scenarios and inspect the audit event.</p></div>
+        <div class="proof-path"><span>Recruiting · Technical depth</span><a href="https://github.com/mattyu-dev/creative-launch-workspace">See how the system was built &rarr;</a><p>Architecture, evaluation, trust boundaries and end-to-end ownership.</p></div>
+      </div>
     </section>
 
     <section class="page section">
@@ -182,7 +215,7 @@ def render_portfolio_page() -> str:
       </div>
       <div class="scope">
         <div><strong>What this proves</strong><p>A governed, testable workflow for turning ambiguous campaign inputs into inspectable decisions.</p></div>
-        <div><strong>What it does not prove</strong><p>Production Meta compatibility, customer-data safety, model quality or business impact. This release is synthetic, local-first and non-executable.</p></div>
+        <div><strong>What this does not prove</strong><p>Production Meta compatibility, customer-data safety, model quality or business impact. This release is synthetic, local-first and non-executable.</p></div>
       </div>
     </section>
   </main>
@@ -222,8 +255,8 @@ def render_social_card_page() -> str:
 </head>
 <body><main>
   <header><span class="brand"><span class="mark"></span>Creative Launch Workspace</span><span>Built by Mathieu Petroni</span></header>
-  <section class="hero"><div class="eyebrow">AI automation case study · Creative operations</div><h1>Catch launch errors before they reach Ads Manager.</h1><p>AI proposes the mapping. Deterministic rules verify every row. A person decides every ambiguous case.</p></section>
-  <section class="proof"><div><strong>100</strong><span>synthetic creatives</span></div><div><strong>70</strong><span>seeded issues routed</span></div><div><strong>0</strong><span>external writes</span></div></section>
+  <section class="hero"><div class="eyebrow">AI automation case study · Creative operations</div><h1>Catch launch errors before they reach Ads Manager.</h1><p>A model can propose the mapping. Deterministic rules verify every row. A person decides every ambiguous case.</p></section>
+  <section class="proof"><div><strong>30</strong><span>pass offline checks</span></div><div><strong>60</strong><span>routed for fixes</span></div><div><strong>10</strong><span>human decisions</span></div></section>
 </main></body>
 </html>
 """

@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v3",
-  "tested_at": "2026-07-12T14:30:35.560Z",
+  "tested_at": "2026-07-12T15:30:34.108Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -149,12 +149,16 @@
     "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card.png",
     "hasWorkspaceCta": true,
     "hasLabCta": true,
+    "hasOperatingChange": true,
+    "hasBoundaries": true,
+    "proofPathCount": 3,
     "ownership": true,
     "noDocumentOverflow": true
   },
   "portfolio_mobile": {
     "noDocumentOverflow": true,
-    "headingVisible": true
+    "headingVisible": true,
+    "bylineVisible": true
   },
   "fix_lab": {
     "initial": {
@@ -183,8 +187,14 @@
   },
   "console_errors": [],
   "lighthouse_accessibility": {
-    "desktopScore": 1,
-    "mobileScore": 1
+    "workspace": {
+      "desktopScore": 1,
+      "mobileScore": 1
+    },
+    "portfolio": {
+      "desktopScore": 1,
+      "mobileScore": 1
+    }
   },
   "mutation_allowed": false,
   "meta_api_compatibility": "not_claimed"
