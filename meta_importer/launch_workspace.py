@@ -471,23 +471,17 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     state_payload = export_workspace_state_dict(plan)
     data_classification = str(state_payload["data_classification"])
     is_synthetic = data_classification == "synthetic_fixture_only"
-    boundary_copy = (
-        "This fixture workspace never writes to Meta. Review state stays local until an operator exports it."
-        if is_synthetic
-        else "This local workspace never writes to Meta. Operator-supplied review state stays local until export."
-    )
     data_badge = "Synthetic fixture" if is_synthetic else "Operator supplied"
     data_scope_guardrail = (
         "No customer assets" if is_synthetic else "Operator-supplied rows stay local"
     )
-    state_total = sum(states.get(key, 0) for key in ("launch_ready", "needs_review", "blocked"))
 
     template = """<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="design-system" content="Editorial Operations v1">
+  <meta name="design-system" content="Editorial Operations v2">
   <title>Creative Launch Workspace for Meta Ads</title>
   <style>
     :root {
@@ -628,60 +622,98 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     .subtle { color: var(--muted); }
     main {
       min-width: 0;
-      width: min(100%, 1800px);
+      width: min(100%, 1480px);
       margin: 0 auto;
       padding: 16px 20px 28px;
       display: grid;
       gap: 16px;
     }
-    .run-summary {
-      min-height: 120px;
+    .evidence-link { color: var(--forest); font-size: 12px; font-weight: 650; white-space: nowrap; }
+    .header-proof {
+      color: var(--forest);
+      font-size: 12px;
+      font-weight: 650;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .header-proof:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .focus-panel {
       display: grid;
-      grid-template-columns: minmax(250px, 1.3fr) minmax(430px, 2fr);
-      overflow: hidden;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 20px 28px;
+      padding: 24px 26px;
       border: 1px solid #244f41;
       border-radius: 12px;
       color: #fff;
       background: var(--forest);
     }
-    .intelligence-strip {
-      display: grid;
-      grid-template-columns: minmax(220px, 1.1fr) minmax(340px, 1.9fr) auto;
-      align-items: center;
-      gap: 18px;
-      padding: 14px 18px;
-      border: 1px solid var(--line-strong);
-      border-radius: 12px;
-      background: var(--paper);
+    .focus-copy { max-width: 720px; }
+    .focus-copy strong {
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -.035em;
     }
-    .intelligence-strip .eyebrow { color: var(--oxide); }
-    .intelligence-strip > * { min-width: 0; }
-    .intelligence-strip strong { display: block; margin-top: 3px; font-size: 15px; }
-    .intelligence-strip p { margin: 0; color: var(--muted); font-size: 12px; }
-    .intelligence-flow {
+    .focus-copy p { margin: 10px 0 0; color: rgba(255, 255, 255, .72); font-size: 13px; }
+    .focus-actions { display: flex; align-items: center; gap: 8px; }
+    .focus-actions button { min-height: 44px; padding-inline: 15px; }
+    .focus-actions .button-primary { color: var(--forest); border-color: #fff; background: #fff; }
+    .focus-actions .button-primary:hover { color: #fff; border-color: rgba(255, 255, 255, .7); background: transparent; }
+    .focus-actions .button-secondary { color: #fff; border-color: rgba(255, 255, 255, .38); background: transparent; }
+    .focus-actions .button-secondary:hover { border-color: #fff; }
+    .status-legend {
+      grid-column: 1 / -1;
       display: flex;
       align-items: center;
+      gap: 8px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, .16);
+    }
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
       gap: 7px;
-      min-width: 0;
-      color: var(--body);
-      font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: rgba(255, 255, 255, .72);
+      font-size: 11px;
     }
-    .intelligence-flow span {
-      padding: 7px 9px;
+    .status-chip strong { color: #fff; font-size: 13px; font-weight: 600; }
+    .status-chip + .status-chip::before { content: ""; width: 1px; height: 16px; margin-right: 1px; background: rgba(255, 255, 255, .18); }
+    .batch-disclosure {
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--canvas);
-      white-space: nowrap;
+      border-radius: 10px;
+      background: var(--surface);
     }
-    .intelligence-flow i { color: var(--oxide); font-style: normal; }
-    .evidence-link { color: var(--forest); font-size: 12px; font-weight: 650; white-space: nowrap; }
-    .summary-copy {
-      padding: 16px 22px;
+    .batch-disclosure > summary,
+    .secondary-actions > summary,
+    .detail-disclosure > summary {
+      cursor: pointer;
+      list-style: none;
+      color: var(--body);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .batch-disclosure > summary::-webkit-details-marker,
+    .secondary-actions > summary::-webkit-details-marker,
+    .detail-disclosure > summary::-webkit-details-marker { display: none; }
+    .batch-disclosure > summary { padding: 13px 16px; }
+    .batch-disclosure > summary::after,
+    .secondary-actions > summary::after,
+    .detail-disclosure > summary::after { content: "+"; float: right; color: var(--muted); }
+    .batch-disclosure[open] > summary::after,
+    .secondary-actions[open] > summary::after,
+    .detail-disclosure[open] > summary::after { content: "−"; }
+    .batch-context-grid {
       display: grid;
-      align-content: space-between;
-      gap: 14px;
-      border-right: 1px solid rgba(255, 255, 255, .16);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
     }
+    .context-block { min-width: 0; padding: 16px; border-right: 1px solid var(--line); }
+    .context-block:last-child { border-right: 0; }
+    .context-block p { margin: 0 0 10px; color: var(--muted); font-size: 11px; }
+    .context-block .evidence-link { display: inline-block; margin-top: 8px; }
     .eyebrow {
       color: rgba(255, 255, 255, .68);
       font-size: 11px;
@@ -689,74 +721,17 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       letter-spacing: .08em;
       text-transform: uppercase;
     }
-    .summary-copy strong {
-      display: block;
-      max-width: 500px;
-      font-size: 21px;
-      font-weight: 400;
-      line-height: 1.18;
-      letter-spacing: -.025em;
-    }
-    .summary-copy p {
-      margin: 0;
-      color: rgba(255, 255, 255, .7);
-      font-size: 11px;
-    }
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(80px, 1fr));
-      align-items: stretch;
-    }
-    .metric {
-      min-width: 0;
-      min-height: 112px;
-      padding: 16px;
-      display: grid;
-      align-content: center;
-      gap: 4px;
-      border-right: 1px solid rgba(255, 255, 255, .13);
-    }
-    .metric:last-of-type { border-right: 0; }
-    .metric strong {
-      display: block;
-      font-size: 26px;
-      font-weight: 400;
-      line-height: 1;
-      letter-spacing: -.03em;
-    }
-    .metric span {
-      color: rgba(255, 255, 255, .68);
-      font-size: 11px;
-    }
-    .readiness {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: __READY_FRACTION__fr __REVIEW_FRACTION__fr __BLOCKED_FRACTION__fr;
-      height: 8px;
-      align-self: end;
-      background: rgba(255, 255, 255, .1);
-    }
-    .readiness span:nth-child(1) { background: var(--mint); }
-    .readiness span:nth-child(2) { background: #e4c06e; }
-    .readiness span:nth-child(3) { background: var(--peach); }
     .workspace {
       display: grid;
-      grid-template-areas: "rail queue detail";
-      grid-template-columns: 224px minmax(520px, 1fr) minmax(340px, 390px);
+      grid-template-areas: "queue detail";
+      grid-template-columns: minmax(560px, 1fr) minmax(340px, 400px);
       align-items: start;
       border: 1px solid var(--line);
       border-radius: 10px;
       overflow: clip;
       background: var(--surface);
     }
-    aside, .table-shell, .detail-shell { min-width: 0; background: var(--surface); }
-    aside {
-      grid-area: rail;
-      min-height: calc(100vh - 220px);
-      padding: 16px;
-      border-right: 1px solid var(--line);
-      background: var(--surface-soft);
-    }
+    .table-shell, .detail-shell { min-width: 0; background: var(--surface); }
     .table-shell { grid-area: queue; border-right: 1px solid var(--line); }
     .detail-shell {
       grid-area: detail;
@@ -782,7 +757,6 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       line-height: 1.25;
       letter-spacing: -.015em;
     }
-    .rail-section { margin-bottom: 24px; }
     .queue { display: grid; }
     .queue-row {
       display: flex;
@@ -896,6 +870,23 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       background: var(--paper);
     }
     .bulkbar .grow { flex: 1 1 190px; min-height: 20px; }
+    .secondary-actions { margin-left: auto; }
+    .secondary-actions > summary {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 7px 10px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, .55);
+    }
+    .secondary-action-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 8px;
+    }
     .file-label {
       min-height: 38px;
       display: inline-flex !important;
@@ -927,13 +918,14 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     .confirm-panel::backdrop { background: rgba(28, 33, 30, .38); }
     .confirm-panel span { flex: 1 1 auto; color: var(--body); font-size: 12px; }
     .table-wrap { max-height: calc(100vh - 262px); overflow: auto; }
-    table { width: 100%; min-width: 760px; border-collapse: collapse; }
+    table { width: 100%; min-width: 620px; border-collapse: collapse; }
     caption {
-      padding: 8px 12px;
-      text-align: left;
-      color: var(--muted);
-      background: var(--surface-soft);
-      font-size: 11px;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
     }
     th, td {
       padding: 10px 9px;
@@ -1027,7 +1019,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     .mapping-cell span { display: block; margin-top: 2px; color: var(--muted); font-size: 11.5px; }
     .delivery-cell strong { display: block; font-weight: 500; }
     .delivery-cell span { display: block; margin-top: 2px; color: var(--muted); font-size: 11.5px; }
-    .issue-cell { min-width: 145px; max-width: 210px; }
+    .issue-cell { min-width: 240px; max-width: 380px; }
     .issue-cell strong { display: block; font-weight: 500; }
     .issue-cell span { display: block; margin-top: 3px; color: var(--muted); font-size: 11.5px; line-height: 1.4; }
     .state, .review-status {
@@ -1078,6 +1070,17 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       margin: 10px 0 18px;
       border-top: 1px solid var(--line);
     }
+    .decision-card {
+      margin: 0 0 16px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-soft);
+    }
+    .decision-card h2 { margin-bottom: 8px; color: var(--ink); font-size: 12px; letter-spacing: 0; text-transform: none; }
+    .detail-disclosure { border-top: 1px solid var(--line); }
+    .detail-disclosure > summary { padding: 13px 0; }
+    .detail-disclosure-content { padding: 0 0 16px; }
     .field {
       min-width: 0;
       padding: 9px 0;
@@ -1170,14 +1173,16 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     .danger { color: var(--blocked); }
     .status-line { min-height: 20px; padding-top: 7px; color: var(--muted); font-size: 11px; }
     @media (max-width: 1300px) {
-      .workspace { grid-template-columns: 200px minmax(480px, 1fr) 350px; }
-      aside { padding: 14px 12px; }
+      .workspace { grid-template-columns: minmax(520px, 1fr) 360px; }
     }
     @media (max-width: 1080px) {
-      .workspace { grid-template-areas: "rail queue" "detail detail"; grid-template-columns: 210px minmax(0, 1fr); overflow: visible; }
+      .workspace { grid-template-areas: "queue" "detail"; grid-template-columns: minmax(0, 1fr); overflow: visible; }
       .table-shell { border-right: 0; }
-      .detail-shell { grid-column: 1 / -1; max-height: none; position: static; border-top: 1px solid var(--line); }
+      .detail-shell { max-height: none; position: static; border-top: 1px solid var(--line); }
       .table-wrap { max-height: 620px; }
+      .batch-context-grid { grid-template-columns: 1fr 1fr; }
+      .context-block:nth-child(2) { border-right: 0; }
+      .context-block:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
     }
     @media (max-width: 1023px) {
       header { gap: 8px; position: static; padding: 9px 12px; }
@@ -1189,15 +1194,17 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       .badge { padding-inline: 7px; font-size: 10px; }
       .local-signal { display: none; }
       main { grid-template-columns: minmax(0, 1fr); padding: 10px 0 86px; gap: 10px; }
-      .run-summary { margin: 0 10px; grid-template-columns: 1fr; border-radius: 10px; }
-      .intelligence-strip { margin: 0 10px; grid-template-columns: 1fr; gap: 10px; }
-      .intelligence-flow { width: 100%; max-width: 100%; overflow-x: auto; padding-bottom: 2px; }
-      .summary-copy { padding: 16px; border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, .16); }
-      .summary-copy strong { font-size: 20px; }
-      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .metric { min-height: 72px; padding: 12px; }
-      .metric strong { font-size: 21px; }
-      .metric:nth-child(5) { display: none; }
+      .header-proof { display: none; }
+      .focus-panel { margin: 0 10px; grid-template-columns: 1fr; gap: 16px; padding: 18px; border-radius: 10px; }
+      .focus-copy strong { font-size: 25px; }
+      .focus-actions { align-items: stretch; flex-direction: column; }
+      .focus-actions button { width: 100%; }
+      .status-legend { align-items: flex-start; flex-direction: column; }
+      .status-chip + .status-chip::before { display: none; }
+      .batch-disclosure { margin: 0 10px; }
+      .batch-context-grid { grid-template-columns: 1fr; }
+      .context-block { border-right: 0; border-bottom: 1px solid var(--line); }
+      .context-block:last-child { border-bottom: 0; }
       .workspace { width: 100%; min-width: 0; display: flex; flex-direction: column; margin: 0; border-left: 0; border-right: 0; border-radius: 0; }
       .table-shell { order: 1; width: 100%; }
       .detail-shell {
@@ -1219,7 +1226,6 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       .detail-shell.open { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
       .detail-close { display: inline-flex; margin-left: auto; }
       body.detail-open { overflow: hidden; }
-      aside { order: 3; width: 100%; min-height: 0; padding: 18px 14px; border-top: 1px solid var(--line); border-right: 0; }
       .toolbar { min-width: 0; align-items: stretch; padding: 10px; }
       .filter-set { width: 100%; min-width: 0; max-width: 100%; padding: 0; overflow-x: auto; }
       .filter-set button { min-width: max-content; min-height: 44px; }
@@ -1227,7 +1233,9 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       .toolbar input, .toolbar select { width: 100%; min-width: 0; }
       input, select, button, .file-label { min-height: 44px; }
       .bulkbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 8px 10px; }
-      .bulkbar .grow, .file-label, .confirm-panel { grid-column: 1 / -1; }
+      .bulkbar .grow, .secondary-actions, .file-label, .confirm-panel { grid-column: 1 / -1; }
+      .secondary-actions > summary { width: 100%; justify-content: space-between; }
+      .secondary-action-grid { display: grid; grid-template-columns: 1fr 1fr; }
       #bulk-blocked { grid-column: 1 / -1; }
       .file-label { width: 100%; justify-content: center; }
       .table-wrap { max-height: none; overflow: visible; }
@@ -1283,9 +1291,6 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       .brand-mark { width: 26px; height: 26px; }
       h1, .batch-line { max-width: 140px; }
       .header-status .badge { max-width: 74px; overflow: hidden; text-overflow: ellipsis; }
-      .summary-copy { padding: 14px; }
-      .summary-copy strong { font-size: 18px; }
-      .metric { padding: 10px; }
       .actions { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -1305,51 +1310,63 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       </div>
     </div>
     <div class="header-status">
+      <a class="header-proof" href="brief-evidence.html">View AI evidence</a>
       <span class="local-signal">Stored locally</span>
       <span class="badge">Dry run only</span>
     </div>
   </header>
   <main>
-    <section class="run-summary" aria-labelledby="summary-title">
-      <div class="summary-copy">
-        <div>
-          <div class="eyebrow">Batch readiness</div>
-          <strong id="summary-title">__LAUNCH_READY__ rows pass offline checks. __REVIEW_COUNT__ need review. __BLOCKED_COUNT__ are blocked.</strong>
-        </div>
-        <p>__BOUNDARY_COPY__</p>
+    <section class="focus-panel" aria-labelledby="focus-title">
+      <div class="focus-copy">
+        <div class="eyebrow">Review session</div>
+        <strong id="focus-title">__REVIEW_COUNT__ creatives need a human decision.</strong>
+        <p>Start with the ambiguous rows. Clean creatives need no action; blocked creatives are routed back to their owners with a specific fix.</p>
       </div>
-      <div class="metrics" aria-label="Batch metrics">
-        <div class="metric"><strong>__ROW_COUNT__</strong><span>Creative rows</span></div>
-        <div class="metric"><strong>__LAUNCH_READY__</strong><span>Pass offline checks</span></div>
-        <div class="metric"><strong>__REVIEW_COUNT__</strong><span>Need review</span></div>
-        <div class="metric"><strong>__BLOCKED_COUNT__</strong><span>Blocked</span></div>
-        <div class="metric"><strong>__ISSUE_COUNT__</strong><span>Issues found</span></div>
-        <div class="readiness" role="img" aria-label="__LAUNCH_READY__ ready, __REVIEW_COUNT__ need review, __BLOCKED_COUNT__ blocked">
-          <span title="Ready"></span><span title="Needs review"></span><span title="Blocked"></span>
-        </div>
+      <div class="focus-actions">
+        <button class="button-primary" data-quick-filter="needs_review">Review __REVIEW_COUNT__ creatives</button>
+        <button class="button-secondary" data-quick-filter="blocked">Inspect __BLOCKED_COUNT__ blockers</button>
+      </div>
+      <div class="status-legend" aria-label="Batch status">
+        <span class="status-chip"><strong>__LAUNCH_READY__</strong> cleared automatically</span>
+        <span class="status-chip"><strong>__REVIEW_COUNT__</strong> need your decision</span>
+        <span class="status-chip"><strong>__BLOCKED_COUNT__</strong> routed for fixes</span>
       </div>
     </section>
-    <section class="intelligence-strip" aria-label="AI-assisted brief intake proof">
-      <div>
-        <div class="eyebrow">AI-assisted brief intake</div>
-        <strong>8 grounded fields &middot; human review required</strong>
+    <details class="batch-disclosure">
+      <summary>Batch details, ownership and guardrails</summary>
+      <div class="batch-context-grid">
+        <section class="context-block">
+          <h2>Owner queue</h2>
+          <div class="queue">__OWNER_QUEUE__</div>
+        </section>
+        <section class="context-block">
+          <h2>Issue mix</h2>
+          <div class="queue">__ISSUE_QUEUE__</div>
+        </section>
+        <section class="context-block">
+          <h2>Guardrails</h2>
+          <ul class="guardrails">
+            <li>No Meta API calls</li>
+            <li>No credentials or OAuth tokens</li>
+            <li>__DATA_SCOPE_GUARDRAIL__</li>
+            <li>No publish or budget mutation</li>
+          </ul>
+        </section>
+        <section class="context-block">
+          <h2>AI intake proof</h2>
+          <p>8 grounded fields, policy checks, mandatory human decisions and deterministic launch QA. No model runs in this browser.</p>
+          <a class="evidence-link" href="brief-evidence.html">Inspect the evidence &rarr;</a>
+        </section>
       </div>
-      <div>
-        <div class="intelligence-flow" aria-label="Proposal, policy checks, human decision, deterministic validation">
-          <span>Proposal</span><i>&rarr;</i><span>Policy checks</span><i>&rarr;</i><span>Human decision</span><i>&rarr;</i><span>Launch QA</span>
-        </div>
-        <p>Versioned synthetic example. No model runs in this browser and no output can publish.</p>
-      </div>
-      <a class="evidence-link" href="brief-evidence.html">Inspect evidence &rarr;</a>
-    </section>
+    </details>
     <div class="workspace" id="review-workspace" tabindex="-1">
       <section class="table-shell" aria-label="Creative review queue">
         <div class="toolbar" aria-label="Batch filters">
           <div class="filter-set" role="group" aria-label="Readiness filter">
-            <button class="active" data-filter="all" aria-pressed="true">All</button>
-            <button data-filter="launch_ready" aria-pressed="false">Pass offline</button>
-            <button data-filter="needs_review" aria-pressed="false">Needs review</button>
+            <button class="active" data-filter="needs_review" aria-pressed="true">To review</button>
             <button data-filter="blocked" aria-pressed="false">Blocked</button>
+            <button data-filter="launch_ready" aria-pressed="false">Cleared</button>
+            <button data-filter="all" aria-pressed="false">All rows</button>
           </div>
           <label>
             Search
@@ -1362,13 +1379,18 @@ def render_html_workspace(plan: LaunchPlan) -> str:
         </div>
         <div class="bulkbar">
           <span id="visible-count" class="subtle grow" aria-live="polite"></span>
-          <button id="bulk-ready">Approve visible</button>
-          <button id="bulk-fix">Flag visible</button>
-          <button id="bulk-blocked" class="danger">Block visible</button>
-          <label class="file-label">
-            Import state
-            <input id="state-import" type="file" accept="application/json">
-          </label>
+          <details class="secondary-actions">
+            <summary>Batch actions</summary>
+            <div class="secondary-action-grid">
+              <button id="bulk-ready">Approve visible</button>
+              <button id="bulk-fix">Flag visible</button>
+              <button id="bulk-blocked" class="danger">Block visible</button>
+              <label class="file-label">
+                Import state
+                <input id="state-import" type="file" accept="application/json">
+              </label>
+            </div>
+          </details>
           <dialog class="confirm-panel" id="confirm-panel" aria-labelledby="confirm-copy">
             <span id="confirm-copy"></span>
             <button id="confirm-action" class="button-primary">Confirm</button>
@@ -1381,11 +1403,8 @@ def render_html_workspace(plan: LaunchPlan) -> str:
             <thead>
               <tr>
                 <th>Creative</th>
-                <th>Offline checks</th>
-                <th>Mapping</th>
-                <th>Delivery</th>
-                <th>Owner</th>
-                <th>Issue / fix</th>
+                <th>Status</th>
+                <th>What needs attention</th>
                 <th>Decision</th>
               </tr>
             </thead>
@@ -1396,25 +1415,16 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       <section class="detail-shell" aria-labelledby="detail-title">
         <div class="detail-heading">
           <div>
-            <div class="detail-kicker">Row detail</div>
+            <div class="detail-kicker">Decision workspace</div>
             <h2 class="detail-title" id="detail-title">No row selected</h2>
           </div>
           <button class="detail-close" id="close-detail" type="button" aria-label="Close row detail">Close</button>
           <span class="badge">__DATA_BADGE__</span>
         </div>
-        <div class="detail-grid" id="detail-grid"></div>
-        <h2>Preview</h2>
-        <div class="proof">
-          <div class="proof-label">Creative proof &middot; not final media</div>
-          <div class="proof-visual" id="preview-art" aria-label="Synthetic creative preview">
-            <span id="preview-format"></span><i></i><b></b>
-          </div>
-          <p id="preview-text"></p>
-          <strong id="preview-headline"></strong>
-          <div class="mono" id="preview-url"></div>
+        <div class="decision-card">
+          <h2>What needs attention</h2>
+          <div class="issue-list" id="issue-list"></div>
         </div>
-        <h2>Issues</h2>
-        <div class="issue-list" id="issue-list"></div>
         <div class="review-form">
           <label>
             Reviewer role
@@ -1430,37 +1440,40 @@ def render_html_workspace(plan: LaunchPlan) -> str:
           <button id="mark-fix">Needs fix</button>
           <button id="mark-blocked" class="danger">Blocked</button>
         </div>
-        <div class="export-panel">
-          <h2>Export</h2>
-          <div class="status-line" id="review-progress"></div>
-          <div class="export-grid">
-            <button id="download-state">Download state</button>
-            <button id="copy-state">Copy JSON</button>
-            <button id="reset-state" class="danger">Reset state</button>
-            <button id="undo-action" disabled>Undo last change</button>
+        <details class="detail-disclosure">
+          <summary>Creative preview</summary>
+          <div class="detail-disclosure-content">
+            <div class="proof">
+              <div class="proof-label">Creative proof &middot; not final media</div>
+              <div class="proof-visual" id="preview-art" aria-label="Synthetic creative preview">
+                <span id="preview-format"></span><i></i><b></b>
+              </div>
+              <p id="preview-text"></p>
+              <strong id="preview-headline"></strong>
+              <div class="mono" id="preview-url"></div>
+            </div>
           </div>
-          <div class="status-line" id="status-line" role="status"></div>
-        </div>
+        </details>
+        <details class="detail-disclosure">
+          <summary>Technical mapping</summary>
+          <div class="detail-disclosure-content">
+            <div class="detail-grid" id="detail-grid"></div>
+          </div>
+        </details>
+        <details class="detail-disclosure export-panel">
+          <summary>Local state and export</summary>
+          <div class="detail-disclosure-content">
+            <div class="status-line" id="review-progress"></div>
+            <div class="export-grid">
+              <button id="download-state">Download state</button>
+              <button id="copy-state">Copy JSON</button>
+              <button id="reset-state" class="danger">Reset state</button>
+              <button id="undo-action" disabled>Undo last change</button>
+            </div>
+          </div>
+        </details>
+        <div class="status-line" id="status-line" role="status"></div>
       </section>
-      <aside aria-label="Batch context">
-        <section class="rail-section">
-          <h2>Owner queue</h2>
-          <div class="queue">__OWNER_QUEUE__</div>
-        </section>
-        <section class="rail-section">
-          <h2>Issue mix</h2>
-          <div class="queue">__ISSUE_QUEUE__</div>
-        </section>
-        <section class="rail-section">
-          <h2>Guardrails</h2>
-          <ul class="guardrails">
-            <li>No Meta API calls</li>
-            <li>No credentials or OAuth tokens</li>
-            <li>__DATA_SCOPE_GUARDRAIL__</li>
-            <li>No publish or budget mutation</li>
-          </ul>
-        </section>
-      </aside>
     </div>
   </main>
   <script id="workspace-data" type="application/json">__WORKSPACE_DATA__</script>
@@ -1493,6 +1506,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     const fixButton = document.getElementById("mark-fix");
     const blockButton = document.getElementById("mark-blocked");
     const filterButtons = Array.from(document.querySelectorAll("button[data-filter]"));
+    const quickFilterButtons = Array.from(document.querySelectorAll("button[data-quick-filter]"));
     const workspaceRowsBySource = new Map(workspaceData.review_statuses.map((row) => [String(row.source_row), row]));
     const knownSourceRows = new Set(workspaceRowsBySource.keys());
     const allowedReviewStatuses = new Set(["ready_to_review", "needs_confirmation", "confirmed_ready", "needs_fix", "blocked"]);
@@ -1502,8 +1516,8 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     let persistedLoadError = false;
     let persisted = loadPersistedState();
     let rows = mergeRows();
-    let activeFilter = "all";
-    let activeRow = rows.find((row) => row.batch_state === "blocked")?.source_row
+    let activeFilter = "needs_review";
+    let activeRow = rows.find((row) => row.batch_state === "needs_review")?.source_row
       || (rows.length ? rows[0].source_row : null);
     let lastFocusedRow = activeRow;
     let pendingAction = null;
@@ -1740,12 +1754,12 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       if (!visibleRows.length) {
         const tr = document.createElement("tr");
         const td = document.createElement("td");
-        td.colSpan = 7;
+        td.colSpan = 4;
         td.className = "subtle";
         td.textContent = "No rows match the current filters.";
         tr.appendChild(td);
         tbody.appendChild(tr);
-        document.getElementById("table-caption").textContent = "0 review rows";
+        document.getElementById("table-caption").textContent = "0 creatives in this view";
         updateProgress(visibleRows);
         return;
       }
@@ -1760,21 +1774,18 @@ def render_html_workspace(plan: LaunchPlan) -> str:
         tr.addEventListener("click", () => selectRow(row.source_row, true, false));
         tr.addEventListener("keydown", (event) => handleRowKeydown(event, row));
         addCreativeCell(tr, row);
-        addPillCell(tr, row.batch_state, batchStateLabel(row.batch_state), "Offline checks");
-        addStackCell(tr, row.campaign_key, row.adset_key, "mapping-cell", "Mapping");
-        addStackCell(tr, row.placement, row.format, "delivery-cell", "Delivery");
-        addCell(tr, row.owners.join(", "), "", "Owner");
+        addPillCell(tr, row.batch_state, batchStateLabel(row.batch_state), "Status");
         addStackCell(
           tr,
-          row.issue_codes.length ? row.issue_codes.map(humanizeCode).join(", ") : "No issue found",
-          row.proposed_fix || "No fix required",
+          row.issue_codes.length ? row.issue_codes.map(humanizeCode).join(", ") : "No action needed",
+          (row.owners.join(", ") || "No owner") + " · " + (row.proposed_fix || "No fix required"),
           "issue-cell",
-          "Issue / fix"
+          "What needs attention"
         );
         addPillCell(tr, row.review_status, reviewStatusLabel(row.review_status), "Decision");
         tbody.appendChild(tr);
       }
-      document.getElementById("table-caption").textContent = `${visibleRows.length} review rows`;
+      document.getElementById("table-caption").textContent = `${visibleRows.length} creatives in this view`;
       updateProgress(visibleRows);
     }
 
@@ -1841,10 +1852,19 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       detailTitle.textContent = row.creative_id + " · row " + row.source_row;
       approveButton.disabled = row.batch_state === "blocked";
       approveButton.title = row.batch_state === "blocked" ? "Resolve offline blockers before local approval." : "Approve this row in local review state.";
+      approveButton.textContent = row.batch_state === "blocked"
+        ? "Resolve blocker first"
+        : row.issue_codes.includes("duplicate_asset")
+          ? "Confirm reuse"
+          : "Approve locally";
       fixButton.disabled = false;
       blockButton.disabled = false;
       reviewNote.value = row.note || "";
-      if (row.updated_by_role) reviewerRole.value = row.updated_by_role;
+      if (row.updated_by_role) {
+        reviewerRole.value = row.updated_by_role;
+      } else if (row.owners.length && reviewerRoles.has(row.owners[0])) {
+        reviewerRole.value = row.owners[0];
+      }
       detailGrid.replaceChildren();
       [
         ["Campaign", row.campaign_key],
@@ -1877,15 +1897,12 @@ def render_html_workspace(plan: LaunchPlan) -> str:
           item.className = "issue";
           const title = document.createElement("strong");
           title.textContent = humanizeCode(issue.code) + " · " + issue.owner;
-          const code = document.createElement("div");
-          code.className = "mono subtle";
-          code.textContent = issue.code;
           const message = document.createElement("div");
           message.textContent = issue.message;
           const fix = document.createElement("div");
           fix.className = "subtle";
           fix.textContent = issue.proposed_fix;
-          item.append(title, code, message, fix);
+          item.append(title, message, fix);
           issueList.appendChild(item);
         }
       }
@@ -2111,7 +2128,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       rows = mergeRows();
       statusLine.textContent = "Browser review state reset.";
       renderOwnerOptions();
-      selectRow(rows.length ? rows[0].source_row : null, false, false);
+      selectRow(filteredRows().length ? filteredRows()[0].source_row : null, false, false);
     }
 
     function importStatePayload(payload) {
@@ -2133,18 +2150,25 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       saveState();
       statusLine.textContent = "Imported local review state.";
       renderOwnerOptions();
-      selectRow(rows.length ? rows[0].source_row : null, false, false);
+      selectRow(filteredRows().length ? filteredRows()[0].source_row : null, false, false);
+    }
+
+    function setActiveFilter(value) {
+      activeFilter = value;
+      filterButtons.forEach((item) => {
+        const active = item.dataset.filter === value;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+      reconcileSelection();
+      document.getElementById("review-workspace").scrollIntoView({ block: "start" });
     }
 
     filterButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        activeFilter = button.dataset.filter;
-        filterButtons.forEach((item) => {
-          item.classList.toggle("active", item === button);
-          item.setAttribute("aria-pressed", String(item === button));
-        });
-        reconcileSelection();
-      });
+      button.addEventListener("click", () => setActiveFilter(button.dataset.filter));
+    });
+    quickFilterButtons.forEach((button) => {
+      button.addEventListener("click", () => setActiveFilter(button.dataset.quickFilter));
     });
     searchInput.addEventListener("input", reconcileSelection);
     ownerFilter.addEventListener("change", reconcileSelection);
@@ -2202,20 +2226,12 @@ def render_html_workspace(plan: LaunchPlan) -> str:
         .replace("__BATCH_ID__", _escape_html(str(state_payload["batch_id"])))
         .replace("__BATCH_SHORT__", _escape_html(str(state_payload["batch_id"])[:8]))
         .replace("__DATA_CLASSIFICATION__", _escape_html(str(state_payload["data_classification"])))
-        .replace("__BOUNDARY_COPY__", _escape_html(boundary_copy))
         .replace("__DATA_BADGE__", _escape_html(data_badge))
         .replace("__DATA_SCOPE_GUARDRAIL__", _escape_html(data_scope_guardrail))
         .replace("__ROW_COUNT__", str(summary["row_count"]))
-        .replace("__CAMPAIGN_COUNT__", str(summary["campaign_count"]))
-        .replace("__ADSET_COUNT__", str(summary["adset_count"]))
         .replace("__LAUNCH_READY__", str(states.get("launch_ready", 0)))
         .replace("__REVIEW_COUNT__", str(states.get("needs_review", 0)))
         .replace("__BLOCKED_COUNT__", str(states.get("blocked", 0)))
-        .replace("__READY_FRACTION__", str(states.get("launch_ready", 0) if state_total else 1))
-        .replace("__REVIEW_FRACTION__", str(states.get("needs_review", 0)))
-        .replace("__BLOCKED_FRACTION__", str(states.get("blocked", 0)))
-        .replace("__NEED_WORK__", str(states.get("needs_review", 0) + states.get("blocked", 0)))
-        .replace("__ISSUE_COUNT__", str(len(plan.issues)))
         .replace("__OWNER_QUEUE__", _html_queue(owner_queue))
         .replace("__ISSUE_QUEUE__", _html_queue(issue_codes, humanize_labels=True))
     )

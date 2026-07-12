@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.0 — 2026-07-12
+
+- Rebuilt the workspace around one explicit operator task: review the ten ambiguous creatives first.
+- Reduced the queue from seven competing columns to four decision-oriented columns.
+- Moved batch context, bulk actions, creative preview, technical mapping and export behind progressive disclosures.
+- Made issue ownership drive the default reviewer role and changed the primary action to match the selected issue.
+- Added task-first and progressive-disclosure checks to the static UI contract.
+- Preserved keyboard navigation, local persistence, guarded imports, undo, responsive behavior and accessibility 100/100 across seven certified viewports.
+
 ## 1.1.0 — 2026-07-12
 
 - Added governed brief-to-mapping proposals with strict contracts, evidence grounding, abstention and field-level human review.

@@ -12,9 +12,9 @@ def audit_workspace_html(html: str) -> dict[str, object]:
     ]
     checks = {
         "has_title": "Creative Launch Workspace for Meta Ads" in html,
-        "has_row_detail": "Row detail" in html,
-        "has_preview": "Preview" in html,
-        "has_export_panel": ">Export<" in html,
+        "has_row_detail": "Decision workspace" in html,
+        "has_preview": "Creative preview" in html,
+        "has_export_panel": "Local state and export" in html,
         "has_aria_live_region": parser.has_attr("aria-live"),
         "filter_buttons_have_aria_pressed": bool(filter_buttons)
         and all("aria-pressed" in attrs for attrs in filter_buttons),
@@ -62,22 +62,39 @@ def audit_workspace_html(html: str) -> dict[str, object]:
             for token in ("ArrowDown", "ArrowUp", 'tr.tabIndex = row.source_row === activeRow ? 0 : -1')
         ),
         "has_responsive_css": "@media (max-width:" in html,
-        "has_design_system_contract": 'content="Editorial Operations v1"' in html,
+        "has_design_system_contract": 'content="Editorial Operations v2"' in html,
         "has_ai_assist_trace": all(
             token in html
             for token in (
-                "AI-assisted brief intake",
-                "Policy checks",
-                "Human decision",
+                "AI intake proof",
+                "policy checks",
+                "human decisions",
                 "No model runs in this browser",
+            )
+        ),
+        "has_task_first_focus": all(
+            token in html
+            for token in (
+                'class="focus-panel"',
+                "creatives need a human decision",
+                'data-quick-filter="needs_review"',
+                'let activeFilter = "needs_review"',
+            )
+        ),
+        "has_progressive_disclosure": all(
+            token in html
+            for token in (
+                'class="batch-disclosure"',
+                'class="secondary-actions"',
+                'class="detail-disclosure"',
             )
         ),
         "has_skip_link": 'class="skip-link"' in html and 'href="#review-workspace"' in html,
         "has_active_row_semantics": 'setAttribute("aria-selected"' in html,
         "has_mobile_row_cards": 'td.dataset.label' in html and 'content: attr(data-label)' in html,
         "has_reduced_motion_support": "@media (prefers-reduced-motion: reduce)" in html,
-        "queue_precedes_secondary_context": html.find('class="table-shell"')
-        < html.find('aria-label="Batch context"'),
+        "focus_precedes_review_queue": html.find('class="focus-panel"')
+        < html.find('class="table-shell"'),
         "no_generic_visual_effects": all(
             token not in html.lower()
             for token in ("linear-gradient", "radial-gradient", "box-shadow:", "backdrop-filter")
@@ -194,6 +211,16 @@ def _check_messages(checks: dict[str, bool]) -> list[tuple[str, bool, str]]:
             checks["has_ai_assist_trace"],
             "The bounded AI-to-human decision path is not visible.",
         ),
+        (
+            "has_task_first_focus",
+            checks["has_task_first_focus"],
+            "The first screen does not make the operator's next action explicit.",
+        ),
+        (
+            "has_progressive_disclosure",
+            checks["has_progressive_disclosure"],
+            "Secondary batch, bulk, and technical controls must use progressive disclosure.",
+        ),
         ("has_skip_link", checks["has_skip_link"], "Skip-to-queue navigation is missing."),
         (
             "has_active_row_semantics",
@@ -211,9 +238,9 @@ def _check_messages(checks: dict[str, bool]) -> list[tuple[str, bool, str]]:
             "Reduced-motion styling is missing.",
         ),
         (
-            "queue_precedes_secondary_context",
-            checks["queue_precedes_secondary_context"],
-            "Review queue must precede secondary context in DOM order.",
+            "focus_precedes_review_queue",
+            checks["focus_precedes_review_queue"],
+            "The operator task focus must precede the review queue in DOM order.",
         ),
         (
             "no_generic_visual_effects",

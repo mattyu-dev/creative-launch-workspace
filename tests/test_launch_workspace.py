@@ -80,9 +80,9 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertIn("No Meta API calls", html)
         self.assertIn("UTM Status", html)
         self.assertIn("Post ID", html)
-        self.assertIn("Row detail", html)
-        self.assertIn("Preview", html)
-        self.assertIn(">Export<", html)
+        self.assertIn("Decision workspace", html)
+        self.assertIn("Creative preview", html)
+        self.assertIn("Local state and export", html)
         self.assertIn("Approve visible", html)
         self.assertIn("Import state", html)
         self.assertIn("Imported state failed the local-only guardrail.", html)
@@ -107,10 +107,18 @@ class LaunchWorkspaceTests(unittest.TestCase):
         plan = build_launch_plan(rows, source_manifest=str(V2_FIXTURE))
         html = render_html_workspace(plan)
 
-        self.assertIn('content="Editorial Operations v1"', html)
-        self.assertIn('class="run-summary"', html)
-        self.assertIn("AI-assisted brief intake", html)
+        self.assertIn('content="Editorial Operations v2"', html)
+        self.assertIn('class="focus-panel"', html)
+        self.assertIn("creatives need a human decision", html)
+        self.assertIn('let activeFilter = "needs_review"', html)
+        self.assertIn("AI intake proof", html)
         self.assertIn("No model runs in this browser", html)
+        self.assertIn('class="batch-disclosure"', html)
+        self.assertIn('class="secondary-actions"', html)
+        self.assertIn('class="detail-disclosure"', html)
+        self.assertIn("What needs attention", html)
+        self.assertIn("Confirm reuse", html)
+        self.assertIn("reviewerRole.value = row.owners[0]", html)
         self.assertIn('thumb.className = "creative-thumb format-"', html)
         self.assertIn('content: attr(data-label)', html)
         self.assertIn('@media (prefers-reduced-motion: reduce)', html)
@@ -128,7 +136,7 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertIn("detailShell.inert = true", html)
         self.assertIn("clearDetail", html)
         self.assertIn("<span>Approval missing</span>", html)
-        self.assertLess(html.index('class="table-shell"'), html.index('aria-label="Batch context"'))
+        self.assertLess(html.index('class="focus-panel"'), html.index('class="table-shell"'))
         self.assertNotIn("linear-gradient", html)
         self.assertNotIn("radial-gradient", html)
         self.assertNotIn("box-shadow:", html)
@@ -154,7 +162,7 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertEqual(state["data_classification"], "operator_supplied_manifest_no_live_mutation")
         self.assertTrue(any("Operator-supplied rows remain local" in item for item in state["guardrails"]))
 
-    def test_readiness_strip_does_not_invent_zero_state_segments(self) -> None:
+    def test_task_focus_does_not_invent_nonzero_review_states(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             manifest = Path(temp_dir) / "synthetic.csv"
             manifest.write_text(
@@ -165,7 +173,10 @@ class LaunchWorkspaceTests(unittest.TestCase):
 
         html = render_html_workspace(plan)
 
-        self.assertIn("grid-template-columns: 1fr 0fr 0fr", html)
+        self.assertIn("0 creatives need a human decision", html)
+        self.assertIn("<strong>1</strong> cleared automatically", html)
+        self.assertIn("<strong>0</strong> need your decision", html)
+        self.assertIn("<strong>0</strong> routed for fixes", html)
 
     def test_workspace_browser_contract_audits_reusable_ui_behaviors(self) -> None:
         rows = read_manifest(V2_FIXTURE)
