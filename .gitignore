@@ -1,0 +1,14 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+build/
+runs/
+tmp/
+.last30days/

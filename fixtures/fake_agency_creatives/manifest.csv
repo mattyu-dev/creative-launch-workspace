@@ -1,0 +1,101 @@
+creative_id,campaign_key,adset_key,format,asset_path,primary_text,headline,destination_url,approval_status,qa_issue
+cr_001,camp_launch,as_prospecting_us,image,fixtures/fake_agency_creatives/assets/launch_static_001.jpg,Hook 01 for prospecting US,Launch offer 01,https://example.invalid/launch-us,approved,
+cr_002,camp_launch,as_prospecting_us,video,fixtures/fake_agency_creatives/assets/launch_video_002.mp4,Hook 02 for prospecting US,Launch offer 02,https://example.invalid/launch-us,approved,
+cr_003,camp_launch,as_prospecting_us,carousel,fixtures/fake_agency_creatives/assets/launch_carousel_003.jpg,Hook 03 for prospecting US,Launch offer 03,https://example.invalid/launch-us,pending,missing_approval
+cr_004,camp_launch,as_prospecting_us,story,fixtures/fake_agency_creatives/assets/launch_story_004.jpg,Hook 04 for prospecting US,Launch offer 04,https://example.invalid/launch-us,approved,
+cr_005,camp_launch,as_prospecting_us,image,fixtures/fake_agency_creatives/assets/launch_static_005.jpg,Hook 05 for prospecting US,Launch offer 05,https://example.invalid/launch-us,approved,naming_error
+cr_006,camp_launch,as_prospecting_us,video,fixtures/fake_agency_creatives/assets/launch_video_006.mp4,Hook 06 for prospecting US,Launch offer 06,https://example.invalid/launch-us,rejected,missing_approval
+cr_007,camp_launch,as_prospecting_us,image,fixtures/fake_agency_creatives/assets/launch_static_001.jpg,Hook 07 for prospecting US,Launch offer 07,https://example.invalid/launch-us,approved,duplicate_asset
+cr_008,camp_launch,as_prospecting_us,carousel,fixtures/fake_agency_creatives/assets/launch_carousel_008.jpg,Hook 08 for prospecting US,Launch offer 08,https://example.invalid/launch-alt,approved,destination_mismatch
+cr_009,camp_launch,as_prospecting_us,story,fixtures/fake_agency_creatives/assets/launch_story_009.jpg,Hook 09 for prospecting US,Launch offer 09,https://example.invalid/launch-us,pending,missing_approval
+cr_010,camp_launch,as_prospecting_us,collection,fixtures/fake_agency_creatives/assets/launch_collection_010.jpg,Hook 10 for prospecting US,Launch offer 10,https://example.invalid/launch-us,approved,unsupported_format
+cr_011,camp_launch,as_retargeting_us,image,fixtures/fake_agency_creatives/assets/retarget_static_011.jpg,Hook 11 for retargeting US,Return offer 11,https://example.invalid/retarget-us,approved,
+cr_012,camp_launch,as_retargeting_us,video,fixtures/fake_agency_creatives/assets/retarget_video_012.mp4,Hook 12 for retargeting US,Return offer 12,https://example.invalid/retarget-us,approved,
+cr_013,camp_launch,as_retargeting_us,carousel,fixtures/fake_agency_creatives/assets/retarget_carousel_013.jpg,Hook 13 for retargeting US,Return offer 13,https://example.invalid/retarget-us,pending,missing_approval
+cr_014,camp_launch,as_retargeting_us,story,fixtures/fake_agency_creatives/assets/retarget_story_014.jpg,Hook 14 for retargeting US,Return offer 14,https://example.invalid/retarget-us,approved,
+cr_015,camp_launch,as_retargeting_us,image,fixtures/fake_agency_creatives/assets/retarget_static_015.jpg,Hook 15 for retargeting US,Return offer 15,https://example.invalid/retarget-us,approved,naming_error
+cr_016,camp_launch,as_retargeting_us,video,fixtures/fake_agency_creatives/assets/retarget_video_016.mp4,Hook 16 for retargeting US,Return offer 16,https://example.invalid/retarget-us,rejected,missing_approval
+cr_017,camp_launch,as_retargeting_us,image,fixtures/fake_agency_creatives/assets/retarget_static_011.jpg,Hook 17 for retargeting US,Return offer 17,https://example.invalid/retarget-us,approved,duplicate_asset
+cr_018,camp_launch,as_retargeting_us,carousel,fixtures/fake_agency_creatives/assets/retarget_carousel_018.jpg,Hook 18 for retargeting US,Return offer 18,https://example.invalid/retarget-alt,approved,destination_mismatch
+cr_019,camp_launch,as_retargeting_us,story,fixtures/fake_agency_creatives/assets/retarget_story_019.jpg,Hook 19 for retargeting US,Return offer 19,https://example.invalid/retarget-us,pending,missing_approval
+cr_020,camp_launch,as_retargeting_us,collection,fixtures/fake_agency_creatives/assets/retarget_collection_020.jpg,Hook 20 for retargeting US,Return offer 20,https://example.invalid/retarget-us,approved,unsupported_format
+cr_021,camp_launch,as_prospecting_fr,image,fixtures/fake_agency_creatives/assets/fr_static_021.jpg,Hook 21 for prospecting FR,Launch FR 21,https://example.invalid/launch-fr,approved,
+cr_022,camp_launch,as_prospecting_fr,video,fixtures/fake_agency_creatives/assets/fr_video_022.mp4,Hook 22 for prospecting FR,Launch FR 22,https://example.invalid/launch-fr,approved,
+cr_023,camp_launch,as_prospecting_fr,carousel,fixtures/fake_agency_creatives/assets/fr_carousel_023.jpg,Hook 23 for prospecting FR,Launch FR 23,https://example.invalid/launch-fr,pending,missing_approval
+cr_024,camp_launch,as_prospecting_fr,story,fixtures/fake_agency_creatives/assets/fr_story_024.jpg,Hook 24 for prospecting FR,Launch FR 24,https://example.invalid/launch-fr,approved,
+cr_025,camp_launch,as_prospecting_fr,image,fixtures/fake_agency_creatives/assets/fr_static_025.jpg,Hook 25 for prospecting FR,Launch FR 25,https://example.invalid/launch-fr,approved,naming_error
+cr_026,camp_launch,as_prospecting_fr,video,fixtures/fake_agency_creatives/assets/fr_video_026.mp4,Hook 26 for prospecting FR,Launch FR 26,https://example.invalid/launch-fr,rejected,missing_approval
+cr_027,camp_launch,as_prospecting_fr,image,fixtures/fake_agency_creatives/assets/fr_static_021.jpg,Hook 27 for prospecting FR,Launch FR 27,https://example.invalid/launch-fr,approved,duplicate_asset
+cr_028,camp_launch,as_prospecting_fr,carousel,fixtures/fake_agency_creatives/assets/fr_carousel_028.jpg,Hook 28 for prospecting FR,Launch FR 28,https://example.invalid/launch-fr-alt,approved,destination_mismatch
+cr_029,camp_launch,as_prospecting_fr,story,fixtures/fake_agency_creatives/assets/fr_story_029.jpg,Hook 29 for prospecting FR,Launch FR 29,https://example.invalid/launch-fr,pending,missing_approval
+cr_030,camp_launch,as_prospecting_fr,collection,fixtures/fake_agency_creatives/assets/fr_collection_030.jpg,Hook 30 for prospecting FR,Launch FR 30,https://example.invalid/launch-fr,approved,unsupported_format
+cr_031,camp_evergreen,as_broad_us,image,fixtures/fake_agency_creatives/assets/evergreen_static_031.jpg,Hook 31 for broad US,Evergreen 31,https://example.invalid/evergreen-us,approved,
+cr_032,camp_evergreen,as_broad_us,video,fixtures/fake_agency_creatives/assets/evergreen_video_032.mp4,Hook 32 for broad US,Evergreen 32,https://example.invalid/evergreen-us,approved,
+cr_033,camp_evergreen,as_broad_us,carousel,fixtures/fake_agency_creatives/assets/evergreen_carousel_033.jpg,Hook 33 for broad US,Evergreen 33,https://example.invalid/evergreen-us,pending,missing_approval
+cr_034,camp_evergreen,as_broad_us,story,fixtures/fake_agency_creatives/assets/evergreen_story_034.jpg,Hook 34 for broad US,Evergreen 34,https://example.invalid/evergreen-us,approved,
+cr_035,camp_evergreen,as_broad_us,image,fixtures/fake_agency_creatives/assets/evergreen_static_035.jpg,Hook 35 for broad US,Evergreen 35,https://example.invalid/evergreen-us,approved,naming_error
+cr_036,camp_evergreen,as_broad_us,video,fixtures/fake_agency_creatives/assets/evergreen_video_036.mp4,Hook 36 for broad US,Evergreen 36,https://example.invalid/evergreen-us,rejected,missing_approval
+cr_037,camp_evergreen,as_broad_us,image,fixtures/fake_agency_creatives/assets/evergreen_static_031.jpg,Hook 37 for broad US,Evergreen 37,https://example.invalid/evergreen-us,approved,duplicate_asset
+cr_038,camp_evergreen,as_broad_us,carousel,fixtures/fake_agency_creatives/assets/evergreen_carousel_038.jpg,Hook 38 for broad US,Evergreen 38,https://example.invalid/evergreen-alt,approved,destination_mismatch
+cr_039,camp_evergreen,as_broad_us,story,fixtures/fake_agency_creatives/assets/evergreen_story_039.jpg,Hook 39 for broad US,Evergreen 39,https://example.invalid/evergreen-us,pending,missing_approval
+cr_040,camp_evergreen,as_broad_us,collection,fixtures/fake_agency_creatives/assets/evergreen_collection_040.jpg,Hook 40 for broad US,Evergreen 40,https://example.invalid/evergreen-us,approved,unsupported_format
+cr_041,camp_evergreen,as_lookalike_us,image,fixtures/fake_agency_creatives/assets/lookalike_static_041.jpg,Hook 41 for lookalike US,Lookalike 41,https://example.invalid/lookalike-us,approved,
+cr_042,camp_evergreen,as_lookalike_us,video,fixtures/fake_agency_creatives/assets/lookalike_video_042.mp4,Hook 42 for lookalike US,Lookalike 42,https://example.invalid/lookalike-us,approved,
+cr_043,camp_evergreen,as_lookalike_us,carousel,fixtures/fake_agency_creatives/assets/lookalike_carousel_043.jpg,Hook 43 for lookalike US,Lookalike 43,https://example.invalid/lookalike-us,pending,missing_approval
+cr_044,camp_evergreen,as_lookalike_us,story,fixtures/fake_agency_creatives/assets/lookalike_story_044.jpg,Hook 44 for lookalike US,Lookalike 44,https://example.invalid/lookalike-us,approved,
+cr_045,camp_evergreen,as_lookalike_us,image,fixtures/fake_agency_creatives/assets/lookalike_static_045.jpg,Hook 45 for lookalike US,Lookalike 45,https://example.invalid/lookalike-us,approved,naming_error
+cr_046,camp_evergreen,as_lookalike_us,video,fixtures/fake_agency_creatives/assets/lookalike_video_046.mp4,Hook 46 for lookalike US,Lookalike 46,https://example.invalid/lookalike-us,rejected,missing_approval
+cr_047,camp_evergreen,as_lookalike_us,image,fixtures/fake_agency_creatives/assets/lookalike_static_041.jpg,Hook 47 for lookalike US,Lookalike 47,https://example.invalid/lookalike-us,approved,duplicate_asset
+cr_048,camp_evergreen,as_lookalike_us,carousel,fixtures/fake_agency_creatives/assets/lookalike_carousel_048.jpg,Hook 48 for lookalike US,Lookalike 48,https://example.invalid/lookalike-alt,approved,destination_mismatch
+cr_049,camp_evergreen,as_lookalike_us,story,fixtures/fake_agency_creatives/assets/lookalike_story_049.jpg,Hook 49 for lookalike US,Lookalike 49,https://example.invalid/lookalike-us,pending,missing_approval
+cr_050,camp_evergreen,as_lookalike_us,collection,fixtures/fake_agency_creatives/assets/lookalike_collection_050.jpg,Hook 50 for lookalike US,Lookalike 50,https://example.invalid/lookalike-us,approved,unsupported_format
+cr_051,camp_evergreen,as_retargeting_fr,image,fixtures/fake_agency_creatives/assets/fr_retarget_static_051.jpg,Hook 51 for retargeting FR,Retarget FR 51,https://example.invalid/retarget-fr,approved,
+cr_052,camp_evergreen,as_retargeting_fr,video,fixtures/fake_agency_creatives/assets/fr_retarget_video_052.mp4,Hook 52 for retargeting FR,Retarget FR 52,https://example.invalid/retarget-fr,approved,
+cr_053,camp_evergreen,as_retargeting_fr,carousel,fixtures/fake_agency_creatives/assets/fr_retarget_carousel_053.jpg,Hook 53 for retargeting FR,Retarget FR 53,https://example.invalid/retarget-fr,pending,missing_approval
+cr_054,camp_evergreen,as_retargeting_fr,story,fixtures/fake_agency_creatives/assets/fr_retarget_story_054.jpg,Hook 54 for retargeting FR,Retarget FR 54,https://example.invalid/retarget-fr,approved,
+cr_055,camp_evergreen,as_retargeting_fr,image,fixtures/fake_agency_creatives/assets/fr_retarget_static_055.jpg,Hook 55 for retargeting FR,Retarget FR 55,https://example.invalid/retarget-fr,approved,naming_error
+cr_056,camp_evergreen,as_retargeting_fr,video,fixtures/fake_agency_creatives/assets/fr_retarget_video_056.mp4,Hook 56 for retargeting FR,Retarget FR 56,https://example.invalid/retarget-fr,rejected,missing_approval
+cr_057,camp_evergreen,as_retargeting_fr,image,fixtures/fake_agency_creatives/assets/fr_retarget_static_051.jpg,Hook 57 for retargeting FR,Retarget FR 57,https://example.invalid/retarget-fr,approved,duplicate_asset
+cr_058,camp_evergreen,as_retargeting_fr,carousel,fixtures/fake_agency_creatives/assets/fr_retarget_carousel_058.jpg,Hook 58 for retargeting FR,Retarget FR 58,https://example.invalid/retarget-fr-alt,approved,destination_mismatch
+cr_059,camp_evergreen,as_retargeting_fr,story,fixtures/fake_agency_creatives/assets/fr_retarget_story_059.jpg,Hook 59 for retargeting FR,Retarget FR 59,https://example.invalid/retarget-fr,pending,missing_approval
+cr_060,camp_evergreen,as_retargeting_fr,collection,fixtures/fake_agency_creatives/assets/fr_retarget_collection_060.jpg,Hook 60 for retargeting FR,Retarget FR 60,https://example.invalid/retarget-fr,approved,unsupported_format
+cr_061,camp_sale,as_sale_us,image,fixtures/fake_agency_creatives/assets/sale_static_061.jpg,Hook 61 for sale US,Sale 61,https://example.invalid/sale-us,approved,
+cr_062,camp_sale,as_sale_us,video,fixtures/fake_agency_creatives/assets/sale_video_062.mp4,Hook 62 for sale US,Sale 62,https://example.invalid/sale-us,approved,
+cr_063,camp_sale,as_sale_us,carousel,fixtures/fake_agency_creatives/assets/sale_carousel_063.jpg,Hook 63 for sale US,Sale 63,https://example.invalid/sale-us,pending,missing_approval
+cr_064,camp_sale,as_sale_us,story,fixtures/fake_agency_creatives/assets/sale_story_064.jpg,Hook 64 for sale US,Sale 64,https://example.invalid/sale-us,approved,
+cr_065,camp_sale,as_sale_us,image,fixtures/fake_agency_creatives/assets/sale_static_065.jpg,Hook 65 for sale US,Sale 65,https://example.invalid/sale-us,approved,naming_error
+cr_066,camp_sale,as_sale_us,video,fixtures/fake_agency_creatives/assets/sale_video_066.mp4,Hook 66 for sale US,Sale 66,https://example.invalid/sale-us,rejected,missing_approval
+cr_067,camp_sale,as_sale_us,image,fixtures/fake_agency_creatives/assets/sale_static_061.jpg,Hook 67 for sale US,Sale 67,https://example.invalid/sale-us,approved,duplicate_asset
+cr_068,camp_sale,as_sale_us,carousel,fixtures/fake_agency_creatives/assets/sale_carousel_068.jpg,Hook 68 for sale US,Sale 68,https://example.invalid/sale-alt,approved,destination_mismatch
+cr_069,camp_sale,as_sale_us,story,fixtures/fake_agency_creatives/assets/sale_story_069.jpg,Hook 69 for sale US,Sale 69,https://example.invalid/sale-us,pending,missing_approval
+cr_070,camp_sale,as_sale_us,collection,fixtures/fake_agency_creatives/assets/sale_collection_070.jpg,Hook 70 for sale US,Sale 70,https://example.invalid/sale-us,approved,unsupported_format
+cr_071,camp_sale,as_sale_fr,image,fixtures/fake_agency_creatives/assets/sale_fr_static_071.jpg,Hook 71 for sale FR,Sale FR 71,https://example.invalid/sale-fr,approved,
+cr_072,camp_sale,as_sale_fr,video,fixtures/fake_agency_creatives/assets/sale_fr_video_072.mp4,Hook 72 for sale FR,Sale FR 72,https://example.invalid/sale-fr,approved,
+cr_073,camp_sale,as_sale_fr,carousel,fixtures/fake_agency_creatives/assets/sale_fr_carousel_073.jpg,Hook 73 for sale FR,Sale FR 73,https://example.invalid/sale-fr,pending,missing_approval
+cr_074,camp_sale,as_sale_fr,story,fixtures/fake_agency_creatives/assets/sale_fr_story_074.jpg,Hook 74 for sale FR,Sale FR 74,https://example.invalid/sale-fr,approved,
+cr_075,camp_sale,as_sale_fr,image,fixtures/fake_agency_creatives/assets/sale_fr_static_075.jpg,Hook 75 for sale FR,Sale FR 75,https://example.invalid/sale-fr,approved,naming_error
+cr_076,camp_sale,as_sale_fr,video,fixtures/fake_agency_creatives/assets/sale_fr_video_076.mp4,Hook 76 for sale FR,Sale FR 76,https://example.invalid/sale-fr,rejected,missing_approval
+cr_077,camp_sale,as_sale_fr,image,fixtures/fake_agency_creatives/assets/sale_fr_static_071.jpg,Hook 77 for sale FR,Sale FR 77,https://example.invalid/sale-fr,approved,duplicate_asset
+cr_078,camp_sale,as_sale_fr,carousel,fixtures/fake_agency_creatives/assets/sale_fr_carousel_078.jpg,Hook 78 for sale FR,Sale FR 78,https://example.invalid/sale-fr-alt,approved,destination_mismatch
+cr_079,camp_sale,as_sale_fr,story,fixtures/fake_agency_creatives/assets/sale_fr_story_079.jpg,Hook 79 for sale FR,Sale FR 79,https://example.invalid/sale-fr,pending,missing_approval
+cr_080,camp_sale,as_sale_fr,collection,fixtures/fake_agency_creatives/assets/sale_fr_collection_080.jpg,Hook 80 for sale FR,Sale FR 80,https://example.invalid/sale-fr,approved,unsupported_format
+cr_081,camp_sale,as_sale_ca,image,fixtures/fake_agency_creatives/assets/sale_ca_static_081.jpg,Hook 81 for sale CA,Sale CA 81,https://example.invalid/sale-ca,approved,
+cr_082,camp_sale,as_sale_ca,video,fixtures/fake_agency_creatives/assets/sale_ca_video_082.mp4,Hook 82 for sale CA,Sale CA 82,https://example.invalid/sale-ca,approved,
+cr_083,camp_sale,as_sale_ca,carousel,fixtures/fake_agency_creatives/assets/sale_ca_carousel_083.jpg,Hook 83 for sale CA,Sale CA 83,https://example.invalid/sale-ca,pending,missing_approval
+cr_084,camp_sale,as_sale_ca,story,fixtures/fake_agency_creatives/assets/sale_ca_story_084.jpg,Hook 84 for sale CA,Sale CA 84,https://example.invalid/sale-ca,approved,
+cr_085,camp_sale,as_sale_ca,image,fixtures/fake_agency_creatives/assets/sale_ca_static_085.jpg,Hook 85 for sale CA,Sale CA 85,https://example.invalid/sale-ca,approved,naming_error
+cr_086,camp_sale,as_sale_ca,video,fixtures/fake_agency_creatives/assets/sale_ca_video_086.mp4,Hook 86 for sale CA,Sale CA 86,https://example.invalid/sale-ca,rejected,missing_approval
+cr_087,camp_sale,as_sale_ca,image,fixtures/fake_agency_creatives/assets/sale_ca_static_081.jpg,Hook 87 for sale CA,Sale CA 87,https://example.invalid/sale-ca,approved,duplicate_asset
+cr_088,camp_sale,as_sale_ca,carousel,fixtures/fake_agency_creatives/assets/sale_ca_carousel_088.jpg,Hook 88 for sale CA,Sale CA 88,https://example.invalid/sale-ca-alt,approved,destination_mismatch
+cr_089,camp_sale,as_sale_ca,story,fixtures/fake_agency_creatives/assets/sale_ca_story_089.jpg,Hook 89 for sale CA,Sale CA 89,https://example.invalid/sale-ca,pending,missing_approval
+cr_090,camp_sale,as_sale_ca,collection,fixtures/fake_agency_creatives/assets/sale_ca_collection_090.jpg,Hook 90 for sale CA,Sale CA 90,https://example.invalid/sale-ca,approved,unsupported_format
+cr_091,camp_sale,as_sale_uk,image,fixtures/fake_agency_creatives/assets/sale_uk_static_091.jpg,Hook 91 for sale UK,Sale UK 91,https://example.invalid/sale-uk,approved,
+cr_092,camp_sale,as_sale_uk,video,fixtures/fake_agency_creatives/assets/sale_uk_video_092.mp4,Hook 92 for sale UK,Sale UK 92,https://example.invalid/sale-uk,approved,
+cr_093,camp_sale,as_sale_uk,carousel,fixtures/fake_agency_creatives/assets/sale_uk_carousel_093.jpg,Hook 93 for sale UK,Sale UK 93,https://example.invalid/sale-uk,pending,missing_approval
+cr_094,camp_sale,as_sale_uk,story,fixtures/fake_agency_creatives/assets/sale_uk_story_094.jpg,Hook 94 for sale UK,Sale UK 94,https://example.invalid/sale-uk,approved,
+cr_095,camp_sale,as_sale_uk,image,fixtures/fake_agency_creatives/assets/sale_uk_static_095.jpg,Hook 95 for sale UK,Sale UK 95,https://example.invalid/sale-uk,approved,naming_error
+cr_096,camp_sale,as_sale_uk,video,fixtures/fake_agency_creatives/assets/sale_uk_video_096.mp4,Hook 96 for sale UK,Sale UK 96,https://example.invalid/sale-uk,rejected,missing_approval
+cr_097,camp_sale,as_sale_uk,image,fixtures/fake_agency_creatives/assets/sale_uk_static_091.jpg,Hook 97 for sale UK,Sale UK 97,https://example.invalid/sale-uk,approved,duplicate_asset
+cr_098,camp_sale,as_sale_uk,carousel,fixtures/fake_agency_creatives/assets/sale_uk_carousel_098.jpg,Hook 98 for sale UK,Sale UK 98,https://example.invalid/sale-uk-alt,approved,destination_mismatch
+cr_099,camp_sale,as_sale_uk,story,fixtures/fake_agency_creatives/assets/sale_uk_story_099.jpg,Hook 99 for sale UK,Sale UK 99,https://example.invalid/sale-uk,pending,missing_approval
+cr_100,camp_sale,as_sale_uk,collection,fixtures/fake_agency_creatives/assets/sale_uk_collection_100.jpg,Hook 100 for sale UK,Sale UK 100,https://example.invalid/sale-uk,approved,unsupported_format

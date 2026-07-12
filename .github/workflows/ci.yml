@@ -1,0 +1,53 @@
+name: Creative Launch Workspace CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Generate v2 fixture
+        run: |
+          python3 scripts/enrich_fixture_v2.py
+          python3 scripts/materialize_synthetic_assets.py
+      - name: Run tests
+        run: python3 -m unittest discover -s tests -q
+      - name: Compile Python
+        run: python3 -m py_compile meta_importer/*.py scripts/*.py
+      - name: Rehearse v1 launch workspace
+        run: python3 -m meta_importer.cli plan fixtures/fake_agency_creatives/manifest.csv --out runs/fake_agency_creatives/launch_plan.json --review runs/fake_agency_creatives/review_packet.md --html runs/fake_agency_creatives/workspace.html --html-audit runs/fake_agency_creatives/workspace_audit.json --state runs/fake_agency_creatives/review_state.json --platform-preview runs/fake_agency_creatives/platform_preview.json --store-dir runs/fake_agency_creatives/store
+      - name: Rehearse v2 launch workspace
+        run: python3 -m meta_importer.cli plan fixtures/fake_agency_creatives/manifest_v2.csv --out runs/fake_agency_creatives_v2/launch_plan.json --review runs/fake_agency_creatives_v2/review_packet.md --html runs/fake_agency_creatives_v2/workspace.html --html-audit runs/fake_agency_creatives_v2/workspace_audit.json --state runs/fake_agency_creatives_v2/review_state.json --platform-preview runs/fake_agency_creatives_v2/platform_preview.json --store-dir runs/fake_agency_creatives_v2/store --sqlite-db runs/fake_agency_creatives_v2/workspace.sqlite3 --asset-metadata fixtures/fake_agency_creatives/asset_metadata.csv
+      - name: Check GitHub Pages demo freshness
+        run: |
+          python3 -m meta_importer.cli plan fixtures/fake_agency_creatives/manifest_v2.csv --out /tmp/pages/launch_plan.json --review /tmp/pages/review_packet.md --html /tmp/pages/index.html --html-audit /tmp/pages/workspace_audit.json --state /tmp/pages/review_state.json --platform-preview /tmp/pages/platform_preview.json
+          cmp docs/index.html /tmp/pages/index.html
+      - name: Check browser QA contract
+        run: python3 scripts/workspace_browser_qa.py runs/fake_agency_creatives_v2/workspace.html --out runs/browser_qa/workspace_v2_browser_qa.json
+      - name: Check golden artifacts
+        run: python3 scripts/check_golden_artifacts.py
+      - name: Check start-selling readiness report
+        run: python3 -m meta_importer.cli sales-readiness --out runs/sales_readiness/sales_readiness.json --markdown runs/sales_readiness/sales_readiness.md
+      - name: Check whitespace
+        run: git diff --check
+      - name: Check generated files are current
+        run: git diff --exit-code
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install frontend QA dependencies
+        run: npm ci
+      - name: Run browser and accessibility QA
+        env:
+          QA_ASSETS_DIR: /tmp/creative-launch-workspace/assets
+          QA_EVIDENCE_DIR: /tmp/creative-launch-workspace/evidence
+        run: npm run qa:frontend

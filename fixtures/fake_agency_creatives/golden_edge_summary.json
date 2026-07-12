@@ -1,0 +1,34 @@
+{
+  "batch_states": {
+    "blocked": 9,
+    "needs_review": 1
+  },
+  "contract_version": "edge_fixture_summary.v1",
+  "issue_codes": {
+    "duplicate_asset_detected": 1,
+    "existing_post_id_missing": 1,
+    "format_placement_mismatch": 1,
+    "idempotency_collision": 2,
+    "missing_creative_id": 1,
+    "partial_utm_mapping": 1,
+    "post_id_type_missing": 2,
+    "reviewer_without_approved_at": 1,
+    "unsupported_objective": 1,
+    "unsupported_placement": 1,
+    "unsupported_post_id_type": 1,
+    "utm_campaign_mismatch": 1
+  },
+  "issue_severity": {
+    "blocker": 9,
+    "warning": 5
+  },
+  "meta_api_compatibility": "not_claimed",
+  "mutation_allowed": false,
+  "owner_queue": {
+    "Approver": 1,
+    "Creative Ops Manager": 2,
+    "Data Model / Import Pipeline Lead": 2,
+    "Media Buyer": 9
+  },
+  "row_count": 10
+}

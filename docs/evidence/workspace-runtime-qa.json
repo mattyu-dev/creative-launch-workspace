@@ -1,0 +1,153 @@
+{
+  "contract_version": "workspace_runtime_qa.v3",
+  "tested_at": "2026-07-11T17:58:23.670Z",
+  "source": "scripts/workspace_runtime_qa.mjs",
+  "viewports": [
+    {
+      "width": 320,
+      "innerWidth": 320,
+      "scrollWidth": 320,
+      "tableScrollWidth": 320,
+      "tableClientWidth": 320,
+      "summaryHeight": 303,
+      "firstRowTop": 811,
+      "rowMode": "block",
+      "noDocumentOverflow": true
+    },
+    {
+      "width": 375,
+      "innerWidth": 375,
+      "scrollWidth": 375,
+      "tableScrollWidth": 375,
+      "tableClientWidth": 375,
+      "summaryHeight": 296,
+      "firstRowTop": 804,
+      "rowMode": "block",
+      "noDocumentOverflow": true
+    },
+    {
+      "width": 390,
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "tableScrollWidth": 390,
+      "tableClientWidth": 390,
+      "summaryHeight": 296,
+      "firstRowTop": 804,
+      "rowMode": "block",
+      "noDocumentOverflow": true
+    },
+    {
+      "width": 760,
+      "innerWidth": 760,
+      "scrollWidth": 760,
+      "tableScrollWidth": 760,
+      "tableClientWidth": 760,
+      "summaryHeight": 256,
+      "firstRowTop": 693,
+      "rowMode": "block",
+      "noDocumentOverflow": true
+    },
+    {
+      "width": 1023,
+      "innerWidth": 1023,
+      "scrollWidth": 1023,
+      "tableScrollWidth": 1023,
+      "tableClientWidth": 1023,
+      "summaryHeight": 256,
+      "firstRowTop": 693,
+      "rowMode": "block",
+      "noDocumentOverflow": true
+    },
+    {
+      "width": 1024,
+      "innerWidth": 1024,
+      "scrollWidth": 1024,
+      "tableScrollWidth": 784,
+      "tableClientWidth": 772,
+      "summaryHeight": 145,
+      "firstRowTop": 436,
+      "rowMode": "table-row-group",
+      "noDocumentOverflow": true
+    },
+    {
+      "width": 1440,
+      "innerWidth": 1440,
+      "scrollWidth": 1440,
+      "tableScrollWidth": 784,
+      "tableClientWidth": 783,
+      "summaryHeight": 129,
+      "firstRowTop": 420,
+      "rowMode": "table-row-group",
+      "noDocumentOverflow": true
+    }
+  ],
+  "mobile_drawer": {
+    "opened": {
+      "open": true,
+      "focused": "close-detail",
+      "inert": false,
+      "ariaHidden": null
+    },
+    "closed": {
+      "open": false,
+      "focusedRow": "2",
+      "inert": true,
+      "ariaHidden": "true"
+    }
+  },
+  "keyboard": {
+    "focusedRow": "3",
+    "selectedRow": "3",
+    "tabStopCount": 1
+  },
+  "bulk": {
+    "dialog": {
+      "open": true,
+      "copy": "Approve 40 visible rows? 60 blocked rows will stay unchanged. This only changes local review state.",
+      "focused": "confirm-action"
+    },
+    "cancelled": {
+      "open": false,
+      "focused": "bulk-ready",
+      "status": "No changes made."
+    },
+    "confirmed": {
+      "progress": "40 approved locally, 60 need fix, 0 blocked locally",
+      "status": "Saved 40 rows as approved.",
+      "blockedDecision": "Needs fix"
+    },
+    "undone": {
+      "progress": "0 approved locally, 60 need fix, 0 blocked locally",
+      "status": "Restored the previous local review state."
+    }
+  },
+  "empty_filter": {
+    "caption": "0 review rows",
+    "title": "No row selected",
+    "detailFields": 0,
+    "issueCount": 0,
+    "approveDisabled": true,
+    "previewHeadline": "No row selected"
+  },
+  "filter_reconciliation": {
+    "selectedRow": "4",
+    "selectedState": "blocked",
+    "detailTitle": "cr_003 · row 4",
+    "visibleRows": 60
+  },
+  "persistence": {
+    "rowTwoDecision": "Approved",
+    "readyState": "complete"
+  },
+  "reset": {
+    "rowTwoDecision": "Pending",
+    "status": "Browser review state reset."
+  },
+  "console_errors": [],
+  "lighthouse_accessibility": {
+    "desktopScore": 1,
+    "mobileScore": 1
+  },
+  "mutation_allowed": false,
+  "meta_api_compatibility": "not_claimed"
+}

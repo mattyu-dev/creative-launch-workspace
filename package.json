@@ -1,0 +1,13 @@
+{
+  "name": "creative-launch-workspace-qa",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Reproducible browser and accessibility certification for the offline workspace",
+  "scripts": {
+    "qa:frontend": "node scripts/workspace_runtime_qa.mjs"
+  },
+  "devDependencies": {
+    "lighthouse": "12.6.1",
+    "puppeteer-core": "25.3.0"
+  }
+}
