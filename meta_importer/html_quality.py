@@ -45,7 +45,7 @@ def audit_workspace_html(html: str) -> dict[str, object]:
             for token in (
                 'patch.review_status === "confirmed_ready"',
                 'row.batch_state !== "blocked"',
-                "Resolve offline blockers before local approval.",
+                "Resolve offline blockers before dry-run export confirmation.",
             )
         ),
         "has_native_modal_confirmation": "<dialog" in html
@@ -203,7 +203,7 @@ def _check_messages(checks: dict[str, bool]) -> list[tuple[str, bool, str]]:
         (
             "has_blocker_approval_invariant",
             checks["has_blocker_approval_invariant"],
-            "Rows with offline blockers must not be approved locally.",
+            "Rows with offline blockers must not be confirmed for dry-run export.",
         ),
         (
             "has_native_modal_confirmation",

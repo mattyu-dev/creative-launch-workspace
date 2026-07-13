@@ -9,8 +9,9 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Interactive review workspace · Creative Launch Workspace">
   <meta property="og:description" content="A task-first review queue for approval, destination, placement, mapping and duplicate issues.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-5.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-6.png">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23113e31'/%3E%3C/svg%3E" type="image/svg+xml">
   <title>Creative Launch Workspace for Meta Ads</title>
   <style>
     :root {
@@ -503,7 +504,6 @@
     .guided-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
     .guided-actions button { min-height: 44px; }
     .guided-actions .button-primary { flex: 1 1 180px; }
-    .guided-boundary { margin: 16px 0 0; color: var(--muted); font-size: 11px; }
     .guided-proof {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -513,7 +513,7 @@
     }
     .guided-proof div { min-width: 0; padding: 12px 13px; border-bottom: 1px solid #bfd7c9; }
     .guided-proof div:nth-child(odd) { border-right: 1px solid #bfd7c9; }
-    .guided-proof div:nth-last-child(-n+2) { border-bottom: 0; }
+    .guided-proof div:last-child { grid-column: 1 / -1; border-right: 0; border-bottom: 0; }
     .guided-proof dt { color: var(--muted); font-size: 10px; font-weight: 650; text-transform: uppercase; }
     .guided-proof dd { margin: 4px 0 0; overflow-wrap: anywhere; font: 600 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
     .guided-highlight { outline: 3px solid var(--oxide); outline-offset: 3px; }
@@ -937,7 +937,7 @@
       <div class="focus-copy">
         <div class="eyebrow">Review session</div>
         <strong id="focus-title">10 creatives need a human decision.</strong>
-        <p>Start with the ambiguous rows. Clean creatives need no action; blocked creatives are routed back to their owners with a specific fix.</p>
+        <p>Start with the ambiguous rows. Creatives that pass offline checks need no exception review; blocked creatives return to their owners with a specific fix.</p>
       </div>
       <div class="focus-actions">
         <button class="button-primary" id="start-guided" data-quick-filter="needs_review">Start guided review</button>
@@ -967,9 +967,9 @@
           <button class="button-primary" id="guided-next" type="button">Make a human decision</button>
         </div>
         <div class="guided-actions" id="guided-step-two" hidden>
-          <button class="button-primary" id="guided-confirm" type="button">Confirm reuse</button>
-          <button id="guided-fix-action" type="button">Needs fix</button>
-          <button class="danger" id="guided-block" type="button">Block launch</button>
+          <button class="button-primary" id="guided-confirm" type="button">Confirm reuse for dry-run export</button>
+          <button id="guided-fix-action" type="button">Return for fix</button>
+          <button class="danger" id="guided-block" type="button">Block from dry-run export</button>
         </div>
         <div id="guided-step-three" hidden>
           <dl class="guided-proof">
@@ -978,12 +978,10 @@
             <div><dt>Audit event</dt><dd id="guided-result-event"></dd></div>
             <div><dt>Creative</dt><dd id="guided-result-creative"></dd></div>
             <div><dt>Occurred at</dt><dd id="guided-result-time"></dd></div>
-            <div><dt>External write</dt><dd id="guided-result-write">not attempted · mutation_allowed:false</dd></div>
           </dl>
           <p class="guided-copy" id="guided-result-copy"></p>
           <div class="guided-actions"><button class="button-primary" id="guided-explore" type="button">Explore the full queue</button><button id="guided-replay" type="button">Review another case</button></div>
         </div>
-        <p class="guided-boundary">Synthetic fixture · browser-local state · no Meta API, upload, publish or spend change</p>
       </div>
     </dialog>
     <details class="batch-disclosure">
@@ -1025,7 +1023,7 @@
           <div class="filter-set" role="group" aria-label="Readiness filter">
             <button class="active" data-filter="needs_review" aria-pressed="true">To review</button>
             <button data-filter="blocked" aria-pressed="false">Blocked</button>
-            <button data-filter="launch_ready" aria-pressed="false">Cleared</button>
+            <button data-filter="launch_ready" aria-pressed="false">Passes offline checks</button>
             <button data-filter="all" aria-pressed="false">All rows</button>
           </div>
           <details class="mobile-filters" id="filter-disclosure" open>
@@ -1047,9 +1045,9 @@
           <details class="secondary-actions">
             <summary>Batch actions</summary>
             <div class="secondary-action-grid">
-              <button id="bulk-ready">Approve visible</button>
-              <button id="bulk-fix">Flag visible</button>
-              <button id="bulk-blocked" class="danger">Block visible</button>
+              <button id="bulk-ready">Confirm visible for dry-run export</button>
+              <button id="bulk-fix">Return visible for fix</button>
+              <button id="bulk-blocked" class="danger">Block visible from dry-run export</button>
               <label class="file-label">
                 Import state
                 <input id="state-import" type="file" accept="application/json">
@@ -1101,9 +1099,9 @@
           </label>
         </div>
         <div class="actions">
-          <button id="mark-ready" class="button-primary">Approve locally</button>
-          <button id="mark-fix">Needs fix</button>
-          <button id="mark-blocked" class="danger">Block launch</button>
+          <button id="mark-ready" class="button-primary">Confirm for dry-run export</button>
+          <button id="mark-fix">Return for fix</button>
+          <button id="mark-blocked" class="danger">Block from dry-run export</button>
         </div>
         <details class="detail-disclosure">
           <summary>Creative preview</summary>
@@ -1338,19 +1336,19 @@
 
     function batchStateLabel(value) {
       return {
-        launch_ready: "Passes offline",
-        needs_review: "Needs review",
-        blocked: "Blocked"
+        launch_ready: "Passes offline checks",
+        needs_review: "Human decision required",
+        blocked: "Blocked by offline checks"
       }[value] || value.replaceAll("_", " ");
     }
 
     function reviewStatusLabel(value) {
       return {
-        ready_to_review: "Pending",
-        needs_confirmation: "Confirm",
-        confirmed_ready: "Approved",
-        needs_fix: "Needs fix",
-        blocked: "Blocked locally"
+        ready_to_review: "No exception review",
+        needs_confirmation: "Decision required",
+        confirmed_ready: "Confirmed for dry-run export",
+        needs_fix: "Return for fix",
+        blocked: "Blocked from dry-run export"
       }[value] || value.replaceAll("_", " ");
     }
 
@@ -1539,12 +1537,12 @@
       lastFocusedRow = row.source_row;
       detailTitle.textContent = row.creative_id + " · row " + row.source_row;
       approveButton.disabled = row.batch_state === "blocked";
-      approveButton.title = row.batch_state === "blocked" ? "Resolve offline blockers before local approval." : "Approve this row in local review state.";
+      approveButton.title = row.batch_state === "blocked" ? "Resolve offline blockers before dry-run export confirmation." : "Confirm this row for dry-run export in local review state.";
       approveButton.textContent = row.batch_state === "blocked"
         ? "Resolve blocker first"
         : row.issue_codes.includes("duplicate_asset")
-          ? "Confirm reuse"
-          : "Approve locally";
+          ? "Confirm reuse for dry-run export"
+          : "Confirm for dry-run export";
       fixButton.disabled = false;
       blockButton.disabled = false;
       reviewNote.value = row.note || "";
@@ -1697,12 +1695,12 @@
       } else if (guidedStep === 2) {
         guidedProgress.textContent = "2 of 3 · Decide";
         guidedTitle.textContent = "Make the human decision.";
-        guidedCopy.textContent = "Confirm intentional reuse, request a fix or block the launch. The choice changes browser-local review state only.";
+        guidedCopy.textContent = "Confirm intentional reuse for dry-run export, return it for a fix or block it from the dry-run export.";
       } else {
         guidedProgress.textContent = "3 of 3 · Verify";
         guidedTitle.textContent = row ? "Inspect what changed." : "No ambiguous case exists in this batch.";
         guidedCopy.textContent = row
-          ? "The decision and audit event are local, inspectable and explicitly unable to write to an external platform."
+          ? "The decision and audit event are now inspectable."
           : "The guided path could not find a row that requires a human decision. You can still explore the full queue.";
       }
       guidedTitle.focus();
@@ -1755,14 +1753,13 @@
     }
 
     function completeGuidedDemo(row, event) {
-      const ambiguousCount = workspaceData.review_statuses.filter((item) => item.batch_state === "needs_review").length;
       guidedStep = 3;
       document.getElementById("guided-result-state").textContent = reviewStatusLabel(row.review_status);
       document.getElementById("guided-result-role").textContent = event.actor_role;
       document.getElementById("guided-result-event").textContent = event.event_type;
       document.getElementById("guided-result-creative").textContent = event.creative_id;
       document.getElementById("guided-result-time").textContent = event.occurred_at;
-      document.getElementById("guided-result-copy").textContent = "You just reviewed one of " + ambiguousCount + " ambiguous cases. No external system was changed.";
+      document.getElementById("guided-result-copy").textContent = "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.";
       renderGuidedStep();
     }
 
@@ -1812,7 +1809,7 @@
       const row = rows.find((item) => item.source_row === activeRow);
       if (!row) return;
       if (status === "confirmed_ready" && row.batch_state === "blocked") {
-        statusLine.textContent = "Resolve offline blockers before local approval.";
+        statusLine.textContent = "Resolve offline blockers before dry-run export confirmation.";
         return;
       }
       rememberUndo();
@@ -1830,7 +1827,7 @@
       undoButton.disabled = false;
     }
 
-    function requestBulkUpdate(status, decision, label) {
+    function requestBulkUpdate(status, decision) {
       const visibleRows = filteredRows();
       if (!visibleRows.length) {
         statusLine.textContent = "No visible rows to update.";
@@ -1841,7 +1838,7 @@
         : visibleRows;
       const skipped = visibleRows.length - targetRows.length;
       if (!targetRows.length) {
-        statusLine.textContent = "No visible rows are eligible for local approval.";
+        statusLine.textContent = "No visible rows are eligible for dry-run export confirmation.";
         return;
       }
       confirmTrigger = document.activeElement;
@@ -1851,7 +1848,13 @@
         decision,
         sourceRows: targetRows.map((row) => row.source_row)
       };
-      confirmCopy.textContent = label + " " + targetRows.length + " visible rows? "
+      const targetLabel = targetRows.length + " visible row" + (targetRows.length === 1 ? "" : "s");
+      const question = status === "confirmed_ready"
+        ? "Confirm " + targetLabel + " for dry-run export? "
+        : status === "needs_fix"
+          ? "Return " + targetLabel + " for fix? "
+          : "Block " + targetLabel + " from dry-run export? ";
+      confirmCopy.textContent = question
         + (skipped ? skipped + " blocked rows will stay unchanged. " : "")
         + "This only changes local review state.";
       confirmPanel.showModal();
@@ -1918,7 +1921,7 @@
       const blocked = counts.blocked || 0;
       const total = rows.length;
       visibleCount.textContent = `${visibleRows.length} visible of ${total} rows`;
-      reviewProgress.textContent = `${confirmed} approved locally, ${needsFix} need fix, ${blocked} blocked locally`;
+      reviewProgress.textContent = `${confirmed} confirmed for dry-run export, ${needsFix} returned for fix, ${blocked} blocked from dry-run export`;
     }
 
     function downloadState() {
@@ -2003,9 +2006,9 @@
     approveButton.addEventListener("click", () => updateReview("confirmed_ready", "approved_for_dry_run_export"));
     fixButton.addEventListener("click", () => updateReview("needs_fix", "requires_fix"));
     blockButton.addEventListener("click", () => updateReview("blocked", "blocked_from_export"));
-    document.getElementById("bulk-ready").addEventListener("click", () => requestBulkUpdate("confirmed_ready", "bulk_approved_for_dry_run_export", "Approve"));
-    document.getElementById("bulk-fix").addEventListener("click", () => requestBulkUpdate("needs_fix", "bulk_requires_fix", "Mark for fixes"));
-    document.getElementById("bulk-blocked").addEventListener("click", () => requestBulkUpdate("blocked", "bulk_blocked_from_export", "Block"));
+    document.getElementById("bulk-ready").addEventListener("click", () => requestBulkUpdate("confirmed_ready", "bulk_approved_for_dry_run_export"));
+    document.getElementById("bulk-fix").addEventListener("click", () => requestBulkUpdate("needs_fix", "bulk_requires_fix"));
+    document.getElementById("bulk-blocked").addEventListener("click", () => requestBulkUpdate("blocked", "bulk_blocked_from_export"));
     document.getElementById("confirm-action").addEventListener("click", confirmPendingAction);
     document.getElementById("cancel-action").addEventListener("click", cancelPendingAction);
     confirmPanel.addEventListener("cancel", (event) => {

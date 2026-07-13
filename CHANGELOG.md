@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0 — 2026-07-13
+
+- Tightened every workspace status and action around offline checks and dry-run export authority, without changing the underlying review-state or export contracts.
+- Reduced repeated fixture and boundary messaging while preserving an explicit local completion receipt and fail-closed platform boundary.
+- Reworked the mobile case study with one author block, overlay-free product imagery and a readable seven-step HTML architecture flow.
+- Compressed spreadsheet differentiation and pilot metrics into three strategic groups, added desktop section navigation and moved operational provenance closer to the business case.
+- Extended headless browser contracts for responsive architecture, section navigation, component counts and precise review-state copy.
+
 ## 1.5.0 — 2026-07-13
 
 - Rebuilt the case-study landing around business value, a product-first hero and direct LinkedIn/GitHub conversion while preserving explicit proof boundaries.
@@ -30,7 +38,7 @@
 - Moved batch context, bulk actions, creative preview, technical mapping and export behind progressive disclosures.
 - Made issue ownership drive the default reviewer role and changed the primary action to match the selected issue.
 - Added task-first and progressive-disclosure checks to the static UI contract.
-- Preserved keyboard navigation, local persistence, guarded imports, undo, responsive behavior and accessibility 100/100 across seven certified viewports.
+- Preserved keyboard navigation, local persistence, guarded imports, undo, responsive behavior and accessibility 100/100 across seven tested viewports.
 
 ## 1.1.0 — 2026-07-12
 
