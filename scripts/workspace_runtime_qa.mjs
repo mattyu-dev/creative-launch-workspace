@@ -428,6 +428,14 @@ const portfolioPage = await page.evaluate(() => ({
     && document.body.textContent.includes("With the workspace"),
   hasSpreadsheetCase: document.body.textContent.includes("Why not another launch spreadsheet?"),
   hasDemoBoundary: document.body.textContent.includes("The demo begins after governed brief intake."),
+  copyFreeze: {
+    mutationBoundary: document.body.textContent.includes("live platform mutations — by design"),
+    reviewState: document.body.textContent.includes("One decision queue holds the review state."),
+    boundedAuthority: document.body.textContent.includes("Each stage has deliberately bounded authority."),
+    heroSecondaryCta: document.querySelector(".hero-cta .text-link")?.textContent.trim(),
+    experienceSince: document.body.textContent.includes("since 2017"),
+    structuredJobTitle: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "Person")?.jobTitle
+  },
   aiProofCount: document.querySelectorAll(".ai-proof").length,
   hasAcceptedProposal: document.body.textContent.includes("Accepted by reviewer")
     && document.body.textContent.includes("Proposed objective")
@@ -463,6 +471,12 @@ if (
   || !portfolioPage.hasBusinessCase
   || !portfolioPage.hasSpreadsheetCase
   || !portfolioPage.hasDemoBoundary
+  || !portfolioPage.copyFreeze.mutationBoundary
+  || !portfolioPage.copyFreeze.reviewState
+  || !portfolioPage.copyFreeze.boundedAuthority
+  || portfolioPage.copyFreeze.heroSecondaryCta !== "See how the system works →"
+  || !portfolioPage.copyFreeze.experienceSince
+  || portfolioPage.copyFreeze.structuredJobTitle !== "AI Automation Lead"
   || portfolioPage.aiProofCount !== 2
   || !portfolioPage.hasAcceptedProposal
   || !portfolioPage.hasAbstentionProof
@@ -786,7 +800,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v6",
+  contract_version: "workspace_runtime_qa.v7",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.2 — 2026-07-13
+
+- Tightened four final case-study claims around mutation boundaries, review-state ownership, bounded authority and the hero system link.
+- Replaced the changing nine-year count with the verifiable, durable `since 2017` timeline while retaining the formal `AI Automation Lead` title.
+- Extended the headless portfolio contract to prevent these credibility and navigation labels from drifting.
+
 ## 1.6.1 — 2026-07-13
 
 - Added a dedicated mobile hero capture that shows the selected ambiguous creative, its owner and all three human-decision controls, with a browser-enforced composition contract.
