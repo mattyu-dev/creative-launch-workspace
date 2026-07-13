@@ -49,8 +49,9 @@ def render_evidence_page(
   <meta property="og:type" content="website">
   <meta property="og:title" content="Governed intake evidence · Creative Launch Workspace">
   <meta property="og:description" content="Source evidence, bounded proposals, policy checks and explicit human decisions.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-5.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-6.png">
   <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <title>Brief mapping evidence · Creative Launch Workspace</title>
   <style>
     :root {{ --ink:#1c211e; --body:#48504b; --muted:#6e756f; --canvas:#f7f5ef; --paper:#fffefa; --line:#d8d3c8; --forest:#164a3b; --mint:#cfe2d7; --oxide:#a9472e; --peach:#f4ead4; }}

@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v4",
-  "tested_at": "2026-07-13T14:52:41.168Z",
+  "contract_version": "workspace_runtime_qa.v5",
+  "tested_at": "2026-07-13T15:48:18.293Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -95,26 +95,25 @@
     "step_two": {
       "progress": "2 of 3 · Decide",
       "confirmVisible": true,
-      "confirmLabel": "Confirm reuse"
+      "confirmLabel": "Confirm reuse for dry-run export"
     },
     "step_three": {
       "progress": "3 of 3 · Verify",
-      "state": "Approved",
+      "state": "Confirmed for dry-run export",
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-13T14:51:41.235Z",
-      "write": "not attempted · mutation_allowed:false",
-      "summary": "You just reviewed one of 10 ambiguous cases. No external system was changed.",
+      "occurredAt": "2026-07-13T15:47:18.407Z",
+      "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1783954301235_8",
+        "event_id": "evt_local_1783957638407_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-13T14:51:41.235Z"
+        "occurred_at": "2026-07-13T15:47:18.407Z"
       }
     },
     "request_violations": [],
@@ -159,7 +158,7 @@
   "bulk": {
     "dialog": {
       "open": true,
-      "copy": "Approve 40 visible rows? 60 blocked rows will stay unchanged. This only changes local review state.",
+      "copy": "Confirm 40 visible rows for dry-run export? 60 blocked rows will stay unchanged. This only changes local review state.",
       "focused": "confirm-action"
     },
     "cancelled": {
@@ -168,12 +167,12 @@
       "status": "No changes made."
     },
     "confirmed": {
-      "progress": "40 approved locally, 60 need fix, 0 blocked locally",
-      "status": "Saved 40 rows as approved.",
-      "blockedDecision": "Needs fix"
+      "progress": "40 confirmed for dry-run export, 60 returned for fix, 0 blocked from dry-run export",
+      "status": "Saved 40 rows as confirmed for dry-run export.",
+      "blockedDecision": "Return for fix"
     },
     "undone": {
-      "progress": "0 approved locally, 60 need fix, 0 blocked locally",
+      "progress": "0 confirmed for dry-run export, 60 returned for fix, 0 blocked from dry-run export",
       "status": "Restored the previous local review state."
     }
   },
@@ -192,17 +191,17 @@
     "visibleRows": 60
   },
   "persistence": {
-    "rowTwoDecision": "Approved",
+    "rowTwoDecision": "Confirmed for dry-run export",
     "readyState": "complete"
   },
   "reset": {
-    "rowTwoDecision": "Pending",
+    "rowTwoDecision": "No exception review",
     "status": "Browser review state reset."
   },
   "portfolio_page": {
     "title": "Catch creative launch errors before they delay campaigns or waste spend.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-5.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-6.png",
     "hasWorkspaceCta": true,
     "hasLabCta": true,
     "hasBusinessCase": true,
@@ -220,17 +219,56 @@
     "heroProductVisible": true,
     "heroProductTop": 243,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:52857/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:57144/docs/assets/workspace-desktop.avif",
+    "differenceCount": 3,
+    "metricGroupCount": 3,
+    "sectionNavTargetsResolve": true,
+    "architectureDiagramVisible": true,
+    "architectureStackHidden": true,
     "noDocumentOverflow": true
   },
   "portfolio_mobile": {
     "noDocumentOverflow": true,
     "headingVisible": true,
-    "authorVisible": true,
+    "compactAuthorCount": 0,
+    "authorBlockCount": 1,
+    "authorBlockDisplayed": true,
+    "authorAfterProduct": true,
     "productVisible": true,
-    "productTop": 626,
-    "productVisibleHeight": 218
+    "productTop": 622,
+    "productVisibleHeight": 222,
+    "visibleAnnotations": 0,
+    "architectureDiagramHidden": true,
+    "architectureStackVisible": true,
+    "architectureStepCount": 7,
+    "architectureMinFontPx": 12
   },
+  "responsive_asset_fidelity": [
+    {
+      "referenceSrc": "assets/workspace-desktop.png",
+      "candidateSrc": "assets/workspace-desktop.avif",
+      "dimensionsMatch": true,
+      "psnr": 46.64
+    },
+    {
+      "referenceSrc": "assets/workspace-desktop.png",
+      "candidateSrc": "assets/workspace-desktop.webp",
+      "dimensionsMatch": true,
+      "psnr": 40.83
+    },
+    {
+      "referenceSrc": "assets/workspace-mobile.png",
+      "candidateSrc": "assets/workspace-mobile.avif",
+      "dimensionsMatch": true,
+      "psnr": 44.55
+    },
+    {
+      "referenceSrc": "assets/workspace-mobile.png",
+      "candidateSrc": "assets/workspace-mobile.webp",
+      "dimensionsMatch": true,
+      "psnr": 39.28
+    }
+  ],
   "social_card": {
     "productImage": "assets/workspace-desktop.png",
     "productLoaded": true,

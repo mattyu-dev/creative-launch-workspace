@@ -23,8 +23,9 @@ class PortfolioSurfaceTests(unittest.TestCase):
         self.assertIn('rel="me" href="https://www.linkedin.com/in/mathieu-petroni/"', html)
         self.assertIn('rel="me" href="https://github.com/mattyu-dev"', html)
         self.assertIn("100-row Meta creative batch", html)
+        self.assertIn("These are test outcomes and implementation boundaries, not customer or business results.", html)
         self.assertIn("Mathieu Petroni · AI Automation Lead", html)
-        self.assertIn("The expensive part is usually the handoff.", html)
+        self.assertIn("Launch risk accumulates in the handoff.", html)
         self.assertIn("Why not another launch spreadsheet?", html)
         self.assertIn("Experience the workflow", html)
         self.assertIn("Inspect the system", html)
@@ -33,9 +34,17 @@ class PortfolioSurfaceTests(unittest.TestCase):
         self.assertIn("What I would validate next", html)
         self.assertIn("Proposed production pilot metrics · not measured results", html)
         self.assertIn("Building an AI workflow where trust matters?", html)
-        self.assertIn('version": "1.5.0"', html)
+        self.assertIn('version": "1.6.0"', html)
         self.assertIn('<time datetime="2026-07-13">', html)
         self.assertIn('<svg viewBox="0 0 720 530" role="img"', html)
+        self.assertIn('class="architecture-stack"', html)
+        self.assertEqual(html.count('<div class="difference">'), 3)
+        self.assertEqual(html.count('<div class="metric-group">'), 3)
+        self.assertEqual(html.count('<li><strong>'), 7)
+        self.assertIn('<a href="#business">Business case</a>', html)
+        self.assertIn('<a href="#system">System</a>', html)
+        self.assertIn('<a href="#evidence">Evidence</a>', html)
+        self.assertIn('<a href="#about">About</a>', html)
         self.assertIn('type="image/avif"', html)
         self.assertIn('type="image/webp"', html)
         self.assertIn('decoding="async" fetchpriority="high"', html)
@@ -45,6 +54,13 @@ class PortfolioSurfaceTests(unittest.TestCase):
         self.assertNotIn("one accountable review path", html)
         self.assertNotIn("Model proposes.", html)
         self.assertNotIn("cleared automatically", html)
+        self.assertNotIn("Exclusive states across a 100-row synthetic fixture", html)
+        self.assertNotIn("hero-mobile-author", html)
+        self.assertNotIn("The expensive part is usually the handoff.", html)
+        self.assertNotIn("certified viewport", html)
+        self.assertNotIn("30</strong>", html)
+        self.assertNotIn("60</strong>", html)
+        self.assertNotIn("10</strong>", html)
 
         json_ld_match = re.search(
             r'<script type="application/ld\+json">\s*(.*?)\s*</script>', html, re.DOTALL
@@ -63,9 +79,12 @@ class PortfolioSurfaceTests(unittest.TestCase):
         self.assertIn("Mathieu Petroni", html)
         self.assertIn("AI Automation · Product Systems", html)
         self.assertIn("workspace-desktop.png", html)
-        self.assertIn("30</b> pass checks", html)
-        self.assertIn("60</b> routed", html)
-        self.assertIn("10</b> human decisions", html)
+        self.assertIn("100</b> fixture rows", html)
+        self.assertIn("70</b> seeded exceptions", html)
+        self.assertIn("0</b> external writes", html)
+        self.assertNotIn("30</b>", html)
+        self.assertNotIn("60</b>", html)
+        self.assertNotIn("10</b>", html)
 
     def test_fix_lab_replays_every_bounded_python_scenario(self) -> None:
         pack = build_fix_lab_rule_pack()
@@ -90,6 +109,7 @@ class PortfolioSurfaceTests(unittest.TestCase):
         self.assertIn("The browser does not invent or execute validation rules.", html)
         self.assertIn("external_write:false", html)
         self.assertIn('href="evidence/interactive-rule-pack.json"', html)
+        self.assertIn('rel="icon" href="assets/favicon.svg"', html)
 
 
 if __name__ == "__main__":

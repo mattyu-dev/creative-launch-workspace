@@ -123,6 +123,7 @@ def render_fix_lab(rule_pack: dict[str, Any]) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Fix a synthetic blocked creative row and replay Python-generated golden validation scenarios in the browser.">
   <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <title>Fix &amp; Revalidate Lab · Creative Launch Workspace</title>
   <style>
     :root {{ --canvas:#f7f5ef;--surface:#fffefa;--soft:#f1efe8;--ink:#1c211e;--body:#48504b;--muted:#6e756f;--line:#d8d3c8;--strong:#b8b2a6;--forest:#113e31;--oxide:#a9472e;--sand:#f2e7d2;--mint:#cfe2d7;--red:#a1362d;--red-soft:#f7e7e4;--font-serif:"Iowan Old Style",Charter,Georgia,serif;--font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;}}
