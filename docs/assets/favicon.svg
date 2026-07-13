@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Creative Launch Workspace mark">
+  <rect width="64" height="64" rx="12" fill="#f7f5ef"/>
+  <path d="M15 34V15h19" fill="none" stroke="#a9472e" stroke-width="5" stroke-linecap="square"/>
+  <path d="M49 30v19H30" fill="none" stroke="#113e31" stroke-width="5" stroke-linecap="square"/>
+  <rect x="28" y="28" width="9" height="9" fill="#113e31"/>
+</svg>

@@ -45,12 +45,14 @@ The static GitHub Pages workspace and the SQLite adapter are deliberately separa
 
 ## Public proof surfaces
 
-- `index.html`: recruiter-facing case study with ownership, reproducible fixture evidence and explicit limits.
-- `workspace.html`: interactive 100-row operator queue using guarded browser-local state.
+- `index.html`: business- and recruiter-facing case study with a product-first hero, trust-boundary diagram, ownership, production path, reproducible fixture evidence and explicit limits.
+- `workspace.html`: interactive 100-row operator queue using guarded browser-local state, plus an ephemeral three-step guide that reuses the same decision and audit functions.
 - `fix-lab.html`: correction/revalidation rehearsal over committed Python golden scenarios.
 - `brief-evidence.html`: deterministic intake evidence, human decisions and fail-closed behaviors.
 
 The Fix & Revalidate Lab does not reimplement validator logic in JavaScript. Python generates all eight possible outputs for the three editable fields, binds them to the validator source hash, and the browser selects the corresponding committed result.
+
+The guided review does not add fields to `workspace_review_state.v1`. Its step, selected row and open/closed state remain ephemeral UI state. Only the actual human decision and its audit event enter the existing guarded local persistence path.
 
 ## Provider boundary
 

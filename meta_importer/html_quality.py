@@ -89,6 +89,31 @@ def audit_workspace_html(html: str) -> dict[str, object]:
                 'class="detail-disclosure"',
             )
         ),
+        "has_guided_demo": all(
+            token in html
+            for token in (
+                'id="guided-dialog"',
+                "findGuidedRow",
+                "startGuidedDemo",
+                "makeGuidedDecision",
+                "completeGuidedDemo",
+            )
+        ),
+        "has_guided_progress": all(
+            token in html for token in ("1 of 3 · Find", "2 of 3 · Decide", "3 of 3 · Verify")
+        ),
+        "has_guided_local_evidence": all(
+            token in html
+            for token in (
+                "No external system was changed.",
+                "mutation_allowed:false",
+                "persisted.audit.unshift(event)",
+            )
+        ),
+        "has_guided_full_queue_exit": all(
+            token in html
+            for token in ('id="guided-explore"', 'searchParams.delete("guided")', 'setActiveFilter("all")')
+        ),
         "has_skip_link": 'class="skip-link"' in html and 'href="#review-workspace"' in html,
         "has_active_row_semantics": 'setAttribute("aria-selected"' in html,
         "has_mobile_row_cards": 'td.dataset.label' in html and 'content: attr(data-label)' in html,
@@ -220,6 +245,26 @@ def _check_messages(checks: dict[str, bool]) -> list[tuple[str, bool, str]]:
             "has_progressive_disclosure",
             checks["has_progressive_disclosure"],
             "Secondary batch, bulk, and technical controls must use progressive disclosure.",
+        ),
+        (
+            "has_guided_demo",
+            checks["has_guided_demo"],
+            "The three-step guided review path is missing or bypasses the local decision path.",
+        ),
+        (
+            "has_guided_progress",
+            checks["has_guided_progress"],
+            "Guided review lacks visible three-step progress.",
+        ),
+        (
+            "has_guided_local_evidence",
+            checks["has_guided_local_evidence"],
+            "Guided review does not expose local audit evidence and the mutation boundary.",
+        ),
+        (
+            "has_guided_full_queue_exit",
+            checks["has_guided_full_queue_exit"],
+            "Guided review lacks a deterministic exit to the full queue.",
         ),
         ("has_skip_link", checks["has_skip_link"], "Skip-to-queue navigation is missing."),
         (

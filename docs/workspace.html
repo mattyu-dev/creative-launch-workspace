@@ -9,7 +9,7 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Interactive review workspace · Creative Launch Workspace">
   <meta property="og:description" content="A task-first review queue for approval, destination, placement, mapping and duplicate issues.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-5.png">
   <meta name="twitter:card" content="summary_large_image">
   <title>Creative Launch Workspace for Meta Ads</title>
   <style>
@@ -448,6 +448,75 @@
     .confirm-panel:not([open]) { display: none; }
     .confirm-panel::backdrop { background: rgba(28, 33, 30, .38); }
     .confirm-panel span { flex: 1 1 auto; color: var(--body); font-size: 12px; }
+    .guided-dialog {
+      width: min(660px, calc(100% - 28px));
+      max-height: min(760px, calc(100vh - 28px));
+      padding: 0;
+      overflow: auto;
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      color: var(--ink);
+      background: var(--surface);
+    }
+    .guided-dialog:not([open]) { display: none; }
+    .guided-dialog [hidden] { display: none !important; }
+    .guided-dialog::backdrop { background: rgba(11, 45, 36, .72); }
+    .guided-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 15px 18px;
+      color: #fff;
+      background: var(--forest);
+    }
+    .guided-progress {
+      font: 700 10px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .guided-close { color: #fff; border-color: rgba(255, 255, 255, .4); background: transparent; }
+    .guided-close:hover { border-color: #fff; }
+    .guided-body { padding: 24px; }
+    .guided-title {
+      margin: 0 0 8px;
+      color: var(--ink);
+      font-size: clamp(25px, 4vw, 34px);
+      font-weight: 450;
+      line-height: 1.08;
+      letter-spacing: -.035em;
+      text-transform: none;
+    }
+    .guided-copy { margin: 0 0 20px; color: var(--body); }
+    .guided-case {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin: 18px 0;
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+    .guided-case > div { min-width: 0; padding: 13px 14px; border-bottom: 1px solid var(--line); }
+    .guided-case > div:nth-child(odd) { border-right: 1px solid var(--line); }
+    .guided-case > div:nth-last-child(-n+2) { border-bottom: 0; }
+    .guided-case span { display: block; margin-bottom: 4px; color: var(--muted); font-size: 10px; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; }
+    .guided-case strong { display: block; overflow-wrap: anywhere; font-size: 13px; }
+    .guided-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+    .guided-actions button { min-height: 44px; }
+    .guided-actions .button-primary { flex: 1 1 180px; }
+    .guided-boundary { margin: 16px 0 0; color: var(--muted); font-size: 11px; }
+    .guided-proof {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin: 18px 0 0;
+      border: 1px solid #bfd7c9;
+      background: var(--ready-soft);
+    }
+    .guided-proof div { min-width: 0; padding: 12px 13px; border-bottom: 1px solid #bfd7c9; }
+    .guided-proof div:nth-child(odd) { border-right: 1px solid #bfd7c9; }
+    .guided-proof div:nth-last-child(-n+2) { border-bottom: 0; }
+    .guided-proof dt { color: var(--muted); font-size: 10px; font-weight: 650; text-transform: uppercase; }
+    .guided-proof dd { margin: 4px 0 0; overflow-wrap: anywhere; font: 600 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .guided-highlight { outline: 3px solid var(--oxide); outline-offset: 3px; }
     .table-wrap { max-height: calc(100vh - 262px); overflow: auto; }
     table { width: 100%; min-width: 620px; border-collapse: collapse; }
     caption {
@@ -816,12 +885,23 @@
         background: rgba(251, 251, 247, .97);
       }
       .detail-grid, .export-grid { grid-template-columns: 1fr 1fr; }
+      .guided-dialog { max-height: calc(100vh - 18px); }
+      .guided-body { padding: 20px 16px; }
     }
     @media (max-width: 480px) {
       .focus-panel { grid-template-columns:1fr; }
       .focus-actions button { flex:1 1 0; }
       .confirm-panel { align-items: stretch; flex-direction: column; }
       .confirm-panel button { width: 100%; }
+      .guided-case, .guided-proof { grid-template-columns: 1fr; }
+      .guided-case > div, .guided-case > div:nth-child(odd),
+      .guided-proof div, .guided-proof div:nth-child(odd), .guided-proof div:nth-last-child(-n+2) {
+        grid-column: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .guided-case > div:last-child, .guided-proof div:last-child { border-bottom: 0; }
+      .guided-actions { display: grid; grid-template-columns: 1fr; }
     }
     @media (max-width: 360px) {
       header { padding-inline: 8px; }
@@ -860,7 +940,7 @@
         <p>Start with the ambiguous rows. Clean creatives need no action; blocked creatives are routed back to their owners with a specific fix.</p>
       </div>
       <div class="focus-actions">
-        <button class="button-primary" data-quick-filter="needs_review">Review 10 creatives</button>
+        <button class="button-primary" id="start-guided" data-quick-filter="needs_review">Start guided review</button>
         <button class="button-secondary" data-quick-filter="blocked">Inspect 60 blockers</button>
       </div>
       <div class="status-legend" aria-label="Batch status">
@@ -869,6 +949,43 @@
         <span class="status-chip"><strong>60</strong> routed for fixes</span>
       </div>
     </section>
+    <dialog class="guided-dialog" id="guided-dialog" aria-labelledby="guided-title">
+      <div class="guided-head">
+        <span class="guided-progress" id="guided-progress" aria-live="polite">1 of 3 · Find</span>
+        <button class="guided-close" id="guided-close" type="button" aria-label="Close guided review">Close</button>
+      </div>
+      <div class="guided-body">
+        <h2 class="guided-title" id="guided-title" tabindex="-1">Find the ambiguous row.</h2>
+        <p class="guided-copy" id="guided-copy">The workflow has separated a possible duplicate from the rows that can pass or must return for fixes.</p>
+        <div class="guided-case" id="guided-case">
+          <div><span>Creative</span><strong id="guided-creative"></strong></div>
+          <div><span>Issue</span><strong id="guided-issue"></strong></div>
+          <div><span>Owner</span><strong id="guided-owner"></strong></div>
+          <div><span>Proposed fix</span><strong id="guided-fix"></strong></div>
+        </div>
+        <div class="guided-actions" id="guided-step-one">
+          <button class="button-primary" id="guided-next" type="button">Make a human decision</button>
+        </div>
+        <div class="guided-actions" id="guided-step-two" hidden>
+          <button class="button-primary" id="guided-confirm" type="button">Confirm reuse</button>
+          <button id="guided-fix-action" type="button">Needs fix</button>
+          <button class="danger" id="guided-block" type="button">Block launch</button>
+        </div>
+        <div id="guided-step-three" hidden>
+          <dl class="guided-proof">
+            <div><dt>Local state</dt><dd id="guided-result-state"></dd></div>
+            <div><dt>Reviewer role</dt><dd id="guided-result-role"></dd></div>
+            <div><dt>Audit event</dt><dd id="guided-result-event"></dd></div>
+            <div><dt>Creative</dt><dd id="guided-result-creative"></dd></div>
+            <div><dt>Occurred at</dt><dd id="guided-result-time"></dd></div>
+            <div><dt>External write</dt><dd id="guided-result-write">not attempted · mutation_allowed:false</dd></div>
+          </dl>
+          <p class="guided-copy" id="guided-result-copy"></p>
+          <div class="guided-actions"><button class="button-primary" id="guided-explore" type="button">Explore the full queue</button><button id="guided-replay" type="button">Review another case</button></div>
+        </div>
+        <p class="guided-boundary">Synthetic fixture · browser-local state · no Meta API, upload, publish or spend change</p>
+      </div>
+    </dialog>
     <details class="batch-disclosure">
       <summary>Batch details, ownership and guardrails</summary>
       <div class="batch-context-grid">
@@ -1054,8 +1171,16 @@
     const fixButton = document.getElementById("mark-fix");
     const blockButton = document.getElementById("mark-blocked");
     const filterDisclosure = document.getElementById("filter-disclosure");
+    const guidedDialog = document.getElementById("guided-dialog");
+    const guidedTitle = document.getElementById("guided-title");
+    const guidedProgress = document.getElementById("guided-progress");
+    const guidedCopy = document.getElementById("guided-copy");
+    const guidedCase = document.getElementById("guided-case");
+    const guidedStepOne = document.getElementById("guided-step-one");
+    const guidedStepTwo = document.getElementById("guided-step-two");
+    const guidedStepThree = document.getElementById("guided-step-three");
     const filterButtons = Array.from(document.querySelectorAll("button[data-filter]"));
-    const quickFilterButtons = Array.from(document.querySelectorAll("button[data-quick-filter]"));
+    const quickFilterButtons = Array.from(document.querySelectorAll("button[data-quick-filter]:not(#start-guided)"));
     const workspaceRowsBySource = new Map(workspaceData.review_statuses.map((row) => [String(row.source_row), row]));
     const knownSourceRows = new Set(workspaceRowsBySource.keys());
     const allowedReviewStatuses = new Set(["ready_to_review", "needs_confirmation", "confirmed_ready", "needs_fix", "blocked"]);
@@ -1071,6 +1196,10 @@
     let lastFocusedRow = activeRow;
     let pendingAction = null;
     let undoSnapshot = null;
+    let guidedActive = false;
+    let guidedStep = 0;
+    let guidedSourceRow = null;
+    let guidedDecisionLocked = false;
     let confirmTrigger = null;
 
     function isPlainObject(value) {
@@ -1534,6 +1663,129 @@
       detailGrid.appendChild(field);
     }
 
+    function findGuidedRow() {
+      return rows.find((row) =>
+        row.batch_state === "needs_review"
+        && row.issue_codes.includes("duplicate_asset")
+        && row.review_status === "needs_confirmation"
+      ) || rows.find((row) =>
+        row.batch_state === "needs_review" && row.review_status === "needs_confirmation"
+      ) || rows.find((row) =>
+        row.batch_state === "needs_review" && row.issue_codes.includes("duplicate_asset")
+      ) || rows.find((row) => row.batch_state === "needs_review") || null;
+    }
+
+    function guidedIssueFor(row) {
+      return row.issues.find((issue) => issue.code.includes("duplicate_asset"))
+        || row.issues[0]
+        || { code: "human_review", owner: row.owners[0] || "Reviewer", proposed_fix: row.proposed_fix || "Record an explicit decision." };
+    }
+
+    function renderGuidedStep() {
+      const row = rows.find((item) => item.source_row === guidedSourceRow);
+      guidedCase.hidden = guidedStep === 3 || !row;
+      guidedStepOne.hidden = guidedStep !== 1;
+      guidedStepTwo.hidden = guidedStep !== 2;
+      guidedStepThree.hidden = guidedStep !== 3;
+      guidedCase.classList.toggle("guided-highlight", guidedStep === 1);
+      guidedDecisionLocked = guidedStep === 3;
+      guidedStepTwo.querySelectorAll("button").forEach((button) => { button.disabled = guidedDecisionLocked; });
+      if (guidedStep === 1) {
+        guidedProgress.textContent = "1 of 3 · Find";
+        guidedTitle.textContent = "Find the ambiguous row.";
+        guidedCopy.textContent = "The workflow separated a possible duplicate from rows that can pass or must return for fixes.";
+      } else if (guidedStep === 2) {
+        guidedProgress.textContent = "2 of 3 · Decide";
+        guidedTitle.textContent = "Make the human decision.";
+        guidedCopy.textContent = "Confirm intentional reuse, request a fix or block the launch. The choice changes browser-local review state only.";
+      } else {
+        guidedProgress.textContent = "3 of 3 · Verify";
+        guidedTitle.textContent = row ? "Inspect what changed." : "No ambiguous case exists in this batch.";
+        guidedCopy.textContent = row
+          ? "The decision and audit event are local, inspectable and explicitly unable to write to an external platform."
+          : "The guided path could not find a row that requires a human decision. You can still explore the full queue.";
+      }
+      guidedTitle.focus();
+    }
+
+    function startGuidedDemo() {
+      const row = findGuidedRow();
+      guidedActive = true;
+      guidedDecisionLocked = false;
+      if (!row) {
+        guidedSourceRow = null;
+        guidedStep = 3;
+        document.getElementById("guided-result-state").textContent = "no pending decision";
+        document.getElementById("guided-result-role").textContent = "not applicable";
+        document.getElementById("guided-result-event").textContent = "none";
+        document.getElementById("guided-result-creative").textContent = "none";
+        document.getElementById("guided-result-time").textContent = "not applicable";
+        document.getElementById("guided-result-copy").textContent = "No ambiguous case exists in this batch.";
+      } else {
+        const issue = guidedIssueFor(row);
+        guidedSourceRow = row.source_row;
+        guidedStep = 1;
+        searchInput.value = "";
+        ownerFilter.value = "all";
+        setActiveFilter("needs_review");
+        selectRow(row.source_row, false, false);
+        document.getElementById("guided-creative").textContent = row.creative_id + " · row " + row.source_row;
+        document.getElementById("guided-issue").textContent = humanizeCode(issue.code);
+        document.getElementById("guided-owner").textContent = issue.owner;
+        document.getElementById("guided-fix").textContent = issue.proposed_fix;
+      }
+      if (!guidedDialog.open) guidedDialog.showModal();
+      renderGuidedStep();
+    }
+
+    function advanceGuidedDemo() {
+      if (!guidedActive || guidedStep !== 1 || guidedSourceRow === null) return;
+      guidedStep = 2;
+      renderGuidedStep();
+    }
+
+    function makeGuidedDecision(status, decision) {
+      if (!guidedActive || guidedStep !== 2 || guidedDecisionLocked) return;
+      const row = rows.find((item) => item.source_row === guidedSourceRow);
+      if (!row) return;
+      guidedDecisionLocked = true;
+      guidedStepTwo.querySelectorAll("button").forEach((button) => { button.disabled = true; });
+      activeRow = row.source_row;
+      updateReview(status, decision);
+    }
+
+    function completeGuidedDemo(row, event) {
+      const ambiguousCount = workspaceData.review_statuses.filter((item) => item.batch_state === "needs_review").length;
+      guidedStep = 3;
+      document.getElementById("guided-result-state").textContent = reviewStatusLabel(row.review_status);
+      document.getElementById("guided-result-role").textContent = event.actor_role;
+      document.getElementById("guided-result-event").textContent = event.event_type;
+      document.getElementById("guided-result-creative").textContent = event.creative_id;
+      document.getElementById("guided-result-time").textContent = event.occurred_at;
+      document.getElementById("guided-result-copy").textContent = "You just reviewed one of " + ambiguousCount + " ambiguous cases. No external system was changed.";
+      renderGuidedStep();
+    }
+
+    function exitGuidedDemo() {
+      guidedActive = false;
+      guidedStep = 0;
+      guidedSourceRow = null;
+      guidedDecisionLocked = false;
+      guidedCase.classList.remove("guided-highlight");
+      if (guidedDialog.open) guidedDialog.close();
+      const nextUrl = new URL(window.location.href);
+      nextUrl.searchParams.delete("guided");
+      history.replaceState(null, "", nextUrl.pathname + nextUrl.search + nextUrl.hash);
+      if (detailShell.classList.contains("open")) closeRowDetail();
+      setActiveFilter("all");
+      const selectedRow = tbody.querySelector('tr[data-source-row="' + activeRow + '"]');
+      if (selectedRow) {
+        selectedRow.focus();
+      } else {
+        document.getElementById("review-workspace").focus();
+      }
+    }
+
     function patchRowDecision(row, status, decision, eventType) {
       const patch = {
         review_status: status,
@@ -1543,7 +1795,7 @@
         updated_at: new Date().toISOString()
       };
       persisted.rows[row.source_row] = Object.assign({}, persisted.rows[row.source_row] || {}, patch);
-      persisted.audit.unshift({
+      const event = {
         event_id: `evt_local_${Date.now()}_${row.source_row}`,
         event_type: eventType,
         actor_role: reviewerRole.value,
@@ -1551,7 +1803,9 @@
         creative_id: row.creative_id,
         decision,
         occurred_at: patch.updated_at
-      });
+      };
+      persisted.audit.unshift(event);
+      return event;
     }
 
     function updateReview(status, decision) {
@@ -1562,10 +1816,13 @@
         return;
       }
       rememberUndo();
-      patchRowDecision(row, status, decision, "row_decision_updated");
+      const event = patchRowDecision(row, status, decision, "row_decision_updated");
       saveState();
       statusLine.textContent = "Saved row " + row.source_row + " as " + reviewStatusLabel(status).toLowerCase() + ".";
-      selectRow(row.source_row, true, false);
+      selectRow(row.source_row, !guidedActive, false);
+      if (guidedActive && guidedStep === 2 && row.source_row === guidedSourceRow) {
+        completeGuidedDemo(rows.find((item) => item.source_row === row.source_row) || row, event);
+      }
     }
 
     function rememberUndo() {
@@ -1729,6 +1986,18 @@
     quickFilterButtons.forEach((button) => {
       button.addEventListener("click", () => setActiveFilter(button.dataset.quickFilter));
     });
+    document.getElementById("start-guided").addEventListener("click", startGuidedDemo);
+    document.getElementById("guided-next").addEventListener("click", advanceGuidedDemo);
+    document.getElementById("guided-confirm").addEventListener("click", () => makeGuidedDecision("confirmed_ready", "approved_for_dry_run_export"));
+    document.getElementById("guided-fix-action").addEventListener("click", () => makeGuidedDecision("needs_fix", "requires_fix"));
+    document.getElementById("guided-block").addEventListener("click", () => makeGuidedDecision("blocked", "blocked_from_export"));
+    document.getElementById("guided-close").addEventListener("click", exitGuidedDemo);
+    document.getElementById("guided-explore").addEventListener("click", exitGuidedDemo);
+    document.getElementById("guided-replay").addEventListener("click", startGuidedDemo);
+    guidedDialog.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      exitGuidedDemo();
+    });
     searchInput.addEventListener("input", reconcileSelection);
     ownerFilter.addEventListener("change", reconcileSelection);
     approveButton.addEventListener("click", () => updateReview("confirmed_ready", "approved_for_dry_run_export"));
@@ -1777,6 +2046,9 @@
       statusLine.textContent = "Saved browser state could not be read; using seeded review state.";
     }
     selectRow(activeRow, false, false);
+    if (new URLSearchParams(window.location.search).get("guided") === "1") {
+      startGuidedDemo();
+    }
   </script>
 </body>
 </html>

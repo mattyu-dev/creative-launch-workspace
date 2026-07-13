@@ -56,7 +56,10 @@ const mimeTypes = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
-  ".png": "image/png"
+  ".png": "image/png",
+  ".svg": "image/svg+xml",
+  ".webp": "image/webp",
+  ".avif": "image/avif"
 };
 
 const server = createServer((request, response) => {
@@ -82,10 +85,15 @@ const url = `${baseUrl}/runs/fake_agency_creatives_v2/workspace.html`;
 const browser = await puppeteer.launch({ executablePath: chromePath, headless: true });
 const page = await browser.newPage();
 const consoleErrors = [];
+const guidedRequests = [];
+let recordGuidedRequests = false;
 page.on("console", (message) => {
   if (["error", "warning"].includes(message.type())) consoleErrors.push(message.text());
 });
 page.on("pageerror", (error) => consoleErrors.push(error.message));
+page.on("request", (request) => {
+  if (recordGuidedRequests) guidedRequests.push({ url: request.url(), method: request.method() });
+});
 
 const viewports = [];
 for (const width of [320, 375, 390, 760, 1023, 1024, 1440]) {
@@ -105,6 +113,110 @@ for (const width of [320, 375, 390, 760, 1023, 1024, 1440]) {
 
 if (viewports.some((item) => !item.noDocumentOverflow)) {
   throw new Error("A certified viewport has document-level horizontal overflow.");
+}
+
+await page.setViewport({ width: 1280, height: 900 });
+await page.goto(url, { waitUntil: "load" });
+await page.evaluate(() => localStorage.clear());
+recordGuidedRequests = true;
+await page.goto(`${url}?guided=1`, { waitUntil: "load" });
+const guidedStepOne = await page.evaluate(() => ({
+  open: document.querySelector("#guided-dialog")?.open,
+  progress: document.querySelector("#guided-progress")?.textContent,
+  selectedRow: document.querySelector('tr[aria-selected="true"]')?.dataset?.sourceRow,
+  issue: document.querySelector("#guided-issue")?.textContent,
+  owner: document.querySelector("#guided-owner")?.textContent,
+  fix: document.querySelector("#guided-fix")?.textContent,
+  focused: document.activeElement?.id,
+  decisionActionsVisible: getComputedStyle(document.querySelector("#guided-step-two")).display !== "none"
+}));
+await page.screenshot({ path: join(assetsDir, "guided-review-step-1.png") });
+await page.click("#guided-next");
+const guidedStepTwo = await page.evaluate(() => ({
+  progress: document.querySelector("#guided-progress")?.textContent,
+  confirmVisible: !document.querySelector("#guided-step-two")?.hidden
+    && getComputedStyle(document.querySelector("#guided-step-two")).display !== "none",
+  confirmLabel: document.querySelector("#guided-confirm")?.textContent
+}));
+await page.click("#guided-confirm");
+const guidedStepThree = await page.evaluate(() => {
+  const data = JSON.parse(document.querySelector("#workspace-data").textContent);
+  const saved = JSON.parse(localStorage.getItem(data.local_storage_key));
+  return {
+    progress: document.querySelector("#guided-progress")?.textContent,
+    state: document.querySelector("#guided-result-state")?.textContent,
+    role: document.querySelector("#guided-result-role")?.textContent,
+    event: document.querySelector("#guided-result-event")?.textContent,
+    creative: document.querySelector("#guided-result-creative")?.textContent,
+    occurredAt: document.querySelector("#guided-result-time")?.textContent,
+    write: document.querySelector("#guided-result-write")?.textContent,
+    summary: document.querySelector("#guided-result-copy")?.textContent,
+    persistedStatus: saved.rows[8]?.review_status,
+    latestAudit: saved.audit[0]
+  };
+});
+await page.screenshot({ path: join(assetsDir, "guided-review-step-3.png") });
+const guidedRequestViolations = guidedRequests.filter((item) => !item.url.startsWith(baseUrl) || item.method !== "GET");
+await page.click("#guided-explore");
+const guidedExit = await page.evaluate(() => ({
+  open: document.querySelector("#guided-dialog")?.open,
+  activeFilter: document.querySelector('button[data-filter][aria-pressed="true"]')?.dataset?.filter,
+  visibleRows: document.querySelectorAll("#review-rows tr[tabindex]").length,
+  guidedParam: new URLSearchParams(location.search).get("guided"),
+  focusedRow: document.activeElement?.dataset?.sourceRow,
+  focusedId: document.activeElement?.id
+}));
+await page.goto(`${url}?guided=1`, { waitUntil: "load" });
+const guidedPersistence = await page.evaluate(() => ({
+  selectedRow: document.querySelector('tr[aria-selected="true"]')?.dataset?.sourceRow,
+  progress: document.querySelector("#guided-progress")?.textContent
+}));
+await page.setViewport({ width: 390, height: 844 });
+await page.goto(`${url}?guided=1`, { waitUntil: "load" });
+const guidedMobile = await page.evaluate(() => ({
+  open: document.querySelector("#guided-dialog")?.open,
+  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
+  dialogWithinViewport: document.querySelector("#guided-dialog")?.getBoundingClientRect().width <= innerWidth,
+  progress: document.querySelector("#guided-progress")?.textContent
+}));
+recordGuidedRequests = false;
+await page.evaluate(() => localStorage.clear());
+
+if (
+  !guidedStepOne.open
+  || guidedStepOne.progress !== "1 of 3 · Find"
+  || guidedStepOne.selectedRow !== "8"
+  || guidedStepOne.issue !== "Possible duplicate"
+  || guidedStepOne.owner !== "Creative Ops Manager"
+  || !guidedStepOne.fix?.includes("Confirm the duplicate")
+  || guidedStepOne.focused !== "guided-title"
+  || guidedStepOne.decisionActionsVisible
+  || guidedStepTwo.progress !== "2 of 3 · Decide"
+  || !guidedStepTwo.confirmVisible
+  || guidedStepTwo.confirmLabel !== "Confirm reuse"
+  || guidedStepThree.progress !== "3 of 3 · Verify"
+  || guidedStepThree.state !== "Approved"
+  || guidedStepThree.role !== "Creative Ops Manager"
+  || !guidedStepThree.event?.includes("row_decision_updated")
+  || guidedStepThree.creative !== "cr_007"
+  || !guidedStepThree.occurredAt?.includes("T")
+  || !guidedStepThree.write?.includes("mutation_allowed:false")
+  || !guidedStepThree.summary?.includes("No external system was changed")
+  || guidedStepThree.persistedStatus !== "confirmed_ready"
+  || guidedStepThree.latestAudit?.source_row !== 8
+  || guidedRequestViolations.length
+  || guidedExit.open
+  || guidedExit.activeFilter !== "all"
+  || guidedExit.visibleRows !== 100
+  || guidedExit.guidedParam !== null
+  || (guidedExit.focusedRow !== "8" && guidedExit.focusedId !== "review-workspace")
+  || guidedPersistence.selectedRow !== "18"
+  || guidedPersistence.progress !== "1 of 3 · Find"
+  || !guidedMobile.open
+  || !guidedMobile.noDocumentOverflow
+  || !guidedMobile.dialogWithinViewport
+) {
+  throw new Error(`Guided review contract failed: ${JSON.stringify({ guidedStepOne, guidedStepTwo, guidedStepThree, guidedRequestViolations, guidedExit, guidedPersistence, guidedMobile })}`);
 }
 
 await page.setViewport({ width: 390, height: 844 });
@@ -239,31 +351,49 @@ await page.goto(url, { waitUntil: "load" });
 await page.screenshot({ path: join(assetsDir, "workspace-desktop.png") });
 
 const portfolioUrl = `${baseUrl}/docs/index.html`;
+await page.setViewport({ width: 1366, height: 768 });
 await page.goto(portfolioUrl, { waitUntil: "load" });
 const portfolioPage = await page.evaluate(() => ({
   title: document.querySelector("h1")?.textContent,
   canonical: document.querySelector('link[rel="canonical"]')?.href,
   ogImage: document.querySelector('meta[property="og:image"]')?.content,
-  hasWorkspaceCta: Boolean(document.querySelector('a[href="workspace.html"]')),
+  hasWorkspaceCta: Boolean(document.querySelector('a[href="workspace.html?guided=1"]')),
   hasLabCta: Boolean(document.querySelector('a[href="fix-lab.html"]')),
-  hasOperatingChange: document.body.textContent.includes("From scattered handoffs to one decision queue"),
+  hasBusinessCase: document.body.textContent.includes("The expensive part is usually the handoff")
+    && document.body.textContent.includes("Without the workspace")
+    && document.body.textContent.includes("With the workspace"),
+  hasSpreadsheetCase: document.body.textContent.includes("Why not another launch spreadsheet?"),
   hasBoundaries: document.body.textContent.includes("What this does not prove")
-    && document.body.textContent.includes("live model quality is not claimed")
-    && document.body.textContent.includes("synthetic, local-first and non-executable"),
+    && document.body.textContent.includes("Production Meta API compatibility")
+    && document.body.textContent.includes("Measured operator or business impact"),
+  hasProductionPath: document.body.textContent.includes("What I would validate next")
+    && document.body.textContent.includes("Proposed production pilot metrics"),
+  hasContact: Boolean(document.querySelector('a[href="https://www.linkedin.com/in/mathieu-petroni/"]')),
+  structuredTypes: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.map((item) => item["@type"]) || [],
   proofPathCount: document.querySelectorAll(".proof-path").length,
-  ownership: document.body.textContent.includes("Designed and built end to end by Mathieu Petroni"),
+  ownership: document.body.textContent.includes("I build governed AI workflows for operational teams"),
+  heroProductVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
+  heroProductTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
+  heroImageLoaded: document.querySelector(".product-window img")?.naturalWidth > 0,
+  heroImageSource: document.querySelector(".product-window img")?.currentSrc,
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
 }));
 if (
-  !portfolioPage.title?.includes("Catch launch errors")
+  !portfolioPage.title?.includes("Catch creative launch errors")
   || !portfolioPage.canonical?.endsWith("/creative-launch-workspace/")
-  || !portfolioPage.ogImage?.endsWith("/assets/social-card.png")
+  || !portfolioPage.ogImage?.endsWith("/assets/social-card-v1-5.png")
   || !portfolioPage.hasWorkspaceCta
   || !portfolioPage.hasLabCta
-  || !portfolioPage.hasOperatingChange
+  || !portfolioPage.hasBusinessCase
+  || !portfolioPage.hasSpreadsheetCase
   || !portfolioPage.hasBoundaries
+  || !portfolioPage.hasProductionPath
+  || !portfolioPage.hasContact
+  || !["Person", "SoftwareSourceCode", "CreativeWork"].every((item) => portfolioPage.structuredTypes.includes(item))
   || portfolioPage.proofPathCount !== 3
   || !portfolioPage.ownership
+  || !portfolioPage.heroProductVisible
+  || !portfolioPage.heroImageLoaded
   || !portfolioPage.noDocumentOverflow
 ) {
   throw new Error(`Portfolio entry contract failed: ${JSON.stringify(portfolioPage)}`);
@@ -275,9 +405,12 @@ await page.goto(portfolioUrl, { waitUntil: "load" });
 const portfolioMobile = await page.evaluate(() => ({
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
   headingVisible: document.querySelector("h1")?.getBoundingClientRect().top < innerHeight,
-  bylineVisible: document.querySelector(".hero-byline")?.getBoundingClientRect().top < innerHeight
+  authorVisible: document.querySelector(".hero-mobile-author")?.getBoundingClientRect().top < innerHeight,
+  productVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
+  productTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
+  productVisibleHeight: Math.round(Math.max(0, Math.min(innerHeight, document.querySelector(".product-window")?.getBoundingClientRect().bottom || 0) - Math.max(0, document.querySelector(".product-window")?.getBoundingClientRect().top || 0)))
 }));
-if (!portfolioMobile.noDocumentOverflow || !portfolioMobile.headingVisible || !portfolioMobile.bylineVisible) {
+if (!portfolioMobile.noDocumentOverflow || !portfolioMobile.headingVisible || !portfolioMobile.authorVisible || !portfolioMobile.productVisible || portfolioMobile.productVisibleHeight < 180) {
   throw new Error(`Portfolio mobile contract failed: ${JSON.stringify(portfolioMobile)}`);
 }
 await page.screenshot({ path: join(assetsDir, "portfolio-mobile.png"), fullPage: true });
@@ -285,7 +418,16 @@ await page.screenshot({ path: join(assetsDir, "portfolio-mobile.png"), fullPage:
 const socialCardUrl = `${baseUrl}/docs/social-card.html`;
 await page.setViewport({ width: 1200, height: 630 });
 await page.goto(socialCardUrl, { waitUntil: "load" });
+const socialCard = await page.evaluate(() => ({
+  productImage: document.querySelector(".visual img")?.getAttribute("src"),
+  productLoaded: document.querySelector(".visual img")?.naturalWidth > 0,
+  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth && document.documentElement.scrollHeight <= innerHeight
+}));
+if (socialCard.productImage !== "assets/workspace-desktop.png" || !socialCard.productLoaded || !socialCard.noDocumentOverflow) {
+  throw new Error(`Social card contract failed: ${JSON.stringify(socialCard)}`);
+}
 await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+await page.screenshot({ path: join(assetsDir, "social-card-v1-5.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
 
 const labUrl = `${baseUrl}/docs/fix-lab.html`;
 await page.setViewport({ width: 1280, height: 900 });
@@ -380,11 +522,64 @@ if (Object.values(accessibility).some((surface) => Object.values(surface).some((
   throw new Error(`Lighthouse accessibility score regressed: ${JSON.stringify(accessibility)}`);
 }
 
+const portfolioQualityTargets = [
+  { formFactor: "desktop", outputPath: join(evidenceDir, "portfolio-lighthouse-quality-desktop.json") },
+  { formFactor: "mobile", outputPath: join(evidenceDir, "portfolio-lighthouse-quality-mobile.json") }
+];
+for (const { formFactor, outputPath } of portfolioQualityTargets) {
+  const args = [
+    portfolioUrl,
+    `--chrome-path=${chromePath}`,
+    "--only-categories=performance,best-practices,seo",
+    `--form-factor=${formFactor}`,
+    "--output=json",
+    `--output-path=${outputPath}`,
+    "--quiet"
+  ];
+  if (formFactor === "desktop") args.push("--screenEmulation.disabled");
+  if (process.platform === "linux") {
+    args.push("--chrome-flags=--headless=new --no-sandbox --disable-dev-shm-usage");
+  }
+  await runFile(lighthouseBin, args, { cwd: root, maxBuffer: 10 * 1024 * 1024 });
+}
+
+const portfolioQuality = {};
+for (const { formFactor, outputPath } of portfolioQualityTargets) {
+  const lighthouseReport = JSON.parse(await readFile(outputPath, "utf8"));
+  portfolioQuality[formFactor] = {
+    performanceScore: lighthouseReport.categories.performance.score,
+    bestPracticesScore: lighthouseReport.categories["best-practices"].score,
+    seoScore: lighthouseReport.categories.seo.score,
+    lcpMs: Math.round(lighthouseReport.audits["largest-contentful-paint"].numericValue),
+    cls: lighthouseReport.audits["cumulative-layout-shift"].numericValue,
+    tbtMs: Math.round(lighthouseReport.audits["total-blocking-time"].numericValue)
+  };
+}
+if (Object.values(portfolioQuality).some((result) =>
+  result.performanceScore < 0.9
+  || result.bestPracticesScore < 0.95
+  || result.seoScore < 0.95
+  || result.lcpMs > 2500
+  || result.cls > 0.1
+  || result.tbtMs > 200
+)) {
+  throw new Error(`Portfolio Lighthouse quality budget regressed: ${JSON.stringify(portfolioQuality)}`);
+}
+
 const report = {
-  contract_version: "workspace_runtime_qa.v3",
+  contract_version: "workspace_runtime_qa.v4",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,
+  guided_review: {
+    step_one: guidedStepOne,
+    step_two: guidedStepTwo,
+    step_three: guidedStepThree,
+    request_violations: guidedRequestViolations,
+    exit: guidedExit,
+    persistence: guidedPersistence,
+    mobile: guidedMobile
+  },
   mobile_drawer: { opened: drawerOpened, closed: drawerClosed },
   keyboard,
   bulk: { dialog: bulkDialog, cancelled: bulkCancelled, confirmed: bulkConfirmed, undone: bulkUndone },
@@ -394,10 +589,12 @@ const report = {
   reset,
   portfolio_page: portfolioPage,
   portfolio_mobile: portfolioMobile,
+  social_card: socialCard,
   fix_lab: { initial: labInitial, fixed: labFixed, reset: labReset },
   evidence_page: evidencePage,
   console_errors: consoleErrors,
   lighthouse_accessibility: accessibility,
+  lighthouse_portfolio_quality: portfolioQuality,
   mutation_allowed: false,
   meta_api_compatibility: "not_claimed"
 };
@@ -406,4 +603,4 @@ await writeFile(join(evidenceDir, "workspace-runtime-qa.json"), `${JSON.stringif
 await new Promise((resolve, reject) => {
   server.close((error) => (error ? reject(error) : resolve()));
 });
-console.log(JSON.stringify({ status: "pass", accessibility, viewports: viewports.length }, null, 2));
+console.log(JSON.stringify({ status: "pass", accessibility, portfolioQuality, viewports: viewports.length }, null, 2));
