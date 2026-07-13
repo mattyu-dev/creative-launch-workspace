@@ -26,7 +26,7 @@
     "placement": "feed",
     "utm_campaign": "camp_launch"
   },
-  "rule_pack_sha256": "fed891dfaa9868481c6dbe14f25ad32423bca4953749b7dea0ab243816347e85",
+  "rule_pack_sha256": "424a0d006854fe6c2e4419542232fc503f9468f1a7205134e1d32a7a2a441a94",
   "scenarios": {
     "feed|approved|camp_launch": {
       "idempotency_key": "c6be1883736bd3d6",
@@ -205,5 +205,5 @@
     "placement": "story",
     "utm_campaign": "camp_sale"
   },
-  "validator_source_sha256": "db6a4b540baf4d2cd3417008d14fdd4a31dd83d9eff318897d21587a373ec546"
+  "validator_source_sha256": "5e2353bda5c3f6c63c7ee8003bfa83697ca031d1aacc475a6a1f47b9ea9ab8d9"
 }

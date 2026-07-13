@@ -102,6 +102,9 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertIn("findGuidedRow", html)
         self.assertIn('searchParams.delete("guided")', html)
         self.assertIn('document.getElementById("review-workspace").focus()', html)
+        self.assertIn('class="brand" href="index.html"', html)
+        self.assertIn('id="guided-return" href="index.html"', html)
+        self.assertIn("Return to the case study", html)
 
     def test_html_static_audit_checks_accessibility_and_network_boundary(self) -> None:
         rows = read_manifest(V2_FIXTURE)

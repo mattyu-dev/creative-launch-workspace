@@ -81,6 +81,8 @@
       align-items: center;
       gap: 12px;
       min-width: 0;
+      color: inherit;
+      text-decoration: none;
     }
     .brand-mark {
       width: 30px;
@@ -502,8 +504,21 @@
     .guided-case span { display: block; margin-bottom: 4px; color: var(--muted); font-size: 10px; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; }
     .guided-case strong { display: block; overflow-wrap: anywhere; font-size: 13px; }
     .guided-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-    .guided-actions button { min-height: 44px; }
+    .guided-actions button, .guided-return { min-height: 44px; }
     .guided-actions .button-primary { flex: 1 1 180px; }
+    .guided-return {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 10px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      color: var(--ink);
+      background: var(--surface);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .guided-return:hover { border-color: var(--ink); }
     .guided-proof {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -919,13 +934,13 @@
 <body>
   <a class="skip-link" href="#review-workspace">Skip to review queue</a>
   <header>
-    <div class="brand">
+    <a class="brand" href="index.html" aria-label="Return to the Creative Launch Workspace case study">
       <div class="brand-mark" aria-hidden="true"><span></span></div>
       <div>
         <h1>Creative Launch Workspace for Meta Ads</h1>
         <div class="batch-line" title="Batch 78f20843aea8a367 &middot; synthetic_fixture_only">Synthetic fixture &middot; batch 78f20843</div>
       </div>
-    </div>
+    </a>
     <div class="header-status">
       <a class="header-proof" href="brief-evidence.html">Governed intake evidence</a>
       <span class="local-signal">Stored locally</span>
@@ -980,7 +995,7 @@
             <div><dt>Occurred at</dt><dd id="guided-result-time"></dd></div>
           </dl>
           <p class="guided-copy" id="guided-result-copy"></p>
-          <div class="guided-actions"><button class="button-primary" id="guided-explore" type="button">Explore the full queue</button><button id="guided-replay" type="button">Review another case</button></div>
+          <div class="guided-actions"><button class="button-primary" id="guided-explore" type="button">Explore the full queue</button><a class="guided-return" id="guided-return" href="index.html">Return to the case study</a><button id="guided-replay" type="button">Review another case</button></div>
         </div>
       </div>
     </dialog>

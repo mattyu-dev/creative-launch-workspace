@@ -165,6 +165,10 @@ const guidedStepThree = await page.evaluate(() => {
     creative: document.querySelector("#guided-result-creative")?.textContent,
     occurredAt: document.querySelector("#guided-result-time")?.textContent,
     summary: document.querySelector("#guided-result-copy")?.textContent,
+    brandHref: document.querySelector(".brand")?.getAttribute("href"),
+    returnHref: document.querySelector("#guided-return")?.getAttribute("href"),
+    returnLabel: document.querySelector("#guided-return")?.textContent.trim(),
+    primaryBeforeReturn: Boolean(document.querySelector("#guided-explore")?.compareDocumentPosition(document.querySelector("#guided-return")) & Node.DOCUMENT_POSITION_FOLLOWING),
     persistedStatus: saved.rows[8]?.review_status,
     latestAudit: saved.audit[0]
   };
@@ -215,6 +219,10 @@ if (
   || guidedStepThree.creative !== "cr_007"
   || !guidedStepThree.occurredAt?.includes("T")
   || !guidedStepThree.summary?.includes("No external system was changed. Technical receipt: mutation_allowed:false.")
+  || guidedStepThree.brandHref !== "index.html"
+  || guidedStepThree.returnHref !== "index.html"
+  || guidedStepThree.returnLabel !== "Return to the case study"
+  || !guidedStepThree.primaryBeforeReturn
   || guidedStepThree.persistedStatus !== "confirmed_ready"
   || guidedStepThree.latestAudit?.source_row !== 8
   || guidedRequestViolations.length
@@ -246,6 +254,42 @@ const drawerOpened = await page.evaluate(() => ({
   ariaHidden: document.querySelector(".detail-shell").getAttribute("aria-hidden")
 }));
 await page.screenshot({ path: join(assetsDir, "workspace-mobile-detail.png") });
+await page.addStyleTag({ content: `
+  .detail-shell { padding: 12px 14px 18px !important; }
+  .detail-heading { margin-bottom: 9px !important; padding-bottom: 9px !important; }
+  .decision-card { margin-bottom: 8px !important; padding: 11px 12px !important; }
+  .decision-card h2 { margin-bottom: 4px !important; }
+  .issue-list { margin: 4px 0 0 !important; }
+  .review-form, .detail-disclosure, .detail-shell > .status-line { display: none !important; }
+  .detail-shell > .actions { margin: 0 !important; }
+` });
+const mobileHeroCapture = await page.evaluate(() => ({
+  selectedRow: document.querySelector('tr[aria-selected="true"]')?.dataset?.sourceRow,
+  creative: document.querySelector("#detail-title")?.textContent,
+  issue: document.querySelector("#issue-list .issue strong")?.textContent,
+  ownerVisible: document.querySelector("#issue-list")?.textContent.includes("Creative Ops Manager"),
+  detailOpen: document.querySelector(".detail-shell")?.classList.contains("open"),
+  actionLabels: [...document.querySelectorAll(".detail-shell > .actions button")].map((item) => item.textContent.trim()),
+  actionBottom: Math.round(document.querySelector(".detail-shell > .actions")?.getBoundingClientRect().bottom || 0),
+  captureWidth: innerWidth
+}));
+if (
+  mobileHeroCapture.selectedRow !== "8"
+  || mobileHeroCapture.creative !== "cr_007 · row 8"
+  || !mobileHeroCapture.issue?.includes("Possible duplicate")
+  || !mobileHeroCapture.ownerVisible
+  || !mobileHeroCapture.detailOpen
+  || !mobileHeroCapture.actionLabels.includes("Confirm reuse for dry-run export")
+  || !mobileHeroCapture.actionLabels.includes("Return for fix")
+  || !mobileHeroCapture.actionLabels.includes("Block from dry-run export")
+  || mobileHeroCapture.actionBottom > 360
+  || mobileHeroCapture.captureWidth !== 390
+) {
+  throw new Error(`Mobile hero composition contract failed: ${JSON.stringify(mobileHeroCapture)}`);
+}
+const mobileHeroClip = { x: 0, y: 0, width: 390, height: 360 };
+await page.screenshot({ path: join(assetsDir, "workspace-mobile-hero.png"), clip: mobileHeroClip });
+await page.screenshot({ path: join(assetsDir, "workspace-mobile-hero.webp"), type: "webp", quality: 88, clip: mobileHeroClip });
 await page.click("#close-detail");
 await page.waitForFunction(() => {
   const shell = document.querySelector(".detail-shell");
@@ -383,6 +427,13 @@ const portfolioPage = await page.evaluate(() => ({
     && document.body.textContent.includes("Without the workspace")
     && document.body.textContent.includes("With the workspace"),
   hasSpreadsheetCase: document.body.textContent.includes("Why not another launch spreadsheet?"),
+  hasDemoBoundary: document.body.textContent.includes("The demo begins after governed brief intake."),
+  aiProofCount: document.querySelectorAll(".ai-proof").length,
+  hasAcceptedProposal: document.body.textContent.includes("Accepted by reviewer")
+    && document.body.textContent.includes("Proposed objective")
+    && document.body.textContent.includes("traffic"),
+  hasAbstentionProof: document.body.textContent.includes("Not found in source")
+    && document.body.textContent.includes("Human input before materialization"),
   hasBoundaries: document.body.textContent.includes("What this does not prove")
     && document.body.textContent.includes("Production Meta API compatibility")
     && document.body.textContent.includes("Measured operator or business impact"),
@@ -411,6 +462,10 @@ if (
   || !portfolioPage.hasLabCta
   || !portfolioPage.hasBusinessCase
   || !portfolioPage.hasSpreadsheetCase
+  || !portfolioPage.hasDemoBoundary
+  || portfolioPage.aiProofCount !== 2
+  || !portfolioPage.hasAcceptedProposal
+  || !portfolioPage.hasAbstentionProof
   || !portfolioPage.hasBoundaries
   || !portfolioPage.hasProductionPath
   || !portfolioPage.hasContact
@@ -432,22 +487,32 @@ await page.screenshot({ path: join(assetsDir, "portfolio-desktop.png"), fullPage
 
 await page.setViewport({ width: 390, height: 844 });
 await page.goto(portfolioUrl, { waitUntil: "load" });
-const portfolioMobile = await page.evaluate(() => ({
-  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
-  headingVisible: document.querySelector("h1")?.getBoundingClientRect().top < innerHeight,
-  compactAuthorCount: document.querySelectorAll(".hero-mobile-author").length,
-  authorBlockCount: document.querySelectorAll(".hero-byline").length,
-  authorBlockDisplayed: getComputedStyle(document.querySelector(".hero-byline")).display !== "none",
-  authorAfterProduct: Boolean(document.querySelector(".hero-product")?.compareDocumentPosition(document.querySelector(".hero-byline")) & Node.DOCUMENT_POSITION_FOLLOWING),
-  productVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
-  productTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
-  productVisibleHeight: Math.round(Math.max(0, Math.min(innerHeight, document.querySelector(".product-window")?.getBoundingClientRect().bottom || 0) - Math.max(0, document.querySelector(".product-window")?.getBoundingClientRect().top || 0))),
-  visibleAnnotations: [...document.querySelectorAll(".annotation")].filter((item) => getComputedStyle(item).display !== "none").length,
-  architectureDiagramHidden: getComputedStyle(document.querySelector(".diagram")).display === "none",
-  architectureStackVisible: getComputedStyle(document.querySelector(".architecture-stack")).display !== "none",
-  architectureStepCount: document.querySelectorAll(".architecture-stack li").length,
-  architectureMinFontPx: Math.min(...[...document.querySelectorAll(".architecture-stack strong, .architecture-stack span")].map((item) => parseFloat(getComputedStyle(item).fontSize)))
-}));
+const portfolioMobile = await page.evaluate(async () => {
+  const heroImage = document.querySelector(".product-window img");
+  const heroAsset = await createImageBitmap(await (await fetch(heroImage.currentSrc)).blob());
+  const result = {
+    noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
+    headingVisible: document.querySelector("h1")?.getBoundingClientRect().top < innerHeight,
+    compactAuthorCount: document.querySelectorAll(".hero-mobile-author").length,
+    authorBlockCount: document.querySelectorAll(".hero-byline").length,
+    authorBlockDisplayed: getComputedStyle(document.querySelector(".hero-byline")).display !== "none",
+    authorAfterProduct: Boolean(document.querySelector(".hero-product")?.compareDocumentPosition(document.querySelector(".hero-byline")) & Node.DOCUMENT_POSITION_FOLLOWING),
+    ctaAfterProduct: Boolean(document.querySelector(".hero-product")?.compareDocumentPosition(document.querySelector(".hero-cta")) & Node.DOCUMENT_POSITION_FOLLOWING),
+    productVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
+    productTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
+    productVisibleHeight: Math.round(Math.max(0, Math.min(innerHeight, document.querySelector(".product-window")?.getBoundingClientRect().bottom || 0) - Math.max(0, document.querySelector(".product-window")?.getBoundingClientRect().top || 0))),
+    heroImageSource: heroImage.currentSrc,
+    heroAssetWidth: heroAsset.width,
+    heroAssetHeight: heroAsset.height,
+    visibleAnnotations: [...document.querySelectorAll(".annotation")].filter((item) => getComputedStyle(item).display !== "none").length,
+    architectureDiagramHidden: getComputedStyle(document.querySelector(".diagram")).display === "none",
+    architectureStackVisible: getComputedStyle(document.querySelector(".architecture-stack")).display !== "none",
+    architectureStepCount: document.querySelectorAll(".architecture-stack li").length,
+    architectureMinFontPx: Math.min(...[...document.querySelectorAll(".architecture-stack strong, .architecture-stack span")].map((item) => parseFloat(getComputedStyle(item).fontSize)))
+  };
+  heroAsset.close();
+  return result;
+});
 if (
   !portfolioMobile.noDocumentOverflow
   || !portfolioMobile.headingVisible
@@ -455,8 +520,12 @@ if (
   || portfolioMobile.authorBlockCount !== 1
   || !portfolioMobile.authorBlockDisplayed
   || !portfolioMobile.authorAfterProduct
+  || !portfolioMobile.ctaAfterProduct
   || !portfolioMobile.productVisible
-  || portfolioMobile.productVisibleHeight < 180
+  || portfolioMobile.productVisibleHeight < 270
+  || !portfolioMobile.heroImageSource?.endsWith("/assets/workspace-mobile-hero.webp")
+  || portfolioMobile.heroAssetWidth !== 390
+  || portfolioMobile.heroAssetHeight !== 360
   || portfolioMobile.visibleAnnotations !== 0
   || !portfolioMobile.architectureDiagramHidden
   || !portfolioMobile.architectureStackVisible
@@ -466,6 +535,39 @@ if (
   throw new Error(`Portfolio mobile contract failed: ${JSON.stringify(portfolioMobile)}`);
 }
 await page.screenshot({ path: join(assetsDir, "portfolio-mobile.png"), fullPage: true });
+
+const portfolioWorkspaceUrl = `${baseUrl}/docs/workspace.html`;
+await page.goto(portfolioWorkspaceUrl, { waitUntil: "load" });
+await page.evaluate(() => localStorage.clear());
+const portfolioNavigation = await page.evaluate(() => ({
+  brandHref: document.querySelector(".brand")?.getAttribute("href"),
+  returnHref: document.querySelector("#guided-return")?.getAttribute("href")
+}));
+await Promise.all([
+  page.waitForNavigation({ waitUntil: "load" }),
+  page.click(".brand")
+]);
+portfolioNavigation.brandDestination = new URL(page.url()).pathname;
+await page.goto(`${portfolioWorkspaceUrl}?guided=1`, { waitUntil: "load" });
+await page.evaluate(() => localStorage.clear());
+await page.reload({ waitUntil: "load" });
+await page.click("#guided-next");
+await page.click("#guided-confirm");
+await Promise.all([
+  page.waitForNavigation({ waitUntil: "load" }),
+  page.click("#guided-return")
+]);
+portfolioNavigation.completionDestination = new URL(page.url()).pathname;
+if (
+  portfolioNavigation.brandHref !== "index.html"
+  || portfolioNavigation.returnHref !== "index.html"
+  || !portfolioNavigation.brandDestination.endsWith("/docs/index.html")
+  || !portfolioNavigation.completionDestination.endsWith("/docs/index.html")
+) {
+  throw new Error(`Portfolio navigation contract failed: ${JSON.stringify(portfolioNavigation)}`);
+}
+await page.setViewport({ width: 390, height: 844 });
+await page.goto(portfolioUrl, { waitUntil: "load" });
 
 const responsiveAssetFidelity = await page.evaluate(async () => {
   const loadImage = (src) => new Promise((resolve, reject) => {
@@ -511,7 +613,8 @@ const responsiveAssetFidelity = await page.evaluate(async () => {
     ["assets/workspace-desktop.png", "assets/workspace-desktop.avif"],
     ["assets/workspace-desktop.png", "assets/workspace-desktop.webp"],
     ["assets/workspace-mobile.png", "assets/workspace-mobile.avif"],
-    ["assets/workspace-mobile.png", "assets/workspace-mobile.webp"]
+    ["assets/workspace-mobile.png", "assets/workspace-mobile.webp"],
+    ["assets/workspace-mobile-hero.png", "assets/workspace-mobile-hero.webp"]
   ];
   const results = [];
   for (const pair of pairs) results.push(await compare(...pair));
@@ -683,7 +786,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v5",
+  contract_version: "workspace_runtime_qa.v6",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,
@@ -697,6 +800,7 @@ const report = {
     mobile: guidedMobile
   },
   mobile_drawer: { opened: drawerOpened, closed: drawerClosed },
+  mobile_hero_capture: mobileHeroCapture,
   keyboard,
   bulk: { dialog: bulkDialog, cancelled: bulkCancelled, confirmed: bulkConfirmed, undone: bulkUndone },
   empty_filter: emptyFilter,
@@ -705,6 +809,7 @@ const report = {
   reset,
   portfolio_page: portfolioPage,
   portfolio_mobile: portfolioMobile,
+  portfolio_navigation: portfolioNavigation,
   responsive_asset_fidelity: responsiveAssetFidelity,
   social_card: socialCard,
   fix_lab: { initial: labInitial, fixed: labFixed, reset: labReset },
