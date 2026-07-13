@@ -423,18 +423,34 @@ const portfolioPage = await page.evaluate(() => ({
   ogImage: document.querySelector('meta[property="og:image"]')?.content,
   hasWorkspaceCta: Boolean(document.querySelector('a[href="workspace.html?guided=1"]')),
   hasLabCta: Boolean(document.querySelector('a[href="fix-lab.html"]')),
-  hasBusinessCase: document.body.textContent.includes("Launch risk accumulates in the handoff")
+  hasBusinessCase: document.body.textContent.includes("One launch review is split across too many tools")
     && document.body.textContent.includes("Without the workspace")
     && document.body.textContent.includes("With the workspace"),
   hasSpreadsheetCase: document.body.textContent.includes("Why not another launch spreadsheet?"),
   hasDemoBoundary: document.body.textContent.includes("The demo begins after governed brief intake."),
   copyFreeze: {
-    mutationBoundary: document.body.textContent.includes("live platform mutations — by design"),
+    mutationBoundary: document.body.textContent.includes("live platform mutations. The demo cannot publish or change spend."),
     reviewState: document.body.textContent.includes("One decision queue holds the review state."),
-    boundedAuthority: document.body.textContent.includes("Each stage has deliberately bounded authority."),
+    boundedAuthority: document.body.textContent.includes("No stage can make the next decision on its own."),
     heroSecondaryCta: document.querySelector(".hero-cta .text-link")?.textContent.trim(),
     experienceSince: document.body.textContent.includes("since 2017"),
     structuredJobTitle: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "Person")?.jobTitle
+  },
+  humanizedCopy: {
+    noLongDash: !/[—–]/.test(`${document.title}\n${document.body.innerText}`),
+    concreteHero: document.body.textContent.includes("leaves ambiguous cases for a person to decide"),
+    concreteProblem: document.body.textContent.includes("reviewing large campaign batches"),
+    plainAiBoundary: document.body.textContent.includes("Rules check each AI proposal before a person decides."),
+    concreteProductionBoundary: document.body.textContent.includes("Before this could touch a production ad account"),
+    personalContribution: document.body.textContent.includes("I built the workflow, interface, Python contracts"),
+    oldSlogansRemoved: ![
+      "Rows are easy. Governed decisions are harder.",
+      "Inspect the evidence, not the promise.",
+      "A reference implementation with a serious next-proof plan.",
+      "AI proposes. Rules verify. A human decides.",
+      "Launch risk accumulates in the handoff.",
+      "Exercise human authority."
+    ].some((copy) => document.body.textContent.includes(copy))
   },
   aiProofCount: document.querySelectorAll(".ai-proof").length,
   hasAcceptedProposal: document.body.textContent.includes("Accepted by reviewer")
@@ -450,7 +466,7 @@ const portfolioPage = await page.evaluate(() => ({
   hasContact: Boolean(document.querySelector('a[href="https://www.linkedin.com/in/mathieu-petroni/"]')),
   structuredTypes: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.map((item) => item["@type"]) || [],
   proofPathCount: document.querySelectorAll(".proof-path").length,
-  ownership: document.body.textContent.includes("I build governed AI workflows for operational teams"),
+  ownership: document.body.textContent.includes("I build AI workflows for teams that need to see and control each decision"),
   heroProductVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
   heroProductTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
   heroImageLoaded: document.querySelector(".product-window img")?.naturalWidth > 0,
@@ -477,6 +493,7 @@ if (
   || portfolioPage.copyFreeze.heroSecondaryCta !== "See how the system works →"
   || !portfolioPage.copyFreeze.experienceSince
   || portfolioPage.copyFreeze.structuredJobTitle !== "AI Automation Lead"
+  || !Object.values(portfolioPage.humanizedCopy).every(Boolean)
   || portfolioPage.aiProofCount !== 2
   || !portfolioPage.hasAcceptedProposal
   || !portfolioPage.hasAbstentionProof
@@ -800,7 +817,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v7",
+  contract_version: "workspace_runtime_qa.v8",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,

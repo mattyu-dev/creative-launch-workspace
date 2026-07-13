@@ -9,7 +9,7 @@ def render_portfolio_page() -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#113e31">
-  <meta name="description" content="An interactive case study of governed AI brief mapping, deterministic Meta creative launch QA and explicit human decisions.">
+  <meta name="description" content="See how a 100-row synthetic Meta creative batch moves through proposal evidence, deterministic checks and explicit reviewer decisions.">
   <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -17,8 +17,8 @@ def render_portfolio_page() -> str:
   <link rel="me" href="https://github.com/mattyu-dev">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Mathieu Petroni · AI Automation portfolio">
-  <meta property="og:title" content="I built a governed AI workflow for 100-row Meta creative launches">
-  <meta property="og:description" content="AI-assisted brief mapping, deterministic launch QA, human review, evaluation design and explicit trust boundaries.">
+  <meta property="og:title" content="How I built an AI review workflow for 100-row Meta creative launches">
+  <meta property="og:description" content="A synthetic batch moves through proposal evidence and deterministic checks before a person decides ambiguous cases.">
   <meta property="og:url" content="https://mattyu-dev.github.io/creative-launch-workspace/">
   <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-6.png">
   <meta property="og:image:type" content="image/png">
@@ -26,11 +26,11 @@ def render_portfolio_page() -> str:
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Creative Launch Workspace review queue with governed AI, deterministic QA and human decisions">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="I built a governed AI workflow for 100-row Meta creative launches">
-  <meta name="twitter:description" content="AI proposes. Rules verify. A human decides.">
+  <meta name="twitter:title" content="How I built an AI review workflow for 100-row Meta creative launches">
+  <meta name="twitter:description" content="A synthetic batch moves through proposal evidence and deterministic checks before a person decides ambiguous cases.">
   <meta name="twitter:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-6.png">
   <meta name="twitter:image:alt" content="Creative Launch Workspace review queue with governed AI, deterministic QA and human decisions">
-  <title>Creative Launch Workspace — Governed AI for Meta Ads | Mathieu Petroni</title>
+  <title>Creative Launch Workspace | Governed AI for Meta Ads | Mathieu Petroni</title>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -54,13 +54,13 @@ def render_portfolio_page() -> str:
         "codeRepository": "https://github.com/mattyu-dev/creative-launch-workspace",
         "programmingLanguage": ["Python", "JavaScript"],
         "license": "https://opensource.org/license/mit",
-        "version": "1.6.2",
+        "version": "1.6.3",
         "author": { "@id": "https://mattyu-dev.github.io/creative-launch-workspace/#mathieu" }
       },
       {
         "@type": "CreativeWork",
         "@id": "https://mattyu-dev.github.io/creative-launch-workspace/#case-study",
-        "name": "Creative Launch Workspace — governed AI case study",
+        "name": "Creative Launch Workspace: governed AI case study",
         "dateModified": "2026-07-13",
         "url": "https://mattyu-dev.github.io/creative-launch-workspace/",
         "image": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-6.png",
@@ -116,7 +116,7 @@ def render_portfolio_page() -> str:
         <div class="hero-copy">
           <div class="eyebrow">AI automation case study · Paid media operations</div>
           <h1>Catch creative launch errors before they delay campaigns or waste spend.</h1>
-          <p class="lead">I built a governed AI workflow that turns an ambiguous campaign brief and a 100-row Meta creative batch into a clear decision queue. Rows that pass the defined offline checks are separated from exceptions; blockers return to the right owner, and ambiguous cases stay with a human.</p>
+          <p class="lead">I built this workflow to turn a campaign brief and a 100-row Meta creative batch into a review queue. It separates the rows that pass the offline checks, sends blockers back to an owner and leaves ambiguous cases for a person to decide.</p>
         </div>
         <div class="hero-product">
           <figure class="product-frame">
@@ -141,30 +141,30 @@ def render_portfolio_page() -> str:
       <div class="proof-strip" aria-label="Reproducible fixture evidence">
         <div class="proof-item"><strong>100</strong><span>synthetic creatives in the reproducible fixture</span></div>
         <div class="proof-item"><strong>70</strong><span>seeded exceptions separated for routing or review</span></div>
-        <div class="proof-item"><strong>0</strong><span>live platform mutations — by design</span></div>
+        <div class="proof-item"><strong>0</strong><span>live platform mutations. The demo cannot publish or change spend.</span></div>
       </div>
       <p class="fixture-note">Reproducible evidence from a 100-row synthetic fixture. These are test outcomes and implementation boundaries, not customer or business results.</p>
     </section>
 
     <section class="page section" id="business" aria-labelledby="problem-title">
-      <div class="section-head"><div><div class="eyebrow">The operational problem</div><h2 id="problem-title">Launch risk accumulates in the handoff.</h2></div><p>Briefs, spreadsheets, chat approvals and trafficking checks fragment one launch decision across too many places.</p></div>
+      <div class="section-head"><div><div class="eyebrow">The operational problem</div><h2 id="problem-title">One launch review is split across too many tools.</h2></div><p>The brief, spreadsheet and chat thread each hold part of the decision, so ownership gets lost and problems appear late.</p></div>
       <div class="before-after">
         <div class="comparison before"><h3>Without the workspace</h3><ul><li>QA is spread across briefs, sheets and chats.</li><li>Operators manually inspect every row.</li><li>Errors have unclear ownership.</li><li>Ambiguity is silently resolved or ignored.</li><li>Problems surface during trafficking.</li></ul></div>
         <div class="comparison after"><h3>With the workspace</h3><ul><li>One decision queue holds the review state.</li><li>Rows that pass offline QA require no exception review.</li><li>Every issue names an owner and proposed fix.</li><li>Ambiguity requires an explicit human decision.</li><li>Problems surface before platform handoff.</li></ul></div>
       </div>
-      <p class="purpose">I designed this workflow from the perspective of someone who has worked across growth, performance marketing and the operational handoffs behind campaign launches since 2017. Its purpose is to reduce repetitive inspection, make exceptions visible and preserve human authority over ambiguous or high-risk decisions.</p>
+      <p class="purpose">I have worked in growth and performance marketing since 2017. I built this workflow around a problem I know well: reviewing large campaign batches without hiding exceptions or taking the final decision away from the operator.</p>
     </section>
 
     <section class="page section" aria-labelledby="demo-title">
       <div class="section-head"><div><div class="eyebrow">Guided interactive demo</div><h2 id="demo-title">Make one local decision, then inspect the evidence.</h2></div><p>The guide uses the same local state and audit path as the full 100-row workspace.</p></div>
-      <div class="guide-grid"><div class="guide-step"><b>01 · FIND</b><h3>See the ambiguous row.</h3><p>The guide selects a possible duplicate and names the issue, owner and proposed fix.</p></div><div class="guide-step"><b>02 · DECIDE</b><h3>Exercise human authority.</h3><p>Confirm for dry-run export, return for a fix or block from the dry-run export.</p></div><div class="guide-step"><b>03 · VERIFY</b><h3>Inspect the local audit event.</h3><p>See what changed, which reviewer role was recorded and the resulting authority boundary.</p></div></div>
-      <div class="guide-action"><p><strong>Nothing to configure.</strong><br>Synthetic fixture, browser-local state and an explicit completion receipt.</p><a class="button" href="workspace.html?guided=1">Start the guided review &rarr;</a></div>
+      <div class="guide-grid"><div class="guide-step"><b>01 · FIND</b><h3>See the ambiguous row.</h3><p>The guide selects a possible duplicate and names the issue, owner and proposed fix.</p></div><div class="guide-step"><b>02 · DECIDE</b><h3>Make the decision yourself.</h3><p>Approve it for dry-run export, send it back for a fix or block it.</p></div><div class="guide-step"><b>03 · VERIFY</b><h3>Inspect the local audit event.</h3><p>See the change, the recorded reviewer role and the action the system still cannot take.</p></div></div>
+      <div class="guide-action"><p><strong>The fixture is already loaded.</strong><br>The review stays in your browser and ends with a clear completion receipt.</p><a class="button" href="workspace.html?guided=1">Start the guided review &rarr;</a></div>
     </section>
 
     <section class="page section" aria-labelledby="spreadsheet-title">
-      <div class="section-head"><div><div class="eyebrow">Why not another launch spreadsheet?</div><h2 id="spreadsheet-title">Rows are easy. Governed decisions are harder.</h2></div><p>A spreadsheet can store data. This reference architecture makes evidence, abstention, validation, ownership and human decisions explicit and testable.</p></div>
-      <div class="difference-grid"><div class="difference"><b>01</b><h3>Governed intake</h3><p>Typed contracts, grounded evidence and explicit abstention replace unstructured assumptions.</p></div><div class="difference"><b>02</b><h3>Deterministic control</h3><p>Policy checks validate every row, fail closed and return exceptions to a named owner.</p></div><div class="difference"><b>03</b><h3>Auditable delivery</h3><p>Versioned evaluation, human decisions and review-only export keep the handoff inspectable.</p></div></div>
-      <div class="ai-proof-head"><strong>The proposal must show its work—or stop.</strong><a href="brief-evidence.html">Inspect the full field-level receipt &rarr;</a></div>
+      <div class="section-head"><div><div class="eyebrow">Why not another launch spreadsheet?</div><h2 id="spreadsheet-title">A spreadsheet can store the rows. The harder part is governing each review decision.</h2></div><p>The workspace records why a row passed or failed, who owns the next step and when a person must decide.</p></div>
+      <div class="difference-grid"><div class="difference"><b>01</b><h3>Grounded proposal</h3><p>The intake links each proposed field to source evidence and can abstain when the brief is incomplete.</p></div><div class="difference"><b>02</b><h3>Rule checks</h3><p>Deterministic checks validate each row. Failed rows go back to a named owner.</p></div><div class="difference"><b>03</b><h3>Review record</h3><p>The export cannot execute a platform change. Every decision gets a versioned audit record.</p></div></div>
+      <div class="ai-proof-head"><strong>Every proposal needs evidence. If a critical field is missing, the model abstains.</strong><a href="brief-evidence.html">Inspect the full field-level receipt &rarr;</a></div>
       <div class="ai-proof-grid" aria-label="Synthetic proposal and abstention evidence">
         <article class="ai-proof accepted"><header><span>SUPPORTED PROPOSAL</span><strong>Accepted by reviewer</strong></header><dl><div><dt>Proposed objective</dt><dd><code>traffic</code></dd></div><div><dt>Source evidence</dt><dd>&ldquo;traffic&rdquo;</dd></div><div><dt>Policy result</dt><dd>Direct evidence · human review required</dd></div></dl></article>
         <article class="ai-proof abstained"><header><span>MISSING CRITICAL FIELD</span><strong>Abstained</strong></header><dl><div><dt>Destination URL</dt><dd>Not found in source</dd></div><div><dt>Provider output</dt><dd>No value proposed</dd></div><div><dt>Required action</dt><dd>Human input before materialization</dd></div></dl></article>
@@ -173,7 +173,7 @@ def render_portfolio_page() -> str:
     </section>
 
     <section class="page section" id="system" aria-labelledby="system-title">
-      <div class="section-head"><div><div class="eyebrow">How the system works</div><h2 id="system-title">AI proposes. Rules verify. A human decides.</h2></div><p>Each stage has deliberately bounded authority.</p></div>
+      <div class="section-head"><div><div class="eyebrow">How the system works</div><h2 id="system-title">Rules check each AI proposal before a person decides.</h2></div><p>No stage can make the next decision on its own.</p></div>
       <div class="architecture">
         <div class="diagram">
           <svg viewBox="0 0 720 530" role="img" aria-labelledby="diagram-title diagram-desc">
@@ -210,29 +210,29 @@ def render_portfolio_page() -> str:
     </section>
 
     <section class="page proof-band" aria-labelledby="proof-title">
-      <div class="eyebrow">Explore the project</div><h2 id="proof-title">Choose the evidence you want to challenge.</h2><p>No signup, account, token or setup. Each path opens a real, bounded artifact.</p>
+      <div class="eyebrow">Explore the project</div><h2 id="proof-title">Inspect the workflow, replay a rule or open the source.</h2><p>You can inspect every artifact without an account or API token.</p>
       <div class="proof-paths"><div class="proof-path"><span>Experience the workflow</span><a href="workspace.html?guided=1">Review a human decision &rarr;</a><p>Use the guided path, then explore the full 100-row queue.</p></div><div class="proof-path"><span>Inspect the system</span><a href="fix-lab.html">Fix and revalidate a row &rarr;</a><p>Replay Python-generated golden scenarios and inspect the audit event.</p></div><div class="proof-path"><span>Review engineering evidence</span><a href="https://github.com/mattyu-dev/creative-launch-workspace">Open the source &rarr;</a><p>Architecture, evaluations, tests, security assumptions and reproducible artifacts.</p></div></div>
     </section>
 
     <section class="page section" id="evidence" aria-labelledby="evidence-title">
-      <div class="section-head"><div><div class="eyebrow">Engineering evidence</div><h2 id="evidence-title">Inspect the evidence, not the promise.</h2></div><p>The deterministic baseline is tested and reproducible. Live model quality is not claimed.</p></div>
+      <div class="section-head"><div><div class="eyebrow">Engineering evidence</div><h2 id="evidence-title">The tests, browser reports and generated evidence live in the repository.</h2></div><p>The deterministic baseline is tested and reproducible. The project does not claim live model performance.</p></div>
       <div class="evidence-grid"><div class="evidence"><strong>36 + 12</strong><span>deterministic contract cases plus cases reserved for repeated live-provider evaluation</span></div><div class="evidence"><strong>50+</strong><span>unit, negative-path and integration tests</span></div><div class="evidence"><strong>7</strong><span>tested viewport widths with real interaction QA</span></div><div class="evidence"><strong>100/100</strong><span>in committed desktop and mobile Lighthouse accessibility runs</span></div></div>
       <div class="evidence-links"><a href="brief-evidence.html">See how the AI is governed</a><a href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md">Architecture</a><a href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/ai/evaluation.md">Evaluation protocol</a><a href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/security/threat_model.md">Threat model</a><a href="https://github.com/mattyu-dev/creative-launch-workspace/actions">CI evidence</a></div>
     </section>
 
     <section class="page section" id="production" aria-labelledby="production-title">
-      <div class="section-head"><div><div class="eyebrow">Production path</div><h2 id="production-title">A reference implementation with a serious next-proof plan.</h2></div><p>These boundaries define the order in which production risk should be reduced.</p></div>
+      <div class="section-head"><div><div class="eyebrow">Production path</div><h2 id="production-title">What the prototype proves, and what still needs testing.</h2></div><p>Before this could touch a production ad account, I would validate the following risks in order.</p></div>
       <div class="production-grid"><div class="production-card warning"><h3>What this does not prove</h3><ul><li>Production Meta API compatibility</li><li>Customer-data and tenant isolation</li><li>Representative live-model quality</li><li>Measured operator or business impact</li></ul></div><div class="production-card"><h3>What I would validate next</h3><ol><li>Read-only Meta sandbox compatibility</li><li>Authentication, tenancy and secrets handling</li><li>Privacy, redaction and retention</li><li>Persistent concurrent review and replay</li><li>Representative model evaluation</li><li>Gradual permissions with approval gates</li></ol></div></div>
       <div class="metrics-label">Proposed production pilot metrics · not measured results</div><div class="metrics"><div class="metric-group"><strong>Efficiency</strong><span>Operator minutes per 100 creatives · time to readiness · rework loops · rows separated from exception review</span></div><div class="metric-group"><strong>Quality</strong><span>Defects found before trafficking · blocker precision and false negatives · correct-owner routing</span></div><div class="metric-group"><strong>Governance</strong><span>Human overrides · model abstentions · audit completeness</span></div></div>
     </section>
 
     <section class="page section" id="about" aria-labelledby="about-title">
-      <div class="about"><div><div class="eyebrow">About Mathieu</div><h2 id="about-title">I build governed AI workflows for operational teams.</h2><p>I designed and implemented this project end to end, combining experience across growth and performance marketing since 2017 with product thinking, automation and data systems.</p><div class="skills"><span>Python</span><span>JavaScript</span><span>Structured Outputs</span><span>AI evaluations</span><span>Human-in-the-loop systems</span><span>Threat modelling</span><span>CI/CD</span><span>Paid-media operations</span></div><div class="actions"><a class="button" href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Message me on LinkedIn</a><a class="text-link" href="https://github.com/mattyu-dev" rel="me external">Explore my GitHub &rarr;</a></div></div><div><div class="eyebrow">My contribution</div><div class="contribution-list"><div class="contribution"><b>Product</b><span>Problem framing, workflow design and business-to-technical translation</span></div><div class="contribution"><b>AI system</b><span>Provider isolation, grounded proposals, abstention and evaluation design</span></div><div class="contribution"><b>Engineering</b><span>Typed contracts, deterministic validators, local persistence and audit state</span></div><div class="contribution"><b>Trust</b><span>Threat model, fail-closed policy and explicit platform boundaries</span></div><div class="contribution"><b>Quality</b><span>Responsive UX, accessibility, browser QA, CI and reproducible artifacts</span></div></div></div></div>
+      <div class="about"><div><div class="eyebrow">About Mathieu</div><h2 id="about-title">I build AI workflows for teams that need to see and control each decision.</h2><p>I built the workflow, interface, Python contracts, evaluations and browser QA myself. The project draws on my work in growth and performance marketing since 2017.</p><div class="skills"><span>Python</span><span>JavaScript</span><span>Structured Outputs</span><span>AI evaluations</span><span>Human-in-the-loop systems</span><span>Threat modelling</span><span>CI/CD</span><span>Paid-media operations</span></div><div class="actions"><a class="button" href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Message me on LinkedIn</a><a class="text-link" href="https://github.com/mattyu-dev" rel="me external">Explore my GitHub &rarr;</a></div></div><div><div class="eyebrow">My contribution</div><div class="contribution-list"><div class="contribution"><b>Product</b><span>Defined the operating problem, designed the review flow and translated campaign requirements into system rules.</span></div><div class="contribution"><b>AI system</b><span>Kept model output behind policy checks, with source evidence and explicit abstention.</span></div><div class="contribution"><b>Engineering</b><span>Built typed contracts, deterministic validators, local state and audit records.</span></div><div class="contribution"><b>Trust</b><span>Wrote the threat model and kept platform mutations out of scope.</span></div><div class="contribution"><b>Quality</b><span>Tested the responsive layout, accessibility, generated artifacts and CI.</span></div></div></div></div>
     </section>
 
-    <section class="page final-cta" aria-labelledby="contact-title"><div class="eyebrow">Let’s talk</div><h2 id="contact-title">Building an AI workflow where trust matters?</h2><p>I would be happy to discuss the product decisions, architecture, evaluation strategy or how this approach could apply to another operational workflow.</p><div class="actions"><a class="button" href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Message me on LinkedIn</a><a class="text-link" href="https://github.com/mattyu-dev/creative-launch-workspace">Explore the source &rarr;</a></div></section>
+    <section class="page final-cta" aria-labelledby="contact-title"><div class="eyebrow">Contact</div><h2 id="contact-title">Working on a similar operational problem?</h2><p>I can walk you through how I designed the system and where I would take it next.</p><div class="actions"><a class="button" href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Message me on LinkedIn</a><a class="text-link" href="https://github.com/mattyu-dev/creative-launch-workspace">Explore the source &rarr;</a></div></section>
   </main>
-  <footer><div class="page footer-row"><span>Creative Launch Workspace · v1.6.2 · Updated <time datetime="2026-07-13">13 July 2026</time></span><span>MIT licensed · Synthetic reference implementation · <a href="https://github.com/mattyu-dev/creative-launch-workspace">Source</a></span></div></footer>
+  <footer><div class="page footer-row"><span>Creative Launch Workspace · v1.6.3 · Updated <time datetime="2026-07-13">13 July 2026</time></span><span>MIT licensed · Synthetic reference implementation · <a href="https://github.com/mattyu-dev/creative-launch-workspace">Source</a></span></div></footer>
 </body>
 </html>
 """
@@ -247,7 +247,7 @@ def render_social_card_page() -> str:
   <title>Creative Launch Workspace social card</title>
   <style>
     :root{--canvas:#f7f5ef;--ink:#1c211e;--body:#48504b;--muted:#666d67;--line:#d8d3c8;--forest:#113e31;--oxide:#a9472e;--serif:"Iowan Old Style",Charter,Georgia,serif}
-    *{box-sizing:border-box}body{width:1200px;height:630px;margin:0;overflow:hidden;color:var(--ink);background:var(--canvas);font:400 16px/1.42 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{height:100%;display:grid;grid-template-columns:55% 45%}section{min-width:0}.copy{display:flex;flex-direction:column;padding:42px 42px 36px 58px}.brand{display:flex;align-items:center;gap:10px;font-weight:750}.mark{width:23px;height:23px;position:relative;border-left:2px solid var(--oxide);border-top:2px solid var(--oxide)}.mark:after{content:"";width:7px;height:7px;position:absolute;right:1px;bottom:1px;background:var(--forest)}.hero{margin:auto 0}.eyebrow{color:var(--oxide);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}h1{max-width:610px;margin:12px 0 15px;font:500 54px/.96 var(--serif);letter-spacing:-.045em}p{max-width:590px;margin:0;color:var(--body);font-size:18px}.proof{display:flex;gap:22px;margin-top:25px;padding-top:15px;border-top:1px solid var(--line)}.proof span{color:var(--muted);font-size:13px}.proof b{margin-right:5px;color:var(--ink);font:500 27px/1 var(--serif)}footer{display:flex;justify-content:space-between;gap:18px;color:var(--muted);font-size:13px}.visual{position:relative;overflow:hidden;border-left:1px solid var(--line);background:var(--forest)}.visual img{width:830px;height:630px;display:block;object-fit:cover;object-position:7% top;opacity:.93}.visual:after{content:"AI proposes · Rules verify · A human decides";position:absolute;left:26px;right:26px;bottom:28px;padding:13px 15px;border:1px solid rgba(255,255,255,.28);color:#fff;background:rgba(17,62,49,.94);font-size:15px;font-weight:700}.badge{position:absolute;top:26px;right:24px;padding:7px 9px;color:var(--forest);background:#fff;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+    *{box-sizing:border-box}body{width:1200px;height:630px;margin:0;overflow:hidden;color:var(--ink);background:var(--canvas);font:400 16px/1.42 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{height:100%;display:grid;grid-template-columns:55% 45%}section{min-width:0}.copy{display:flex;flex-direction:column;padding:42px 42px 36px 58px}.brand{display:flex;align-items:center;gap:10px;font-weight:750}.mark{width:23px;height:23px;position:relative;border-left:2px solid var(--oxide);border-top:2px solid var(--oxide)}.mark:after{content:"";width:7px;height:7px;position:absolute;right:1px;bottom:1px;background:var(--forest)}.hero{margin:auto 0}.eyebrow{color:var(--oxide);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}h1{max-width:610px;margin:12px 0 15px;font:500 54px/.96 var(--serif);letter-spacing:-.045em}p{max-width:590px;margin:0;color:var(--body);font-size:18px}.proof{display:flex;gap:22px;margin-top:25px;padding-top:15px;border-top:1px solid var(--line)}.proof span{color:var(--muted);font-size:13px}.proof b{margin-right:5px;color:var(--ink);font:500 27px/1 var(--serif)}footer{display:flex;justify-content:space-between;gap:18px;color:var(--muted);font-size:13px}.visual{position:relative;overflow:hidden;border-left:1px solid var(--line);background:var(--forest)}.visual img{width:830px;height:630px;display:block;object-fit:cover;object-position:7% top;opacity:.93}.visual:after{content:"Rules check each AI proposal before a person decides.";position:absolute;left:26px;right:26px;bottom:28px;padding:13px 15px;border:1px solid rgba(255,255,255,.28);color:#fff;background:rgba(17,62,49,.94);font-size:15px;font-weight:700}.badge{position:absolute;top:26px;right:24px;padding:7px 9px;color:var(--forest);background:#fff;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
   </style>
 </head>
 <body><main><section class="copy"><div class="brand"><span class="mark"></span>Creative Launch Workspace</div><div class="hero"><div class="eyebrow">AI automation case study · Paid media operations</div><h1>Catch launch errors before Ads Manager.</h1><p>A governed workflow for 100-row Meta creative launches.</p><div class="proof"><span><b>100</b> fixture rows</span><span><b>70</b> seeded exceptions</span><span><b>0</b> live mutations</span></div></div><footer><strong>Mathieu Petroni</strong><span>AI Automation · Product Systems</span></footer></section><section class="visual"><img src="assets/workspace-desktop.png" alt=""><span class="badge">Interactive case study</span></section></main></body>

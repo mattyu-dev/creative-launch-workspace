@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.3 — 2026-07-13
+
+- Rewrote the public portfolio and README with the Humanizer 2.8.2 audit method, replacing slogan-like claims with concrete descriptions of the workflow, evidence and production boundary.
+- Made Mathieu's contribution more specific and active without changing the verified `AI Automation Lead` title or `since 2017` timeline.
+- Added unit and headless browser contracts for the final copy, including removal of the old portfolio slogans and long dashes.
+
 ## 1.6.2 — 2026-07-13
 
 - Tightened four final case-study claims around mutation boundaries, review-state ownership, bounded authority and the hero system link.
