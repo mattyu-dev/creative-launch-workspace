@@ -22,15 +22,24 @@ const chromePath = [
   process.env.PUPPETEER_EXECUTABLE_PATH,
   join(homedir(), ".local/bin/chrome-headless-shell"),
   "/usr/bin/chrome-headless-shell",
-  "/usr/bin/chromium-headless-shell"
+  "/usr/bin/chromium-headless-shell",
+  "/usr/bin/google-chrome",
+  "/usr/bin/google-chrome-stable",
+  "/usr/bin/chromium",
+  "/usr/bin/chromium-browser"
 ]
   .filter((candidate) => candidate && existsSync(candidate))
   .map((candidate) => realpathSync(candidate))
-  .find((candidate) => !candidate.includes(".app/") && /^(chrome|chromium)-headless-shell$/.test(basename(candidate)));
+  .find((candidate) => {
+    if (candidate.includes(".app/")) return false;
+    const executable = basename(candidate);
+    return /^(chrome|chromium)-headless-shell$/.test(executable)
+      || (process.platform !== "darwin" && /^(chrome|google-chrome(?:-stable)?|chromium(?:-browser)?)$/.test(executable));
+  });
 
 if (!chromePath) {
   throw new Error(
-    "Chrome Headless Shell was not found. Set CODEX_HEADLESS_CHROME_PATH to the standalone headless-shell executable."
+    "No focus-safe browser was found. macOS requires standalone chrome-headless-shell via CODEX_HEADLESS_CHROME_PATH."
   );
 }
 
