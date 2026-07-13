@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v7",
-  "tested_at": "2026-07-13T17:22:50.238Z",
+  "contract_version": "workspace_runtime_qa.v8",
+  "tested_at": "2026-07-13T17:41:11.791Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-13T17:21:51.245Z",
+      "occurredAt": "2026-07-13T17:40:12.790Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1783963311245_8",
+        "event_id": "evt_local_1783964412790_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-13T17:21:51.245Z"
+        "occurred_at": "2026-07-13T17:40:12.790Z"
       }
     },
     "request_violations": [],
@@ -233,6 +233,15 @@
       "experienceSince": true,
       "structuredJobTitle": "AI Automation Lead"
     },
+    "humanizedCopy": {
+      "noLongDash": true,
+      "concreteHero": true,
+      "concreteProblem": true,
+      "plainAiBoundary": true,
+      "concreteProductionBoundary": true,
+      "personalContribution": true,
+      "oldSlogansRemoved": true
+    },
     "aiProofCount": 2,
     "hasAcceptedProposal": true,
     "hasAbstentionProof": true,
@@ -247,9 +256,9 @@
     "proofPathCount": 3,
     "ownership": true,
     "heroProductVisible": true,
-    "heroProductTop": 266,
+    "heroProductTop": 250,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:61495/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:62156/docs/assets/workspace-desktop.avif",
     "differenceCount": 3,
     "metricGroupCount": 3,
     "sectionNavTargetsResolve": true,
@@ -266,9 +275,9 @@
     "authorAfterProduct": true,
     "ctaAfterProduct": true,
     "productVisible": true,
-    "productTop": 508,
+    "productTop": 458,
     "productVisibleHeight": 270,
-    "heroImageSource": "http://127.0.0.1:61495/docs/assets/workspace-mobile-hero.webp",
+    "heroImageSource": "http://127.0.0.1:62156/docs/assets/workspace-mobile-hero.webp",
     "heroAssetWidth": 390,
     "heroAssetHeight": 360,
     "visibleAnnotations": 0,
