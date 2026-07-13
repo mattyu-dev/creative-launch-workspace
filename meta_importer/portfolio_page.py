@@ -54,7 +54,7 @@ def render_portfolio_page() -> str:
         "codeRepository": "https://github.com/mattyu-dev/creative-launch-workspace",
         "programmingLanguage": ["Python", "JavaScript"],
         "license": "https://opensource.org/license/mit",
-        "version": "1.6.1",
+        "version": "1.6.2",
         "author": { "@id": "https://mattyu-dev.github.io/creative-launch-workspace/#mathieu" }
       },
       {
@@ -135,13 +135,13 @@ def render_portfolio_page() -> str:
           <span class="annotation a2"><b>OWNED EXCEPTIONS</b> blocker + owner + fix</span>
           <span class="annotation a3"><b>HUMAN AUTHORITY</b> ambiguity stays visible</span>
         </div>
-        <div class="hero-cta"><div class="actions"><a class="button" href="workspace.html?guided=1">Try the guided demo</a><a class="text-link" href="#system">Explore architecture and evidence &rarr;</a></div><p class="demo-boundary">The demo begins after governed brief intake. <a href="brief-evidence.html">Inspect the proposal evidence and abstention boundary.</a></p></div>
+        <div class="hero-cta"><div class="actions"><a class="button" href="workspace.html?guided=1">Try the guided demo</a><a class="text-link" href="#system">See how the system works &rarr;</a></div><p class="demo-boundary">The demo begins after governed brief intake. <a href="brief-evidence.html">Inspect the proposal evidence and abstention boundary.</a></p></div>
         <div class="hero-byline"><strong>Mathieu Petroni · AI Automation Lead</strong><span>AI automation, product systems and growth operations</span><a href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">LinkedIn</a><a href="https://github.com/mattyu-dev" rel="me external">GitHub</a></div>
       </div>
       <div class="proof-strip" aria-label="Reproducible fixture evidence">
         <div class="proof-item"><strong>100</strong><span>synthetic creatives in the reproducible fixture</span></div>
         <div class="proof-item"><strong>70</strong><span>seeded exceptions separated for routing or review</span></div>
-        <div class="proof-item"><strong>0</strong><span>external writes available in this implementation</span></div>
+        <div class="proof-item"><strong>0</strong><span>live platform mutations — by design</span></div>
       </div>
       <p class="fixture-note">Reproducible evidence from a 100-row synthetic fixture. These are test outcomes and implementation boundaries, not customer or business results.</p>
     </section>
@@ -150,9 +150,9 @@ def render_portfolio_page() -> str:
       <div class="section-head"><div><div class="eyebrow">The operational problem</div><h2 id="problem-title">Launch risk accumulates in the handoff.</h2></div><p>Briefs, spreadsheets, chat approvals and trafficking checks fragment one launch decision across too many places.</p></div>
       <div class="before-after">
         <div class="comparison before"><h3>Without the workspace</h3><ul><li>QA is spread across briefs, sheets and chats.</li><li>Operators manually inspect every row.</li><li>Errors have unclear ownership.</li><li>Ambiguity is silently resolved or ignored.</li><li>Problems surface during trafficking.</li></ul></div>
-        <div class="comparison after"><h3>With the workspace</h3><ul><li>One decision queue holds the launch state.</li><li>Rows that pass offline QA require no exception review.</li><li>Every issue names an owner and proposed fix.</li><li>Ambiguity requires an explicit human decision.</li><li>Problems surface before platform handoff.</li></ul></div>
+        <div class="comparison after"><h3>With the workspace</h3><ul><li>One decision queue holds the review state.</li><li>Rows that pass offline QA require no exception review.</li><li>Every issue names an owner and proposed fix.</li><li>Ambiguity requires an explicit human decision.</li><li>Problems surface before platform handoff.</li></ul></div>
       </div>
-      <p class="purpose">I designed this workflow from the perspective of someone who has spent nine years across growth, performance marketing and the operational handoffs behind campaign launches. Its purpose is to reduce repetitive inspection, make exceptions visible and preserve human authority over ambiguous or high-risk decisions.</p>
+      <p class="purpose">I designed this workflow from the perspective of someone who has worked across growth, performance marketing and the operational handoffs behind campaign launches since 2017. Its purpose is to reduce repetitive inspection, make exceptions visible and preserve human authority over ambiguous or high-risk decisions.</p>
     </section>
 
     <section class="page section" aria-labelledby="demo-title">
@@ -173,7 +173,7 @@ def render_portfolio_page() -> str:
     </section>
 
     <section class="page section" id="system" aria-labelledby="system-title">
-      <div class="section-head"><div><div class="eyebrow">How the system works</div><h2 id="system-title">AI proposes. Rules verify. A human decides.</h2></div><p>Each boundary has a deliberately narrower authority than the one before it.</p></div>
+      <div class="section-head"><div><div class="eyebrow">How the system works</div><h2 id="system-title">AI proposes. Rules verify. A human decides.</h2></div><p>Each stage has deliberately bounded authority.</p></div>
       <div class="architecture">
         <div class="diagram">
           <svg viewBox="0 0 720 530" role="img" aria-labelledby="diagram-title diagram-desc">
@@ -227,12 +227,12 @@ def render_portfolio_page() -> str:
     </section>
 
     <section class="page section" id="about" aria-labelledby="about-title">
-      <div class="about"><div><div class="eyebrow">About Mathieu</div><h2 id="about-title">I build governed AI workflows for operational teams.</h2><p>I designed and implemented this project end to end, combining nine years of growth and performance marketing experience with product thinking, automation and data systems.</p><div class="skills"><span>Python</span><span>JavaScript</span><span>Structured Outputs</span><span>AI evaluations</span><span>Human-in-the-loop systems</span><span>Threat modelling</span><span>CI/CD</span><span>Paid-media operations</span></div><div class="actions"><a class="button" href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Message me on LinkedIn</a><a class="text-link" href="https://github.com/mattyu-dev" rel="me external">Explore my GitHub &rarr;</a></div></div><div><div class="eyebrow">My contribution</div><div class="contribution-list"><div class="contribution"><b>Product</b><span>Problem framing, workflow design and business-to-technical translation</span></div><div class="contribution"><b>AI system</b><span>Provider isolation, grounded proposals, abstention and evaluation design</span></div><div class="contribution"><b>Engineering</b><span>Typed contracts, deterministic validators, local persistence and audit state</span></div><div class="contribution"><b>Trust</b><span>Threat model, fail-closed policy and explicit platform boundaries</span></div><div class="contribution"><b>Quality</b><span>Responsive UX, accessibility, browser QA, CI and reproducible artifacts</span></div></div></div></div>
+      <div class="about"><div><div class="eyebrow">About Mathieu</div><h2 id="about-title">I build governed AI workflows for operational teams.</h2><p>I designed and implemented this project end to end, combining experience across growth and performance marketing since 2017 with product thinking, automation and data systems.</p><div class="skills"><span>Python</span><span>JavaScript</span><span>Structured Outputs</span><span>AI evaluations</span><span>Human-in-the-loop systems</span><span>Threat modelling</span><span>CI/CD</span><span>Paid-media operations</span></div><div class="actions"><a class="button" href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Message me on LinkedIn</a><a class="text-link" href="https://github.com/mattyu-dev" rel="me external">Explore my GitHub &rarr;</a></div></div><div><div class="eyebrow">My contribution</div><div class="contribution-list"><div class="contribution"><b>Product</b><span>Problem framing, workflow design and business-to-technical translation</span></div><div class="contribution"><b>AI system</b><span>Provider isolation, grounded proposals, abstention and evaluation design</span></div><div class="contribution"><b>Engineering</b><span>Typed contracts, deterministic validators, local persistence and audit state</span></div><div class="contribution"><b>Trust</b><span>Threat model, fail-closed policy and explicit platform boundaries</span></div><div class="contribution"><b>Quality</b><span>Responsive UX, accessibility, browser QA, CI and reproducible artifacts</span></div></div></div></div>
     </section>
 
     <section class="page final-cta" aria-labelledby="contact-title"><div class="eyebrow">Let’s talk</div><h2 id="contact-title">Building an AI workflow where trust matters?</h2><p>I would be happy to discuss the product decisions, architecture, evaluation strategy or how this approach could apply to another operational workflow.</p><div class="actions"><a class="button" href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Message me on LinkedIn</a><a class="text-link" href="https://github.com/mattyu-dev/creative-launch-workspace">Explore the source &rarr;</a></div></section>
   </main>
-  <footer><div class="page footer-row"><span>Creative Launch Workspace · v1.6.1 · Updated <time datetime="2026-07-13">13 July 2026</time></span><span>MIT licensed · Synthetic reference implementation · <a href="https://github.com/mattyu-dev/creative-launch-workspace">Source</a></span></div></footer>
+  <footer><div class="page footer-row"><span>Creative Launch Workspace · v1.6.2 · Updated <time datetime="2026-07-13">13 July 2026</time></span><span>MIT licensed · Synthetic reference implementation · <a href="https://github.com/mattyu-dev/creative-launch-workspace">Source</a></span></div></footer>
 </body>
 </html>
 """
@@ -250,6 +250,6 @@ def render_social_card_page() -> str:
     *{box-sizing:border-box}body{width:1200px;height:630px;margin:0;overflow:hidden;color:var(--ink);background:var(--canvas);font:400 16px/1.42 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{height:100%;display:grid;grid-template-columns:55% 45%}section{min-width:0}.copy{display:flex;flex-direction:column;padding:42px 42px 36px 58px}.brand{display:flex;align-items:center;gap:10px;font-weight:750}.mark{width:23px;height:23px;position:relative;border-left:2px solid var(--oxide);border-top:2px solid var(--oxide)}.mark:after{content:"";width:7px;height:7px;position:absolute;right:1px;bottom:1px;background:var(--forest)}.hero{margin:auto 0}.eyebrow{color:var(--oxide);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}h1{max-width:610px;margin:12px 0 15px;font:500 54px/.96 var(--serif);letter-spacing:-.045em}p{max-width:590px;margin:0;color:var(--body);font-size:18px}.proof{display:flex;gap:22px;margin-top:25px;padding-top:15px;border-top:1px solid var(--line)}.proof span{color:var(--muted);font-size:13px}.proof b{margin-right:5px;color:var(--ink);font:500 27px/1 var(--serif)}footer{display:flex;justify-content:space-between;gap:18px;color:var(--muted);font-size:13px}.visual{position:relative;overflow:hidden;border-left:1px solid var(--line);background:var(--forest)}.visual img{width:830px;height:630px;display:block;object-fit:cover;object-position:7% top;opacity:.93}.visual:after{content:"AI proposes · Rules verify · A human decides";position:absolute;left:26px;right:26px;bottom:28px;padding:13px 15px;border:1px solid rgba(255,255,255,.28);color:#fff;background:rgba(17,62,49,.94);font-size:15px;font-weight:700}.badge{position:absolute;top:26px;right:24px;padding:7px 9px;color:var(--forest);background:#fff;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
   </style>
 </head>
-<body><main><section class="copy"><div class="brand"><span class="mark"></span>Creative Launch Workspace</div><div class="hero"><div class="eyebrow">AI automation case study · Paid media operations</div><h1>Catch launch errors before Ads Manager.</h1><p>A governed workflow for 100-row Meta creative launches.</p><div class="proof"><span><b>100</b> fixture rows</span><span><b>70</b> seeded exceptions</span><span><b>0</b> external writes</span></div></div><footer><strong>Mathieu Petroni</strong><span>AI Automation · Product Systems</span></footer></section><section class="visual"><img src="assets/workspace-desktop.png" alt=""><span class="badge">Interactive case study</span></section></main></body>
+<body><main><section class="copy"><div class="brand"><span class="mark"></span>Creative Launch Workspace</div><div class="hero"><div class="eyebrow">AI automation case study · Paid media operations</div><h1>Catch launch errors before Ads Manager.</h1><p>A governed workflow for 100-row Meta creative launches.</p><div class="proof"><span><b>100</b> fixture rows</span><span><b>70</b> seeded exceptions</span><span><b>0</b> live mutations</span></div></div><footer><strong>Mathieu Petroni</strong><span>AI Automation · Product Systems</span></footer></section><section class="visual"><img src="assets/workspace-desktop.png" alt=""><span class="badge">Interactive case study</span></section></main></body>
 </html>
 """

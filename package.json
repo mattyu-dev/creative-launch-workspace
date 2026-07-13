@@ -1,7 +1,7 @@
 {
   "name": "creative-launch-workspace",
   "private": true,
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Governed AI-assisted creative launch workspace and reproducible browser QA",
   "scripts": {
     "qa:frontend": "node scripts/workspace_runtime_qa.mjs"

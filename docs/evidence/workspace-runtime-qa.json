@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v6",
-  "tested_at": "2026-07-13T16:57:44.152Z",
+  "contract_version": "workspace_runtime_qa.v7",
+  "tested_at": "2026-07-13T17:22:50.238Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-13T16:56:45.198Z",
+      "occurredAt": "2026-07-13T17:21:51.245Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1783961805198_8",
+        "event_id": "evt_local_1783963311245_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-13T16:56:45.198Z"
+        "occurred_at": "2026-07-13T17:21:51.245Z"
       }
     },
     "request_violations": [],
@@ -225,6 +225,14 @@
     "hasBusinessCase": true,
     "hasSpreadsheetCase": true,
     "hasDemoBoundary": true,
+    "copyFreeze": {
+      "mutationBoundary": true,
+      "reviewState": true,
+      "boundedAuthority": true,
+      "heroSecondaryCta": "See how the system works →",
+      "experienceSince": true,
+      "structuredJobTitle": "AI Automation Lead"
+    },
     "aiProofCount": 2,
     "hasAcceptedProposal": true,
     "hasAbstentionProof": true,
@@ -241,7 +249,7 @@
     "heroProductVisible": true,
     "heroProductTop": 266,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:60529/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:61495/docs/assets/workspace-desktop.avif",
     "differenceCount": 3,
     "metricGroupCount": 3,
     "sectionNavTargetsResolve": true,
@@ -260,7 +268,7 @@
     "productVisible": true,
     "productTop": 508,
     "productVisibleHeight": 270,
-    "heroImageSource": "http://127.0.0.1:60529/docs/assets/workspace-mobile-hero.webp",
+    "heroImageSource": "http://127.0.0.1:61495/docs/assets/workspace-mobile-hero.webp",
     "heroAssetWidth": 390,
     "heroAssetHeight": 360,
     "visibleAnnotations": 0,
@@ -353,7 +361,7 @@
       "performanceScore": 0.98,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1051,
+      "lcpMs": 1050,
       "cls": 0,
       "tbtMs": 0
     },
