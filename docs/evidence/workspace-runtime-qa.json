@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v4",
-  "tested_at": "2026-07-13T14:50:01.051Z",
+  "tested_at": "2026-07-13T14:52:41.168Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,18 +103,18 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-13T14:49:00.962Z",
+      "occurredAt": "2026-07-13T14:51:41.235Z",
       "write": "not attempted · mutation_allowed:false",
       "summary": "You just reviewed one of 10 ambiguous cases. No external system was changed.",
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1783954140962_8",
+        "event_id": "evt_local_1783954301235_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-13T14:49:00.962Z"
+        "occurred_at": "2026-07-13T14:51:41.235Z"
       }
     },
     "request_violations": [],
@@ -220,7 +220,7 @@
     "heroProductVisible": true,
     "heroProductTop": 243,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:52362/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:52857/docs/assets/workspace-desktop.avif",
     "noDocumentOverflow": true
   },
   "portfolio_mobile": {
