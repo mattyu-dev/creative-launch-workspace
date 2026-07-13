@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
 import { execFile, execFileSync } from "node:child_process";
-import { createReadStream, existsSync } from "node:fs";
+import { createReadStream, existsSync, realpathSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
-import { dirname, extname, join, normalize, relative } from "node:path";
+import { homedir } from "node:os";
+import { basename, dirname, extname, join, normalize, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
@@ -16,16 +17,21 @@ const assetsDir = normalize(process.env.QA_ASSETS_DIR || join(root, "docs/assets
 const evidenceDir = normalize(process.env.QA_EVIDENCE_DIR || join(root, "docs/evidence"));
 const runFile = promisify(execFile);
 const chromePath = [
+  process.env.CODEX_HEADLESS_CHROME_PATH,
   process.env.CHROME_PATH,
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-  "/usr/bin/google-chrome",
-  "/usr/bin/google-chrome-stable",
-  "/usr/bin/chromium",
-  "/usr/bin/chromium-browser"
-].find((candidate) => candidate && existsSync(candidate));
+  process.env.PUPPETEER_EXECUTABLE_PATH,
+  join(homedir(), ".local/bin/chrome-headless-shell"),
+  "/usr/bin/chrome-headless-shell",
+  "/usr/bin/chromium-headless-shell"
+]
+  .filter((candidate) => candidate && existsSync(candidate))
+  .map((candidate) => realpathSync(candidate))
+  .find((candidate) => !candidate.includes(".app/") && /^(chrome|chromium)-headless-shell$/.test(basename(candidate)));
 
 if (!chromePath) {
-  throw new Error("Chrome or Chromium was not found. Set CHROME_PATH to its executable.");
+  throw new Error(
+    "Chrome Headless Shell was not found. Set CODEX_HEADLESS_CHROME_PATH to the standalone headless-shell executable."
+  );
 }
 
 execFileSync(
@@ -580,6 +586,8 @@ await page.screenshot({ path: join(assetsDir, "brief-evidence.png"), fullPage: t
 await browser.close();
 
 const lighthouseBin = join(root, "node_modules/.bin/lighthouse");
+const lighthouseChromeFlags = ["--headless=new", "--disable-dev-shm-usage"];
+if (process.platform === "linux") lighthouseChromeFlags.push("--no-sandbox");
 const lighthouseTargets = [
   { surface: "workspace", formFactor: "desktop", targetUrl: url, outputPath: join(evidenceDir, "workspace-lighthouse-accessibility-desktop.json") },
   { surface: "workspace", formFactor: "mobile", targetUrl: url, outputPath: join(evidenceDir, "workspace-lighthouse-accessibility-mobile.json") },
@@ -598,10 +606,12 @@ for (const { formFactor, targetUrl, outputPath } of lighthouseTargets) {
     "--quiet"
   ];
   if (formFactor === "desktop") args.push("--screenEmulation.disabled");
-  if (process.platform === "linux") {
-    args.push("--chrome-flags=--headless=new --no-sandbox --disable-dev-shm-usage");
-  }
-  await runFile(lighthouseBin, args, { cwd: root, maxBuffer: 10 * 1024 * 1024 });
+  args.push(`--chrome-flags=${lighthouseChromeFlags.join(" ")}`);
+  await runFile(lighthouseBin, args, {
+    cwd: root,
+    env: { ...process.env, CHROME_PATH: chromePath },
+    maxBuffer: 10 * 1024 * 1024
+  });
 }
 
 const accessibility = { workspace: {}, portfolio: {} };
@@ -628,10 +638,12 @@ for (const { formFactor, outputPath } of portfolioQualityTargets) {
     "--quiet"
   ];
   if (formFactor === "desktop") args.push("--screenEmulation.disabled");
-  if (process.platform === "linux") {
-    args.push("--chrome-flags=--headless=new --no-sandbox --disable-dev-shm-usage");
-  }
-  await runFile(lighthouseBin, args, { cwd: root, maxBuffer: 10 * 1024 * 1024 });
+  args.push(`--chrome-flags=${lighthouseChromeFlags.join(" ")}`);
+  await runFile(lighthouseBin, args, {
+    cwd: root,
+    env: { ...process.env, CHROME_PATH: chromePath },
+    maxBuffer: 10 * 1024 * 1024
+  });
 }
 
 const portfolioQuality = {};
