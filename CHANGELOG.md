@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.1 — 2026-07-13
+
+- Added a dedicated mobile hero capture that shows the selected ambiguous creative, its owner and all three human-decision controls, with a browser-enforced composition contract.
+- Closed the guided-demo portfolio loop through a linked workspace brand and a secondary return action after completion.
+- Added compact, source-backed proposal and abstention evidence before the engineering links without implying live-model quality.
+- Extended headless QA to verify the mobile hero asset, AI evidence cards and both real navigation paths back to the case study.
+
 ## 1.6.0 — 2026-07-13
 
 - Tightened every workspace status and action around offline checks and dry-run export authority, without changing the underlying review-state or export contracts.

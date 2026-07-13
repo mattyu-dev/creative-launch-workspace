@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v5",
-  "tested_at": "2026-07-13T15:48:18.293Z",
+  "contract_version": "workspace_runtime_qa.v6",
+  "tested_at": "2026-07-13T16:57:44.152Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,17 +103,21 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-13T15:47:18.407Z",
+      "occurredAt": "2026-07-13T16:56:45.198Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
+      "brandHref": "index.html",
+      "returnHref": "index.html",
+      "returnLabel": "Return to the case study",
+      "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1783957638407_8",
+        "event_id": "evt_local_1783961805198_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-13T15:47:18.407Z"
+        "occurred_at": "2026-07-13T16:56:45.198Z"
       }
     },
     "request_violations": [],
@@ -149,6 +153,20 @@
       "inert": true,
       "ariaHidden": "true"
     }
+  },
+  "mobile_hero_capture": {
+    "selectedRow": "8",
+    "creative": "cr_007 · row 8",
+    "issue": "Possible duplicate · Creative Ops Manager",
+    "ownerVisible": true,
+    "detailOpen": true,
+    "actionLabels": [
+      "Confirm reuse for dry-run export",
+      "Return for fix",
+      "Block from dry-run export"
+    ],
+    "actionBottom": 295,
+    "captureWidth": 390
   },
   "keyboard": {
     "focusedRow": "18",
@@ -206,6 +224,10 @@
     "hasLabCta": true,
     "hasBusinessCase": true,
     "hasSpreadsheetCase": true,
+    "hasDemoBoundary": true,
+    "aiProofCount": 2,
+    "hasAcceptedProposal": true,
+    "hasAbstentionProof": true,
     "hasBoundaries": true,
     "hasProductionPath": true,
     "hasContact": true,
@@ -217,9 +239,9 @@
     "proofPathCount": 3,
     "ownership": true,
     "heroProductVisible": true,
-    "heroProductTop": 243,
+    "heroProductTop": 266,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:57144/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:60529/docs/assets/workspace-desktop.avif",
     "differenceCount": 3,
     "metricGroupCount": 3,
     "sectionNavTargetsResolve": true,
@@ -234,39 +256,55 @@
     "authorBlockCount": 1,
     "authorBlockDisplayed": true,
     "authorAfterProduct": true,
+    "ctaAfterProduct": true,
     "productVisible": true,
-    "productTop": 622,
-    "productVisibleHeight": 222,
+    "productTop": 508,
+    "productVisibleHeight": 270,
+    "heroImageSource": "http://127.0.0.1:60529/docs/assets/workspace-mobile-hero.webp",
+    "heroAssetWidth": 390,
+    "heroAssetHeight": 360,
     "visibleAnnotations": 0,
     "architectureDiagramHidden": true,
     "architectureStackVisible": true,
     "architectureStepCount": 7,
     "architectureMinFontPx": 12
   },
+  "portfolio_navigation": {
+    "brandHref": "index.html",
+    "returnHref": "index.html",
+    "brandDestination": "/docs/index.html",
+    "completionDestination": "/docs/index.html"
+  },
   "responsive_asset_fidelity": [
     {
       "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.avif",
       "dimensionsMatch": true,
-      "psnr": 46.64
+      "psnr": 45.61
     },
     {
       "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.webp",
       "dimensionsMatch": true,
-      "psnr": 40.83
+      "psnr": 40.6
     },
     {
       "referenceSrc": "assets/workspace-mobile.png",
       "candidateSrc": "assets/workspace-mobile.avif",
       "dimensionsMatch": true,
-      "psnr": 44.55
+      "psnr": 43.21
     },
     {
       "referenceSrc": "assets/workspace-mobile.png",
       "candidateSrc": "assets/workspace-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 39.28
+      "psnr": 38.93
+    },
+    {
+      "referenceSrc": "assets/workspace-mobile-hero.png",
+      "candidateSrc": "assets/workspace-mobile-hero.webp",
+      "dimensionsMatch": true,
+      "psnr": 41.34
     }
   ],
   "social_card": {
@@ -312,10 +350,10 @@
   },
   "lighthouse_portfolio_quality": {
     "desktop": {
-      "performanceScore": 0.97,
+      "performanceScore": 0.98,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1201,
+      "lcpMs": 1051,
       "cls": 0,
       "tbtMs": 0
     },
@@ -323,7 +361,7 @@
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1051,
+      "lcpMs": 900,
       "cls": 0,
       "tbtMs": 0
     }
