@@ -79,6 +79,11 @@ def audit_workspace_browser_contract(html: str) -> dict[str, object]:
             "A simulated row decision must keep mutation disabled and append local audit state.",
         ),
         BrowserQACheck(
+            "guided_review_reuses_local_decision_path",
+            _guided_review_reuses_local_decision_path(html, workspace_data),
+            "Guided review must select an ambiguous row, reuse the local decision path, and expose the no-write boundary.",
+        ),
+        BrowserQACheck(
             "screen_reader_proxy_contract",
             _screen_reader_proxy_contract(static_audit),
             "Review table, filter state, and detail panel need screen-reader-oriented affordances.",
@@ -247,6 +252,32 @@ def _decision_patch_preserves_guardrails(workspace_data: dict[str, object]) -> b
         and exported["meta_api_compatibility"] == "not_claimed"
         and exported["audit"][0]["event_type"] == "row_decision_updated"
         and str(first["source_row"]) in exported["rows"]
+    )
+
+
+def _guided_review_reuses_local_decision_path(
+    html: str, workspace_data: dict[str, object]
+) -> bool:
+    rows = workspace_data.get("review_statuses", [])
+    if not isinstance(rows, list):
+        return False
+    ambiguous = [row for row in rows if row.get("batch_state") == "needs_review"]
+    duplicates = [row for row in ambiguous if "duplicate_asset" in row.get("issue_codes", [])]
+    return (
+        bool(ambiguous)
+        and bool(duplicates)
+        and all(
+            token in html
+            for token in (
+                "findGuidedRow",
+                "makeGuidedDecision",
+                "updateReview(status, decision)",
+                "persisted.audit.unshift(event)",
+                "No external system was changed.",
+                'setActiveFilter("all")',
+            )
+        )
+        and workspace_data.get("mutation_allowed") is False
     )
 
 

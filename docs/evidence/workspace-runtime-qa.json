@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v3",
-  "tested_at": "2026-07-12T15:30:34.108Z",
+  "contract_version": "workspace_runtime_qa.v4",
+  "tested_at": "2026-07-13T14:50:01.051Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -81,6 +81,62 @@
       "noDocumentOverflow": true
     }
   ],
+  "guided_review": {
+    "step_one": {
+      "open": true,
+      "progress": "1 of 3 · Find",
+      "selectedRow": "8",
+      "issue": "Possible duplicate",
+      "owner": "Creative Ops Manager",
+      "fix": "Confirm the duplicate is intentional or replace the asset.",
+      "focused": "guided-title",
+      "decisionActionsVisible": false
+    },
+    "step_two": {
+      "progress": "2 of 3 · Decide",
+      "confirmVisible": true,
+      "confirmLabel": "Confirm reuse"
+    },
+    "step_three": {
+      "progress": "3 of 3 · Verify",
+      "state": "Approved",
+      "role": "Creative Ops Manager",
+      "event": "row_decision_updated",
+      "creative": "cr_007",
+      "occurredAt": "2026-07-13T14:49:00.962Z",
+      "write": "not attempted · mutation_allowed:false",
+      "summary": "You just reviewed one of 10 ambiguous cases. No external system was changed.",
+      "persistedStatus": "confirmed_ready",
+      "latestAudit": {
+        "event_id": "evt_local_1783954140962_8",
+        "event_type": "row_decision_updated",
+        "actor_role": "Creative Ops Manager",
+        "source_row": 8,
+        "creative_id": "cr_007",
+        "decision": "approved_for_dry_run_export",
+        "occurred_at": "2026-07-13T14:49:00.962Z"
+      }
+    },
+    "request_violations": [],
+    "exit": {
+      "open": false,
+      "activeFilter": "all",
+      "visibleRows": 100,
+      "guidedParam": null,
+      "focusedRow": "8",
+      "focusedId": ""
+    },
+    "persistence": {
+      "selectedRow": "18",
+      "progress": "1 of 3 · Find"
+    },
+    "mobile": {
+      "open": true,
+      "noDocumentOverflow": true,
+      "dialogWithinViewport": true,
+      "progress": "1 of 3 · Find"
+    }
+  },
   "mobile_drawer": {
     "opened": {
       "open": true,
@@ -144,21 +200,41 @@
     "status": "Browser review state reset."
   },
   "portfolio_page": {
-    "title": "Catch launch errors before they reach Ads Manager.",
+    "title": "Catch creative launch errors before they delay campaigns or waste spend.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-5.png",
     "hasWorkspaceCta": true,
     "hasLabCta": true,
-    "hasOperatingChange": true,
+    "hasBusinessCase": true,
+    "hasSpreadsheetCase": true,
     "hasBoundaries": true,
+    "hasProductionPath": true,
+    "hasContact": true,
+    "structuredTypes": [
+      "Person",
+      "SoftwareSourceCode",
+      "CreativeWork"
+    ],
     "proofPathCount": 3,
     "ownership": true,
+    "heroProductVisible": true,
+    "heroProductTop": 243,
+    "heroImageLoaded": true,
+    "heroImageSource": "http://127.0.0.1:52362/docs/assets/workspace-desktop.avif",
     "noDocumentOverflow": true
   },
   "portfolio_mobile": {
     "noDocumentOverflow": true,
     "headingVisible": true,
-    "bylineVisible": true
+    "authorVisible": true,
+    "productVisible": true,
+    "productTop": 626,
+    "productVisibleHeight": 218
+  },
+  "social_card": {
+    "productImage": "assets/workspace-desktop.png",
+    "productLoaded": true,
+    "noDocumentOverflow": true
   },
   "fix_lab": {
     "initial": {
@@ -194,6 +270,24 @@
     "portfolio": {
       "desktopScore": 1,
       "mobileScore": 1
+    }
+  },
+  "lighthouse_portfolio_quality": {
+    "desktop": {
+      "performanceScore": 0.97,
+      "bestPracticesScore": 1,
+      "seoScore": 1,
+      "lcpMs": 1201,
+      "cls": 0,
+      "tbtMs": 0
+    },
+    "mobile": {
+      "performanceScore": 1,
+      "bestPracticesScore": 1,
+      "seoScore": 1,
+      "lcpMs": 1051,
+      "cls": 0,
+      "tbtMs": 0
     }
   },
   "mutation_allowed": false,

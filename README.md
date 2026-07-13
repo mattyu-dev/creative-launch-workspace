@@ -9,13 +9,17 @@ Catch approval, mapping, destination and placement errors before a large Meta cr
 
 AI proposes the mapping. Deterministic rules verify every row. A person decides every ambiguous case.
 
-**[Open the case study](https://mattyu-dev.github.io/creative-launch-workspace/)** · [Try the interactive review demo](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html) · [Fix and revalidate a blocked row](https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html)
+**[Open the case study](https://mattyu-dev.github.io/creative-launch-workspace/)** · [Try the guided human review](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1) · [Explore the full queue](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html) · [Fix and revalidate a blocked row](https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html)
 
 **100 synthetic creatives · 70 seeded issues detected and routed · 10 ambiguous cases held for human review · 0 external writes**
 
 Designed and built end to end by **Mathieu Petroni**: product framing, AI orchestration, evaluation design, trust boundaries, deterministic validation, and responsive workflow UX.
 
 [![Creative Launch Workspace desktop](docs/assets/workspace-desktop.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html)
+
+The public case study starts with the operating problem and the real product, then progressively exposes the business case, guided decision, trust-boundary architecture, reproducible engineering evidence, production validation path and Mathieu's end-to-end contribution.
+
+[![Guided human review with local audit evidence](docs/assets/guided-review-step-3.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1)
 
 ## Why this exists
 
@@ -169,6 +173,8 @@ The repo-native benchmark contains 36 labelled contract cases for the determinis
 
 Browser QA exercises seven viewport widths and real interactions. The committed workspace and portfolio Lighthouse accessibility reports score 100/100 on desktop and mobile.
 
+The same QA run completes the guided 1→2→3 decision path, verifies that it creates only browser-local state and audit evidence, confirms the next pending ambiguous case survives reload, and enforces portfolio Lighthouse budgets of at least 90 performance, 95 best practices and 95 SEO, with LCP ≤ 2.5 s, CLS ≤ 0.1 and total blocking time ≤ 200 ms. These are reproducible local Lighthouse measurements, not production RUM.
+
 - [Brief baseline eval](docs/evidence/brief-mapping-baseline-eval.json)
 - [Reviewed manifest validation](docs/evidence/reviewed-manifest-validation.json)
 - [Runtime browser QA](docs/evidence/workspace-runtime-qa.json)
@@ -176,6 +182,8 @@ Browser QA exercises seven viewport widths and real interactions. The committed 
 - [Mobile accessibility](docs/evidence/workspace-lighthouse-accessibility-mobile.json)
 - [Portfolio desktop accessibility](docs/evidence/portfolio-lighthouse-accessibility-desktop.json)
 - [Portfolio mobile accessibility](docs/evidence/portfolio-lighthouse-accessibility-mobile.json)
+- [Portfolio desktop quality budget](docs/evidence/portfolio-lighthouse-quality-desktop.json)
+- [Portfolio mobile quality budget](docs/evidence/portfolio-lighthouse-quality-mobile.json)
 
 ## Engineering choices
 

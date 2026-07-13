@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0 — 2026-07-13
+
+- Rebuilt the case-study landing around business value, a product-first hero and direct LinkedIn/GitHub conversion while preserving explicit proof boundaries.
+- Added an accessible three-step guided review that selects an ambiguous row, records a real local human decision and exposes the resulting audit event without adding a second state path.
+- Added a before/after operating case, spreadsheet differentiation, an accessible trust-boundary diagram, production validation plan and clearly labelled pilot metrics.
+- Added Person, SoftwareSourceCode and CreativeWork structured data, rel-me identity links, favicon and touch icon, visible release freshness and a cache-busted product-led social card.
+- Added responsive AVIF/WebP product imagery and Lighthouse quality budgets covering performance, best practices, SEO, LCP, CLS and total blocking time.
+
 ## 1.4.0 — 2026-07-12
 
 - Sharpened the landing around the launch handoff problem and the operational change, without adding unmeasured ROI claims.

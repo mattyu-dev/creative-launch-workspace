@@ -15,6 +15,7 @@ Creative Launch Workspace turns that material into a review queue with an explic
 5. The accepted mapping passes deterministic field validation and can seed a synthetic manifest template.
 6. The materialized rows enter the existing manifest validators before the operator reviews or exports local state.
 7. A bounded browser lab lets a visitor correct three synthetic fields and replay Python-generated golden validation outcomes.
+8. A three-step guided review selects a pending ambiguous row, reuses the normal local decision path, and exposes the resulting audit event before handing the visitor into the full queue.
 
 The system never publishes ads. The final artifact is intentionally non-executable.
 
@@ -26,6 +27,7 @@ The system never publishes ads. The final artifact is intentionally non-executab
 - The same synthetic inputs produce byte-stable evidence artifacts.
 - All external writes remain impossible in the current release.
 - A LinkedIn visitor can understand the business problem, Mathieu's ownership, the authority boundary and the product workflow before opening the operator UI.
+- A first-time visitor can complete one real local decision without learning the full 100-row workspace first.
 
 ## Current proof
 
@@ -34,6 +36,7 @@ The system never publishes ads. The final artifact is intentionally non-executab
 - 48 synthetic brief cases: 36 baseline contract cases plus 12 natural-prose/adversarial live-provider cases.
 - Browser interaction QA at seven viewport widths.
 - Lighthouse accessibility 100/100 on desktop and mobile.
+- Portfolio Lighthouse quality budgets for performance, best practices, SEO, LCP, CLS and total blocking time.
 - Eight correction/revalidation scenarios generated from the Python validators and exercised in the browser.
 
 These numbers describe the included fixtures. They are not customer or production results.
