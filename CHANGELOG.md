@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.8.0 — 2026-07-14
+
+- Replaced the packed 1,118-word public entry with a 533-word portfolio landing that puts Mathieu, the product and the two-minute demo first.
+- Moved the complete architecture, proposal receipts, production gaps and pilot metrics into a dedicated technical `case-study.html` instead of competing on the main page.
+- Cut measured page height from 5,342 to 4,099 pixels on desktop and from 9,544 to 6,131 pixels at 390 pixels wide, while keeping six clearly separated narrative sections.
+- Moved the primary mobile CTA before the product capture and added a 320×568 contract requiring the complete button to remain in the first viewport.
+- Applied the Emil Kowalski design-engineering review bar: explicit 160 ms press feedback, pointer-gated hover states and reduced-motion, reduced-transparency and increased-contrast alternatives.
+- Added case-study generation, sitemap discovery, responsive density budgets, image-decode screenshot checks and a cache-busted v1.8 social card.
+
 ## 1.7.0 — 2026-07-14
 
 - Closed two trust-boundary gaps by canonicalizing fixture asset paths against traversal and symlink escapes and by propagating operator-supplied data classification into every preview artifact.

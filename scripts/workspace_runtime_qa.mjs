@@ -484,27 +484,26 @@ const portfolioPage = await page.evaluate(() => ({
   canonical: document.querySelector('link[rel="canonical"]')?.href,
   ogImage: document.querySelector('meta[property="og:image"]')?.content,
   hasWorkspaceCta: Boolean(document.querySelector('a[href="workspace.html?guided=1"]')),
-  hasLabCta: Boolean(document.querySelector('a[href="fix-lab.html"]')),
-  hasBusinessCase: document.body.textContent.includes("One launch review is split across too many tools")
-    && document.body.textContent.includes("Without the workspace")
-    && document.body.textContent.includes("With the workspace"),
-  hasSpreadsheetCase: document.body.textContent.includes("Why not another launch spreadsheet?"),
-  hasDemoBoundary: document.body.textContent.includes("The demo begins after governed brief intake."),
+  hasCaseStudyLink: Boolean(document.querySelector('a[href="case-study.html"]')),
+  mainSectionCount: document.querySelectorAll("main > section").length,
+  visibleWordCount: document.body.innerText.trim().split(/\s+/).length,
+  scrollHeight: document.body.scrollHeight,
   copyFreeze: {
-    mutationBoundary: document.body.textContent.includes("live platform mutations. The demo cannot publish or change spend."),
-    reviewState: document.body.textContent.includes("One decision queue holds the review state."),
-    boundedAuthority: document.body.textContent.includes("No stage can make the next decision on its own."),
-    heroSecondaryCta: document.querySelector(".hero-cta .text-link")?.textContent.trim(),
+    mutationBoundary: document.body.textContent.includes("0 live write paths")
+      && document.body.textContent.includes("cannot publish or change spend"),
+    reviewState: document.body.textContent.includes("one decision queue"),
+    boundedAuthority: document.body.textContent.includes("cannot approve, validate or publish"),
+    heroSecondaryCta: document.querySelector(".hero-copy .text-link")?.textContent.trim(),
     experienceSince: document.body.textContent.includes("since 2017"),
     structuredJobTitle: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "Person")?.jobTitle
   },
   humanizedCopy: {
     noLongDash: !/[—–]/.test(`${document.title}\n${document.body.innerText}`),
-    concreteHero: document.body.textContent.includes("leaves ambiguous cases for a person to decide"),
-    concreteProblem: document.body.textContent.includes("reviewing large campaign batches"),
-    plainAiBoundary: document.body.textContent.includes("Rules check each AI proposal before a person decides."),
-    concreteProductionBoundary: document.body.textContent.includes("Before this could touch a production ad account"),
-    personalContribution: document.body.textContent.includes("I built the workflow, interface, Python contracts"),
+    concreteHero: document.body.textContent.includes("catches creative launch errors before Ads Manager"),
+    concreteProblem: document.body.textContent.includes("briefs, spreadsheets and asset folders"),
+    plainAiBoundary: document.body.textContent.includes("The model can propose. It cannot approve, validate or publish."),
+    concreteProductionBoundary: document.body.textContent.includes("No Meta connection or live changes"),
+    personalContribution: document.body.textContent.includes("Designed and built end to end"),
     oldSlogansRemoved: ![
       "Rows are easy. Governed decisions are harder.",
       "Inspect the evidence, not the promise.",
@@ -514,68 +513,63 @@ const portfolioPage = await page.evaluate(() => ({
       "Exercise human authority."
     ].some((copy) => document.body.textContent.includes(copy))
   },
-  aiProofCount: document.querySelectorAll(".ai-proof").length,
-  hasAcceptedProposal: document.body.textContent.includes("Accepted by reviewer")
-    && document.body.textContent.includes("Proposed objective")
-    && document.body.textContent.includes("traffic"),
-  hasAbstentionProof: document.body.textContent.includes("Not found in source")
-    && document.body.textContent.includes("Human input before materialization"),
-  hasBoundaries: document.body.textContent.includes("What this does not prove")
-    && document.body.textContent.includes("Production Meta API compatibility")
-    && document.body.textContent.includes("Measured operator or business impact"),
-  hasProductionPath: document.body.textContent.includes("What I would validate next")
-    && document.body.textContent.includes("Proposed production pilot metrics"),
+  denseTechnicalContentRemoved: !document.body.textContent.includes("What this does not prove")
+    && !document.body.textContent.includes("Proposed production pilot metrics")
+    && !document.querySelector(".architecture"),
   hasContact: Boolean(document.querySelector('a[href="https://www.linkedin.com/in/mathieu-petroni/"]')),
   structuredTypes: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.map((item) => item["@type"]) || [],
-  proofPathCount: document.querySelectorAll(".proof-path").length,
-  ownership: document.body.textContent.includes("I build AI workflows for teams that need to see and control each decision"),
+  governanceStepCount: document.querySelectorAll(".governance-step").length,
+  contributionCount: document.querySelectorAll(".contribution-list li").length,
+  evidenceCount: document.querySelectorAll(".evidence").length,
+  ownership: document.body.textContent.includes("I built the operating model and the product"),
+  primaryCtaVisible: document.querySelector(".hero-copy .button")?.getBoundingClientRect().top < innerHeight,
   heroProductVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
   heroProductTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
   heroImageLoaded: document.querySelector(".product-window img")?.naturalWidth > 0,
   heroImageSource: document.querySelector(".product-window img")?.currentSrc,
-  differenceCount: document.querySelectorAll(".difference").length,
-  metricGroupCount: document.querySelectorAll(".metric-group").length,
-  sectionNavTargetsResolve: [...document.querySelectorAll(".section-links a")].every((link) => document.querySelector(link.getAttribute("href"))),
-  architectureDiagramVisible: getComputedStyle(document.querySelector(".diagram")).display !== "none",
-  architectureStackHidden: getComputedStyle(document.querySelector(".architecture-stack")).display === "none",
+  sectionNavTargetsResolve: [...document.querySelectorAll('.nav-links a[href^="#"]')].every((link) => document.querySelector(link.getAttribute("href"))),
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
 }));
 if (
-  !portfolioPage.title?.includes("Catch creative launch errors")
+  !portfolioPage.title?.includes("I built an AI workflow")
   || !portfolioPage.canonical?.endsWith("/creative-launch-workspace/")
-  || !portfolioPage.ogImage?.endsWith("/assets/social-card-v1-7.png")
+  || !portfolioPage.ogImage?.endsWith("/assets/social-card-v1-8.png")
   || !portfolioPage.hasWorkspaceCta
-  || !portfolioPage.hasLabCta
-  || !portfolioPage.hasBusinessCase
-  || !portfolioPage.hasSpreadsheetCase
-  || !portfolioPage.hasDemoBoundary
+  || !portfolioPage.hasCaseStudyLink
+  || portfolioPage.mainSectionCount !== 6
+  || portfolioPage.visibleWordCount > 650
+  || portfolioPage.scrollHeight > 4300
   || !portfolioPage.copyFreeze.mutationBoundary
   || !portfolioPage.copyFreeze.reviewState
   || !portfolioPage.copyFreeze.boundedAuthority
-  || portfolioPage.copyFreeze.heroSecondaryCta !== "See how the system works →"
+  || portfolioPage.copyFreeze.heroSecondaryCta !== "See how it works →"
   || !portfolioPage.copyFreeze.experienceSince
-  || portfolioPage.copyFreeze.structuredJobTitle !== "AI Automation Lead"
+  || portfolioPage.copyFreeze.structuredJobTitle !== "AI Automation Builder"
   || !Object.values(portfolioPage.humanizedCopy).every(Boolean)
-  || portfolioPage.aiProofCount !== 2
-  || !portfolioPage.hasAcceptedProposal
-  || !portfolioPage.hasAbstentionProof
-  || !portfolioPage.hasBoundaries
-  || !portfolioPage.hasProductionPath
+  || !portfolioPage.denseTechnicalContentRemoved
   || !portfolioPage.hasContact
   || !["Person", "SoftwareSourceCode", "CreativeWork"].every((item) => portfolioPage.structuredTypes.includes(item))
-  || portfolioPage.proofPathCount !== 3
+  || portfolioPage.governanceStepCount !== 4
+  || portfolioPage.contributionCount !== 3
+  || portfolioPage.evidenceCount !== 4
   || !portfolioPage.ownership
+  || !portfolioPage.primaryCtaVisible
   || !portfolioPage.heroProductVisible
   || !portfolioPage.heroImageLoaded
-  || portfolioPage.differenceCount !== 3
-  || portfolioPage.metricGroupCount !== 3
   || !portfolioPage.sectionNavTargetsResolve
-  || !portfolioPage.architectureDiagramVisible
-  || !portfolioPage.architectureStackHidden
   || !portfolioPage.noDocumentOverflow
 ) {
   throw new Error(`Portfolio entry contract failed: ${JSON.stringify(portfolioPage)}`);
 }
+await page.evaluate(async () => {
+  for (const image of document.images) {
+    image.scrollIntoView({ block: "center" });
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  }
+  await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)));
+  window.scrollTo(0, 0);
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+});
 await page.screenshot({ path: join(assetsDir, "portfolio-desktop.png"), fullPage: true });
 
 await page.setViewport({ width: 390, height: 844 });
@@ -583,25 +577,21 @@ await page.goto(portfolioUrl, { waitUntil: "load" });
 const portfolioMobile = await page.evaluate(async () => {
   const heroImage = document.querySelector(".product-window img");
   const heroAsset = await createImageBitmap(await (await fetch(heroImage.currentSrc)).blob());
+  const heroCta = document.querySelector(".hero-copy .button");
+  const heroProduct = document.querySelector(".hero-product");
   const result = {
     noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
     headingVisible: document.querySelector("h1")?.getBoundingClientRect().top < innerHeight,
-    compactAuthorCount: document.querySelectorAll(".hero-mobile-author").length,
-    authorBlockCount: document.querySelectorAll(".hero-byline").length,
-    authorBlockDisplayed: getComputedStyle(document.querySelector(".hero-byline")).display !== "none",
-    authorAfterProduct: Boolean(document.querySelector(".hero-product")?.compareDocumentPosition(document.querySelector(".hero-byline")) & Node.DOCUMENT_POSITION_FOLLOWING),
-    ctaAfterProduct: Boolean(document.querySelector(".hero-product")?.compareDocumentPosition(document.querySelector(".hero-cta")) & Node.DOCUMENT_POSITION_FOLLOWING),
-    productVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
+    primaryCtaVisible: heroCta?.getBoundingClientRect().top >= 0
+      && heroCta?.getBoundingClientRect().bottom <= innerHeight,
+    ctaBeforeProduct: Boolean(heroCta?.compareDocumentPosition(heroProduct) & Node.DOCUMENT_POSITION_FOLLOWING),
     productTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
-    productVisibleHeight: Math.round(Math.max(0, Math.min(innerHeight, document.querySelector(".product-window")?.getBoundingClientRect().bottom || 0) - Math.max(0, document.querySelector(".product-window")?.getBoundingClientRect().top || 0))),
     heroImageSource: heroImage.currentSrc,
     heroAssetWidth: heroAsset.width,
     heroAssetHeight: heroAsset.height,
-    visibleAnnotations: [...document.querySelectorAll(".annotation")].filter((item) => getComputedStyle(item).display !== "none").length,
-    architectureDiagramHidden: getComputedStyle(document.querySelector(".diagram")).display === "none",
-    architectureStackVisible: getComputedStyle(document.querySelector(".architecture-stack")).display !== "none",
-    architectureStepCount: document.querySelectorAll(".architecture-stack li").length,
-    architectureMinFontPx: Math.min(...[...document.querySelectorAll(".architecture-stack strong, .architecture-stack span")].map((item) => parseFloat(getComputedStyle(item).fontSize)))
+    scrollHeight: document.body.scrollHeight,
+    bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize),
+    evidenceColumns: getComputedStyle(document.querySelector(".evidence-grid")).gridTemplateColumns.split(" ").length
   };
   heroAsset.close();
   return result;
@@ -609,25 +599,95 @@ const portfolioMobile = await page.evaluate(async () => {
 if (
   !portfolioMobile.noDocumentOverflow
   || !portfolioMobile.headingVisible
-  || portfolioMobile.compactAuthorCount !== 0
-  || portfolioMobile.authorBlockCount !== 1
-  || !portfolioMobile.authorBlockDisplayed
-  || !portfolioMobile.authorAfterProduct
-  || !portfolioMobile.ctaAfterProduct
-  || !portfolioMobile.productVisible
-  || portfolioMobile.productVisibleHeight < 270
+  || !portfolioMobile.primaryCtaVisible
+  || !portfolioMobile.ctaBeforeProduct
   || !portfolioMobile.heroImageSource?.endsWith("/assets/workspace-mobile-hero.webp")
   || portfolioMobile.heroAssetWidth !== 390
   || portfolioMobile.heroAssetHeight !== 360
-  || portfolioMobile.visibleAnnotations !== 0
-  || !portfolioMobile.architectureDiagramHidden
-  || !portfolioMobile.architectureStackVisible
-  || portfolioMobile.architectureStepCount !== 7
-  || portfolioMobile.architectureMinFontPx < 12
+  || portfolioMobile.scrollHeight > 6500
+  || portfolioMobile.bodyFontPx < 16
+  || portfolioMobile.evidenceColumns !== 2
 ) {
   throw new Error(`Portfolio mobile contract failed: ${JSON.stringify(portfolioMobile)}`);
 }
+await page.evaluate(async () => {
+  for (const image of document.images) {
+    image.scrollIntoView({ block: "center" });
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  }
+  await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)));
+  window.scrollTo(0, 0);
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+});
 await page.screenshot({ path: join(assetsDir, "portfolio-mobile.png"), fullPage: true });
+
+const portfolioTextResize = [];
+for (const width of [320, 768]) {
+  await page.setViewport({ width, height: width === 320 ? 568 : 900 });
+  await page.goto(portfolioUrl, { waitUntil: "load" });
+  const result = await page.evaluate(async () => {
+    const textElements = [...document.querySelectorAll("body *")]
+      .filter((element) => [...element.childNodes].some((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim()))
+      .map((element) => ({ element, fontSize: parseFloat(getComputedStyle(element).fontSize) }));
+    for (const { element, fontSize } of textElements) element.style.fontSize = `${fontSize * 2}px`;
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const overflowers = [...document.querySelectorAll("body *")]
+      .filter((element) => {
+        const style = getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        return style.display !== "none"
+          && style.visibility !== "hidden"
+          && rect.width > 0
+          && rect.bottom > 0
+          && (rect.left < -1 || rect.right > innerWidth + 1);
+      })
+      .slice(0, 12)
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          selector: `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ""}${element.classList.length ? `.${[...element.classList].join(".")}` : ""}`,
+          left: Math.round(rect.left),
+          right: Math.round(rect.right)
+        };
+      });
+    return {
+      documentWidth: document.documentElement.scrollWidth,
+      viewportWidth: innerWidth,
+      overflowers
+    };
+  });
+  portfolioTextResize.push({ width, ...result });
+}
+if (portfolioTextResize.some((result) => result.documentWidth > result.viewportWidth || result.overflowers.length)) {
+  throw new Error(`Portfolio 200% text resize overflow: ${JSON.stringify(portfolioTextResize)}`);
+}
+
+const caseStudyUrl = `${baseUrl}/docs/case-study.html`;
+await page.setViewport({ width: 1366, height: 768 });
+await page.goto(caseStudyUrl, { waitUntil: "load" });
+const caseStudyPage = await page.evaluate(() => ({
+  canonical: document.querySelector('link[rel="canonical"]')?.href,
+  brandHref: document.querySelector(".brand")?.getAttribute("href"),
+  ctaBeforeProduct: Boolean(document.querySelector(".hero-cta")?.compareDocumentPosition(document.querySelector(".hero-product")) & Node.DOCUMENT_POSITION_FOLLOWING),
+  hasArchitecture: Boolean(document.querySelector(".architecture")),
+  hasAcceptedProposal: document.body.textContent.includes("Accepted by reviewer"),
+  hasAbstention: document.body.textContent.includes("Human input before materialization"),
+  hasProductionBoundaries: document.body.textContent.includes("What this does not prove")
+    && document.body.textContent.includes("What I would validate next"),
+  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
+}));
+if (
+  !caseStudyPage.canonical?.endsWith("/creative-launch-workspace/case-study.html")
+  || caseStudyPage.brandHref !== "index.html"
+  || !caseStudyPage.ctaBeforeProduct
+  || !caseStudyPage.hasArchitecture
+  || !caseStudyPage.hasAcceptedProposal
+  || !caseStudyPage.hasAbstention
+  || !caseStudyPage.hasProductionBoundaries
+  || !caseStudyPage.noDocumentOverflow
+) {
+  throw new Error(`Technical case-study contract failed: ${JSON.stringify(caseStudyPage)}`);
+}
 
 const portfolioWorkspaceUrl = `${baseUrl}/docs/workspace.html`;
 await page.goto(portfolioWorkspaceUrl, { waitUntil: "load" });
@@ -729,7 +789,7 @@ if (socialCard.productImage !== "assets/workspace-desktop.png" || !socialCard.pr
   throw new Error(`Social card contract failed: ${JSON.stringify(socialCard)}`);
 }
 await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
-await page.screenshot({ path: join(assetsDir, "social-card-v1-7.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+await page.screenshot({ path: join(assetsDir, "social-card-v1-8.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
 
 const labUrl = `${baseUrl}/docs/fix-lab.html`;
 await page.setViewport({ width: 1280, height: 900 });
@@ -894,7 +954,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v9",
+  contract_version: "workspace_runtime_qa.v10",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,
@@ -919,6 +979,8 @@ const report = {
   reset,
   portfolio_page: portfolioPage,
   portfolio_mobile: portfolioMobile,
+  portfolio_text_resize: portfolioTextResize,
+  case_study_page: caseStudyPage,
   portfolio_navigation: portfolioNavigation,
   responsive_asset_fidelity: responsiveAssetFidelity,
   social_card: socialCard,

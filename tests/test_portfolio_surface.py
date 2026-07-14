@@ -9,6 +9,7 @@ from meta_importer.ai.contracts import FIELD_NAMES
 from meta_importer.ai.evidence_page import render_evidence_page
 from meta_importer.fix_lab import build_fix_lab_rule_pack, render_fix_lab
 from meta_importer.portfolio_page import (
+    render_case_study_page,
     render_not_found_page,
     render_portfolio_page,
     render_robots_txt,
@@ -18,7 +19,7 @@ from meta_importer.portfolio_page import (
 
 
 class PortfolioSurfaceTests(unittest.TestCase):
-    def test_linkedin_entry_has_social_metadata_and_honest_boundaries(self) -> None:
+    def test_linkedin_entry_is_concise_personal_and_honest(self) -> None:
         html = render_portfolio_page()
 
         self.assertIn('property="og:image"', html)
@@ -26,67 +27,49 @@ class PortfolioSurfaceTests(unittest.TestCase):
         self.assertIn('name="author" content="Mathieu Petroni"', html)
         self.assertIn('property="og:type" content="article"', html)
         self.assertIn('property="article:author"', html)
-        self.assertIn("social-card-v1-7.png", html)
+        self.assertIn("social-card-v1-8.png", html)
         self.assertIn(
-            'content="How I built a governed AI workflow for creative launches | Mathieu Petroni"',
+            'content="An AI-assisted review system for creative launches | Mathieu Petroni"',
             html,
         )
         self.assertIn('name="theme-color" content="#113e31"', html)
         self.assertIn('name="twitter:image:alt"', html)
         self.assertIn('name="twitter:card" content="summary_large_image"', html)
         self.assertIn('href="workspace.html?guided=1"', html)
-        self.assertIn('href="fix-lab.html"', html)
+        self.assertIn('href="case-study.html"', html)
         self.assertIn('class="skip-link" href="#main"', html)
         self.assertIn('rel="me" href="https://www.linkedin.com/in/mathieu-petroni/"', html)
         self.assertIn('rel="me" href="https://github.com/mattyu-dev"', html)
-        self.assertIn("100-row Meta creative batch", html)
-        self.assertIn("These are test outcomes and implementation boundaries, not customer or business results.", html)
-        self.assertIn("Mathieu Petroni · AI Automation Lead", html)
-        self.assertIn("One launch review is split across too many tools.", html)
-        self.assertIn("Why not another launch spreadsheet?", html)
-        self.assertIn("Experience the workflow", html)
-        self.assertIn("Inspect the system", html)
-        self.assertIn("Review engineering evidence", html)
-        self.assertIn("What this does not prove", html)
-        self.assertIn("What I would validate next", html)
-        self.assertIn("Proposed production pilot metrics · not measured results", html)
+        self.assertIn("I built an AI workflow", html)
+        self.assertIn("Try the 2-minute review", html)
+        self.assertIn("Designed and built end to end", html)
+        self.assertIn("100-row test batch", html)
+        self.assertIn("70 seeded exceptions", html)
+        self.assertIn("0 live write paths", html)
+        self.assertIn("Synthetic offline prototype. No Meta connection or live changes.", html)
+        self.assertIn("The model can propose. It cannot approve, validate or publish.", html)
+        self.assertIn("I built the operating model and the product.", html)
+        self.assertIn("63</strong>", html)
+        self.assertIn("implementation and test outcomes, not customer or business results", html)
         self.assertIn("Hiring or project conversation", html)
-        self.assertIn("Connect with Mathieu on LinkedIn", html)
-        self.assertIn('version": "1.7.0"', html)
-        self.assertIn("live platform mutations. The demo cannot publish or change spend.", html)
-        self.assertIn("One decision queue holds the review state.", html)
-        self.assertIn("No stage can make the next decision on its own.", html)
-        self.assertIn("See how the system works &rarr;", html)
+        self.assertIn("Connect with Mathieu", html)
+        self.assertIn('version": "1.8.0"', html)
         self.assertIn("since 2017", html)
-        self.assertIn("reviewing large campaign batches", html)
-        self.assertIn("Every proposal needs evidence.", html)
-        self.assertIn("The tests, browser reports and generated evidence live in the repository.", html)
-        self.assertIn("What the prototype proves, and what still needs testing.", html)
-        self.assertIn("I built the workflow, interface, Python contracts", html)
-        self.assertIn('<time datetime="2026-07-14">', html)
-        self.assertIn('<svg viewBox="0 0 720 530" role="img"', html)
-        self.assertIn('class="architecture-stack"', html)
-        self.assertEqual(html.count('<div class="difference">'), 3)
-        self.assertEqual(html.count('<div class="metric-group">'), 3)
-        self.assertEqual(html.count('<li><strong>'), 7)
-        self.assertIn('<a href="#business">Business case</a>', html)
-        self.assertIn('<a href="#system">System</a>', html)
-        self.assertIn('<a href="#evidence">Evidence</a>', html)
-        self.assertIn('<a href="#about">Contribution</a>', html)
+        self.assertEqual(html.count('<article class="governance-step">'), 4)
+        self.assertEqual(html.count('<li><b>'), 6)
+        self.assertEqual(html.count('<div class="evidence">'), 4)
+        self.assertIn('<a href="#workflow">Workflow</a>', html)
+        self.assertIn('<a href="#about">My role</a>', html)
         self.assertIn('type="image/avif"', html)
         self.assertIn('type="image/webp"', html)
         self.assertIn('decoding="async" fetchpriority="high"', html)
         self.assertIn("workspace-mobile-hero.webp", html)
         self.assertIn("workspace-mobile-hero.png", html)
-        self.assertIn("The demo begins after governed brief intake.", html)
-        self.assertEqual(html.count('<div class="ai-proof '), 2)
-        self.assertIn("Accepted by reviewer", html)
-        self.assertIn("Destination URL", html)
-        self.assertIn("Not found in source", html)
-        self.assertIn("Human input before materialization", html)
-        self.assertIn("Fixture scale", html)
-        self.assertIn("Exception coverage", html)
-        self.assertIn("Safety boundary", html)
+        self.assertIn("guided-review-step-3.png", html)
+        self.assertNotIn("What this does not prove", html)
+        self.assertNotIn("Proposed production pilot metrics", html)
+        self.assertNotIn('<div class="ai-proof ', html)
+        self.assertNotIn('<svg viewBox="0 0 720 530"', html)
         self.assertNotRegex(html, r'<div[^>]+aria-label=')
         self.assertNotIn('aria-label="Open the guided interactive review workspace"', html)
         self.assertNotIn("CMO · Operations", html)
@@ -102,8 +85,7 @@ class PortfolioSurfaceTests(unittest.TestCase):
         self.assertNotIn("external writes available in this implementation", html)
         self.assertNotIn("holds the launch state", html)
         self.assertNotIn("narrower authority than the one before it", html)
-        self.assertNotIn("Explore architecture and evidence", html)
-        self.assertNotIn("nine years", html)
+        self.assertNotIn("AI Automation Lead", html)
         self.assertNotIn("Rows are easy. Governed decisions are harder.", html)
         self.assertNotIn("Inspect the evidence, not the promise.", html)
         self.assertNotIn("A reference implementation with a serious next-proof plan.", html)
@@ -112,9 +94,10 @@ class PortfolioSurfaceTests(unittest.TestCase):
         self.assertNotIn("Exercise human authority.", html)
         self.assertNotIn("—", html)
         self.assertNotIn("–", html)
-        self.assertNotIn("30</strong>", html)
-        self.assertNotIn("60</strong>", html)
-        self.assertNotIn("10</strong>", html)
+        body = re.search(r"<body>(.*?)</body>", html, re.DOTALL)
+        self.assertIsNotNone(body)
+        visible_words = re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", body.group(1)))  # type: ignore[union-attr]
+        self.assertLessEqual(len(visible_words), 650)
 
         json_ld_match = re.search(
             r'<script type="application/ld\+json">\s*(.*?)\s*</script>', html, re.DOTALL
@@ -125,6 +108,31 @@ class PortfolioSurfaceTests(unittest.TestCase):
             {item["@type"] for item in graph},
             {"Person", "SoftwareSourceCode", "CreativeWork"},
         )
+        person = next(item for item in graph if item["@type"] == "Person")
+        self.assertEqual(person["jobTitle"], "AI Automation Builder")
+
+    def test_technical_case_study_preserves_deep_evidence(self) -> None:
+        html = render_case_study_page()
+
+        self.assertIn(
+            '<link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/case-study.html">',
+            html,
+        )
+        self.assertIn('class="brand" href="index.html"', html)
+        self.assertLess(html.index('class="hero-cta"'), html.index('class="hero-product"'))
+        self.assertIn("One launch review is split across too many tools.", html)
+        self.assertIn("Why not another launch spreadsheet?", html)
+        self.assertIn("Every proposal needs evidence.", html)
+        self.assertIn("Accepted by reviewer", html)
+        self.assertIn("Human input before materialization", html)
+        self.assertIn('<svg viewBox="0 0 720 530" role="img"', html)
+        self.assertIn('class="architecture-stack"', html)
+        self.assertIn("What this does not prove", html)
+        self.assertIn("What I would validate next", html)
+        self.assertIn("Proposed production pilot metrics", html)
+        self.assertIn("Portfolio overview", html)
+        self.assertIn("social-card-v1-8.png", html)
+        self.assertIn('version": "1.8.0"', html)
 
     def test_social_card_has_safe_dedicated_composition(self) -> None:
         html = render_social_card_page()
@@ -137,7 +145,7 @@ class PortfolioSurfaceTests(unittest.TestCase):
         self.assertIn("Reproducible evidence", html)
         self.assertIn("No Meta write path", html)
         self.assertIn("Rules verify. A person decides.", html)
-        self.assertIn("Built and documented by Mathieu", html)
+        self.assertIn("Designed and built by Mathieu", html)
         self.assertIn('class="creator-copy"', html)
         self.assertNotIn(".creator span{", html)
         self.assertNotIn("30</b>", html)
@@ -205,7 +213,7 @@ class PortfolioSurfaceTests(unittest.TestCase):
         self.assertIn('name="author" content="Mathieu Petroni"', rendered)
         self.assertIn("Mathieu Petroni / Creative Launch Workspace", rendered)
         self.assertIn("Connect on LinkedIn", rendered)
-        self.assertIn("social-card-v1-7.png", rendered)
+        self.assertIn("social-card-v1-8.png", rendered)
 
     def test_github_pages_discovery_and_not_found_surfaces(self) -> None:
         robots = render_robots_txt()
@@ -214,10 +222,11 @@ class PortfolioSurfaceTests(unittest.TestCase):
 
         self.assertIn("User-agent: *\nAllow: /", robots)
         self.assertIn("creative-launch-workspace/sitemap.xml", robots)
-        self.assertEqual(sitemap.count("<url>"), 4)
+        self.assertEqual(sitemap.count("<url>"), 5)
+        self.assertIn("case-study.html", sitemap)
         self.assertIn("workspace.html", sitemap)
         self.assertIn('name="robots" content="noindex"', not_found)
-        self.assertIn("Mathieu Petroni's case study", not_found)
+        self.assertIn("Mathieu Petroni's portfolio", not_found)
         self.assertIn("Connect on LinkedIn", not_found)
         nested_missing_url = (
             "https://mattyu-dev.github.io/creative-launch-workspace/missing/nested/page"

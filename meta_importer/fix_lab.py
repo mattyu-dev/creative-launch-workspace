@@ -131,7 +131,7 @@ def render_fix_lab(rule_pack: dict[str, Any]) -> str:
   <meta property="article:author" content="https://www.linkedin.com/in/mathieu-petroni/">
   <meta property="og:title" content="Fix &amp; Revalidate Lab · Mathieu Petroni">
   <meta property="og:description" content="Replay Python-generated validation scenarios in a bounded interactive lab.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-7.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-8.png">
   <title>Fix &amp; Revalidate Lab · Mathieu Petroni</title>
   <style>
     :root {{ --canvas:#f7f5ef;--surface:#fffefa;--soft:#f1efe8;--ink:#1c211e;--body:#48504b;--muted:#6e756f;--line:#d8d3c8;--strong:#b8b2a6;--forest:#113e31;--oxide:#a9472e;--sand:#f2e7d2;--mint:#cfe2d7;--red:#a1362d;--red-soft:#f7e7e4;--font-serif:"Iowan Old Style",Charter,Georgia,serif;--font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;}}
