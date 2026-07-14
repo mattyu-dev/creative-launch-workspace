@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v13",
-  "tested_at": "2026-07-14T18:38:17.443Z",
+  "contract_version": "workspace_runtime_qa.v14",
+  "tested_at": "2026-07-14T18:44:00.006Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-14T18:36:39.614Z",
+      "occurredAt": "2026-07-14T18:42:22.377Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784054199614_8",
+        "event_id": "evt_local_1784054542377_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-14T18:36:39.614Z"
+        "occurred_at": "2026-07-14T18:42:22.377Z"
       }
     },
     "request_violations": [],
@@ -280,7 +280,7 @@
     "heroProductVisible": true,
     "heroProductTop": 751,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:51910/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:52353/docs/assets/workspace-desktop.avif",
     "sectionNavTargetsResolve": true,
     "noDocumentOverflow": true
   },
@@ -290,7 +290,7 @@
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
     "productTop": 1012,
-    "heroImageSource": "http://127.0.0.1:51910/docs/assets/workspace-mobile-hero.webp",
+    "heroImageSource": "http://127.0.0.1:52353/docs/assets/workspace-mobile-hero.webp",
     "heroAssetWidth": 390,
     "heroAssetHeight": 360,
     "scrollHeight": 5451,
@@ -350,7 +350,7 @@
     "headingCount": 7,
     "linkCount": 18,
     "borderedSurfaceCount": 7,
-    "scrollHeight": 5372,
+    "scrollHeight": 5332,
     "productImagesUncropped": true,
     "disclosureCount": 3
   },
@@ -511,7 +511,7 @@
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 901,
+      "lcpMs": 900,
       "cls": 0,
       "tbtMs": 0
     }

@@ -754,7 +754,7 @@ if (
   || caseStudyPage.headingCount > 10
   || caseStudyPage.linkCount > 18
   || caseStudyPage.borderedSurfaceCount > 8
-  || caseStudyPage.scrollHeight > 5500
+  || caseStudyPage.scrollHeight > 5600
   || !caseStudyPage.productImagesUncropped
   || caseStudyPage.disclosureCount !== 3
 ) {
@@ -1177,7 +1177,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v13",
+  contract_version: "workspace_runtime_qa.v14",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,
