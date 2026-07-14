@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "creative-launch-workspace"
-version = "1.8.0"
+version = "1.9.0"
 description = "Governed AI-assisted brief intake and offline creative launch review"
 readme = "README.md"
 requires-python = ">=3.9"

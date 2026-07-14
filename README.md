@@ -17,7 +17,7 @@ Deterministic rules check each AI proposal before a person decides an ambiguous 
 
 [![Creative Launch Workspace desktop](docs/assets/workspace-desktop.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html)
 
-The public portfolio gives visitors a concise product, role and proof path. The separate technical case study preserves the full architecture, accepted and abstained proposal evidence, production boundaries and validation plan for deeper review.
+The public portfolio uses a shared dark product system with one accent, semantic surfaces and uncropped product views. The separate case study keeps a short six-chapter narrative, then moves proposal receipts, architecture references and the production plan behind accessible disclosures.
 
 [![Guided human review with local audit evidence](docs/assets/guided-review-step-3.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1)
 
@@ -169,9 +169,9 @@ The included 100-row fixture spans three campaigns and ten ad sets:
 
 The repo-native benchmark contains 36 labelled contract cases for the deterministic baseline plus 12 natural-prose and adversarial cases for repeated live-provider evaluation. The deterministic baseline passes every contract gate. That is harness proof, not model-quality proof; no live model score is committed without an authenticated run.
 
-Browser QA exercises seven viewport widths plus dedicated 320×568 guided-decision and portfolio CTA contracts. It also doubles rendered text at 320 and 768 pixels to reject clipped or horizontally overflowing content. The committed workspace and portfolio Lighthouse accessibility reports score 100/100 on desktop and mobile, while a separate gate fails any serious or critical WCAG audit even if the category score rounds to 100.
+Browser QA exercises seven viewport widths plus dedicated 320×568 guided-decision, portfolio and case-study contracts. The small-phone gates require a visible personal identity, a named home link, logical keyboard order, 44-pixel standalone targets and an above-the-fold primary CTA. QA also doubles rendered text at 320 and 768 pixels on both public pages to reject clipped or horizontally overflowing content. The committed workspace, portfolio and case-study Lighthouse accessibility reports score 100/100 on desktop and mobile, while a separate gate fails any serious or critical WCAG audit even if the category score rounds to 100.
 
-The same QA run completes the guided 1→2→3 decision path, verifies that it creates only browser-local state and audit evidence, confirms the next pending ambiguous case survives reload, and enforces portfolio Lighthouse budgets of at least 90 performance, 95 best practices and 95 SEO, with LCP ≤ 2.5 s, CLS ≤ 0.1 and total blocking time ≤ 200 ms. These are reproducible local Lighthouse measurements, not production RUM.
+The same QA run completes the guided 1→2→3 decision path, verifies that it creates only browser-local state and audit evidence, confirms the next pending ambiguous case survives reload, and enforces portfolio and case-study Lighthouse budgets of at least 90 performance, 95 best practices and 95 SEO, with LCP ≤ 2.5 s, CLS ≤ 0.1 and total blocking time ≤ 200 ms. These are reproducible local Lighthouse measurements, not production RUM.
 
 - [Brief baseline eval](docs/evidence/brief-mapping-baseline-eval.json)
 - [Reviewed manifest validation](docs/evidence/reviewed-manifest-validation.json)

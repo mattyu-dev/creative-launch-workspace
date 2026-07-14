@@ -487,7 +487,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
   <meta property="og:type" content="website">
   <meta property="og:title" content="Interactive review workspace · Creative Launch Workspace">
   <meta property="og:description" content="A task-first review queue for approval, destination, placement, mapping and duplicate issues.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-8.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-9.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20fill%3D%22%23113e31%22%2F%3E%3C%2Fsvg%3E" type="image/svg+xml">
   <title>Creative Launch Workspace for Meta Ads</title>
