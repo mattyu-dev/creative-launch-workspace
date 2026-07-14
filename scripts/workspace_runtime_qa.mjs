@@ -489,10 +489,10 @@ const portfolioPage = await page.evaluate(() => ({
   visibleWordCount: document.body.innerText.trim().split(/\s+/).length,
   scrollHeight: document.body.scrollHeight,
   copyFreeze: {
-    mutationBoundary: document.body.textContent.includes("0 live write paths")
-      && document.body.textContent.includes("cannot publish or change spend"),
+    mutationBoundary: document.body.textContent.toLowerCase().includes("0 write paths")
+      && document.body.textContent.toLowerCase().includes("cannot publish or change spend"),
     reviewState: document.body.textContent.includes("one decision queue"),
-    boundedAuthority: document.body.textContent.includes("cannot approve, validate or publish"),
+    boundedAuthority: document.body.textContent.includes("cannot validate, approve or publish"),
     heroSecondaryCta: document.querySelector(".hero-copy .text-link")?.textContent.trim(),
     experienceSince: document.body.textContent.includes("since 2017"),
     structuredJobTitle: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "Person")?.jobTitle
@@ -501,9 +501,9 @@ const portfolioPage = await page.evaluate(() => ({
     noLongDash: !/[—–]/.test(`${document.title}\n${document.body.innerText}`),
     concreteHero: document.body.textContent.includes("catches creative launch errors before Ads Manager"),
     concreteProblem: document.body.textContent.includes("briefs, spreadsheets and asset folders"),
-    plainAiBoundary: document.body.textContent.includes("The model can propose. It cannot approve, validate or publish."),
-    concreteProductionBoundary: document.body.textContent.includes("No Meta connection or live changes"),
-    personalContribution: document.body.textContent.includes("Designed and built end to end"),
+    plainAiBoundary: document.body.textContent.includes("It cannot validate, approve or publish"),
+    concreteProductionBoundary: document.body.textContent.includes("no Meta connection"),
+    personalContribution: document.body.textContent.includes("Built end to end"),
     oldSlogansRemoved: ![
       "Rows are easy. Governed decisions are harder.",
       "Inspect the evidence, not the promise.",
@@ -518,9 +518,9 @@ const portfolioPage = await page.evaluate(() => ({
     && !document.querySelector(".architecture"),
   hasContact: Boolean(document.querySelector('a[href="https://www.linkedin.com/in/mathieu-petroni/"]')),
   structuredTypes: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.map((item) => item["@type"]) || [],
-  governanceStepCount: document.querySelectorAll(".governance-step").length,
-  contributionCount: document.querySelectorAll(".contribution-list li").length,
-  evidenceCount: document.querySelectorAll(".evidence").length,
+  governanceStepCount: document.querySelectorAll(".governance-copy .plain-list li").length,
+  contributionCount: document.querySelectorAll(".role-card .step-list li").length,
+  evidenceCount: document.querySelectorAll(".metric").length,
   ownership: document.body.textContent.includes("I built the operating model and the product"),
   primaryCtaVisible: document.querySelector(".hero-copy .button")?.getBoundingClientRect().top < innerHeight,
   heroProductVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
@@ -533,25 +533,25 @@ const portfolioPage = await page.evaluate(() => ({
 if (
   !portfolioPage.title?.includes("I built an AI workflow")
   || !portfolioPage.canonical?.endsWith("/creative-launch-workspace/")
-  || !portfolioPage.ogImage?.endsWith("/assets/social-card-v1-8.png")
+  || !portfolioPage.ogImage?.endsWith("/assets/social-card-v1-9.png")
   || !portfolioPage.hasWorkspaceCta
   || !portfolioPage.hasCaseStudyLink
-  || portfolioPage.mainSectionCount !== 6
-  || portfolioPage.visibleWordCount > 650
-  || portfolioPage.scrollHeight > 4300
+  || portfolioPage.mainSectionCount !== 5
+  || portfolioPage.visibleWordCount > 400
+  || portfolioPage.scrollHeight > 4500
   || !portfolioPage.copyFreeze.mutationBoundary
   || !portfolioPage.copyFreeze.reviewState
   || !portfolioPage.copyFreeze.boundedAuthority
-  || portfolioPage.copyFreeze.heroSecondaryCta !== "See how it works →"
+  || portfolioPage.copyFreeze.heroSecondaryCta !== "Read the case study →"
   || !portfolioPage.copyFreeze.experienceSince
   || portfolioPage.copyFreeze.structuredJobTitle !== "AI Automation Builder"
   || !Object.values(portfolioPage.humanizedCopy).every(Boolean)
   || !portfolioPage.denseTechnicalContentRemoved
   || !portfolioPage.hasContact
   || !["Person", "SoftwareSourceCode", "CreativeWork"].every((item) => portfolioPage.structuredTypes.includes(item))
-  || portfolioPage.governanceStepCount !== 4
+  || portfolioPage.governanceStepCount !== 3
   || portfolioPage.contributionCount !== 3
-  || portfolioPage.evidenceCount !== 4
+  || portfolioPage.evidenceCount !== 3
   || !portfolioPage.ownership
   || !portfolioPage.primaryCtaVisible
   || !portfolioPage.heroProductVisible
@@ -591,7 +591,7 @@ const portfolioMobile = await page.evaluate(async () => {
     heroAssetHeight: heroAsset.height,
     scrollHeight: document.body.scrollHeight,
     bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize),
-    evidenceColumns: getComputedStyle(document.querySelector(".evidence-grid")).gridTemplateColumns.split(" ").length
+    evidenceColumns: getComputedStyle(document.querySelector(".metric-grid")).gridTemplateColumns.split(" ").length
   };
   heroAsset.close();
   return result;
@@ -620,6 +620,62 @@ await page.evaluate(async () => {
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 });
 await page.screenshot({ path: join(assetsDir, "portfolio-mobile.png"), fullPage: true });
+
+await page.setViewport({ width: 320, height: 568 });
+await page.goto(portfolioUrl, { waitUntil: "load" });
+const portfolioSmallPhone = await page.evaluate(() => {
+  const primaryCta = document.querySelector(".hero-copy .button");
+  const ctaRect = primaryCta?.getBoundingClientRect();
+  const brandName = document.querySelector(".brand-copy strong");
+  const brandNameRect = brandName?.getBoundingClientRect();
+  const independentTargets = [...document.querySelectorAll(".site-nav a,.hero-copy .button,.hero-copy .text-link")]
+    .filter((element) => getComputedStyle(element).display !== "none")
+    .map((element) => ({
+      label: element.getAttribute("aria-label") || element.textContent.trim().slice(0, 48),
+      height: Math.round(element.getBoundingClientRect().height)
+    }));
+  return {
+    noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
+    primaryCtaVisible: ctaRect?.top >= 0 && ctaRect?.bottom <= innerHeight,
+    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".hero-product")) & Node.DOCUMENT_POSITION_FOLLOWING),
+    brandNameVisible: getComputedStyle(brandName).display !== "none"
+      && brandNameRect?.top >= 0
+      && brandNameRect?.bottom <= innerHeight,
+    touchTargetFailures: independentTargets.filter((target) => target.height < 44),
+    ctaTop: Math.round(ctaRect?.top || 0),
+    ctaBottom: Math.round(ctaRect?.bottom || 0),
+    headingHeight: Math.round(document.querySelector("h1")?.getBoundingClientRect().height || 0)
+  };
+});
+const portfolioBrandHandle = await page.$(".brand");
+const portfolioBrandAccessibility = portfolioBrandHandle
+  ? await page.accessibility.snapshot({ root: portfolioBrandHandle })
+  : null;
+portfolioSmallPhone.brandAccessibleName = portfolioBrandAccessibility?.name || "";
+await portfolioBrandHandle?.dispose();
+const portfolioSmallPhoneFocusOrder = [];
+for (let index = 0; index < 3; index += 1) {
+  await page.keyboard.press("Tab");
+  portfolioSmallPhoneFocusOrder.push(await page.evaluate(() => ({
+    className: document.activeElement?.className || "",
+    label: document.activeElement?.getAttribute("aria-label") || document.activeElement?.textContent.trim() || ""
+  })));
+}
+portfolioSmallPhone.keyboardFocusOrder = portfolioSmallPhoneFocusOrder;
+const portfolioSmallPhoneKeyboardOrder = portfolioSmallPhoneFocusOrder[0]?.className.includes("skip-link")
+  && portfolioSmallPhoneFocusOrder[1]?.className.includes("brand")
+  && portfolioSmallPhoneFocusOrder[2]?.label.includes("Try the demo");
+if (
+  !portfolioSmallPhone.noDocumentOverflow
+  || !portfolioSmallPhone.primaryCtaVisible
+  || !portfolioSmallPhone.ctaBeforeProduct
+  || !portfolioSmallPhone.brandAccessibleName?.includes("Mathieu Petroni")
+  || !portfolioSmallPhone.brandNameVisible
+  || portfolioSmallPhone.touchTargetFailures.length
+  || !portfolioSmallPhoneKeyboardOrder
+) {
+  throw new Error(`Portfolio small-phone contract failed: ${JSON.stringify(portfolioSmallPhone)}`);
+}
 
 const portfolioTextResize = [];
 for (const width of [320, 768]) {
@@ -669,12 +725,20 @@ const caseStudyPage = await page.evaluate(() => ({
   canonical: document.querySelector('link[rel="canonical"]')?.href,
   brandHref: document.querySelector(".brand")?.getAttribute("href"),
   ctaBeforeProduct: Boolean(document.querySelector(".hero-cta")?.compareDocumentPosition(document.querySelector(".hero-product")) & Node.DOCUMENT_POSITION_FOLLOWING),
-  hasArchitecture: Boolean(document.querySelector(".architecture")),
+  hasArchitecture: Boolean(document.querySelector(".system-flow")),
   hasAcceptedProposal: document.body.textContent.includes("Accepted by reviewer"),
   hasAbstention: document.body.textContent.includes("Human input before materialization"),
   hasProductionBoundaries: document.body.textContent.includes("What this does not prove")
     && document.body.textContent.includes("What I would validate next"),
-  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
+  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
+  mainSectionCount: document.querySelectorAll("main > section").length,
+  visibleWordCount: document.body.innerText.trim().split(/\s+/).length,
+  headingCount: document.querySelectorAll("h1,h2,h3").length,
+  linkCount: document.querySelectorAll("a").length,
+  borderedSurfaceCount: document.querySelectorAll(".product-panel,.system-flow,.disclosure,.contact-panel").length,
+  scrollHeight: document.body.scrollHeight,
+  productImagesUncropped: [...document.querySelectorAll(".product-window img")].every((image) => getComputedStyle(image).objectFit !== "cover"),
+  disclosureCount: document.querySelectorAll("details.disclosure").length
 }));
 if (
   !caseStudyPage.canonical?.endsWith("/creative-launch-workspace/case-study.html")
@@ -685,8 +749,163 @@ if (
   || !caseStudyPage.hasAbstention
   || !caseStudyPage.hasProductionBoundaries
   || !caseStudyPage.noDocumentOverflow
+  || caseStudyPage.mainSectionCount !== 6
+  || caseStudyPage.visibleWordCount > 700
+  || caseStudyPage.headingCount > 10
+  || caseStudyPage.linkCount > 18
+  || caseStudyPage.borderedSurfaceCount > 8
+  || caseStudyPage.scrollHeight > 5500
+  || !caseStudyPage.productImagesUncropped
+  || caseStudyPage.disclosureCount !== 3
 ) {
   throw new Error(`Technical case-study contract failed: ${JSON.stringify(caseStudyPage)}`);
+}
+await page.evaluate(async () => {
+  for (const image of document.images) {
+    image.scrollIntoView({ block: "center" });
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  }
+  await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)));
+  window.scrollTo(0, 0);
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+});
+await page.screenshot({ path: join(assetsDir, "case-study-desktop.png"), fullPage: true });
+
+await page.setViewport({ width: 390, height: 844 });
+await page.goto(caseStudyUrl, { waitUntil: "load" });
+const caseStudyMobile = await page.evaluate(() => {
+  const primaryCta = document.querySelector(".hero-cta .button");
+  const independentTargets = [...document.querySelectorAll(".site-nav a,.button,.evidence-links a,summary")]
+    .filter((element) => getComputedStyle(element).display !== "none")
+    .map((element) => ({
+      label: element.textContent.trim().slice(0, 48),
+      width: Math.round(element.getBoundingClientRect().width),
+      height: Math.round(element.getBoundingClientRect().height)
+    }));
+  return {
+    noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
+    scrollHeight: document.body.scrollHeight,
+    ctaVisible: primaryCta?.getBoundingClientRect().top >= 0 && primaryCta?.getBoundingClientRect().bottom <= innerHeight,
+    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".hero-product")) & Node.DOCUMENT_POSITION_FOLLOWING),
+    touchTargetFailures: independentTargets.filter((target) => target.height < 44),
+    bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize)
+  };
+});
+if (
+  !caseStudyMobile.noDocumentOverflow
+  || caseStudyMobile.scrollHeight > 7000
+  || !caseStudyMobile.ctaVisible
+  || !caseStudyMobile.ctaBeforeProduct
+  || caseStudyMobile.touchTargetFailures.length
+  || caseStudyMobile.bodyFontPx < 16
+) {
+  throw new Error(`Case study mobile contract failed: ${JSON.stringify(caseStudyMobile)}`);
+}
+await page.evaluate(async () => {
+  for (const image of document.images) {
+    image.scrollIntoView({ block: "center" });
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  }
+  await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)));
+  window.scrollTo(0, 0);
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+});
+await page.screenshot({ path: join(assetsDir, "case-study-mobile.png"), fullPage: true });
+
+await page.setViewport({ width: 320, height: 568 });
+await page.goto(caseStudyUrl, { waitUntil: "load" });
+const caseStudySmallPhone = await page.evaluate(() => {
+  const primaryCta = document.querySelector(".hero-cta .button");
+  const brandName = document.querySelector(".brand-copy strong");
+  const brandNameRect = brandName?.getBoundingClientRect();
+  const independentTargets = [...document.querySelectorAll(".site-nav a,.hero-cta .button")]
+    .filter((element) => getComputedStyle(element).display !== "none")
+    .map((element) => ({
+      label: element.getAttribute("aria-label") || element.textContent.trim().slice(0, 48),
+      height: Math.round(element.getBoundingClientRect().height)
+    }));
+  return {
+    noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
+    primaryCtaVisible: primaryCta?.getBoundingClientRect().top >= 0 && primaryCta?.getBoundingClientRect().bottom <= innerHeight,
+    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".hero-product")) & Node.DOCUMENT_POSITION_FOLLOWING),
+    brandNameVisible: getComputedStyle(brandName).display !== "none"
+      && brandNameRect?.top >= 0
+      && brandNameRect?.bottom <= innerHeight,
+    touchTargetFailures: independentTargets.filter((target) => target.height < 44)
+  };
+});
+const caseStudyBrandHandle = await page.$(".brand");
+const caseStudyBrandAccessibility = caseStudyBrandHandle
+  ? await page.accessibility.snapshot({ root: caseStudyBrandHandle })
+  : null;
+caseStudySmallPhone.brandAccessibleName = caseStudyBrandAccessibility?.name || "";
+await caseStudyBrandHandle?.dispose();
+const caseStudySmallPhoneFocusOrder = [];
+for (let index = 0; index < 3; index += 1) {
+  await page.keyboard.press("Tab");
+  caseStudySmallPhoneFocusOrder.push(await page.evaluate(() => ({
+    className: document.activeElement?.className || "",
+    label: document.activeElement?.getAttribute("aria-label") || document.activeElement?.textContent.trim() || ""
+  })));
+}
+caseStudySmallPhone.keyboardFocusOrder = caseStudySmallPhoneFocusOrder;
+const caseStudySmallPhoneKeyboardOrder = caseStudySmallPhoneFocusOrder[0]?.className.includes("skip-link")
+  && caseStudySmallPhoneFocusOrder[1]?.className.includes("brand")
+  && caseStudySmallPhoneFocusOrder[2]?.label.includes("Try the demo");
+if (
+  !caseStudySmallPhone.noDocumentOverflow
+  || !caseStudySmallPhone.primaryCtaVisible
+  || !caseStudySmallPhone.ctaBeforeProduct
+  || !caseStudySmallPhone.brandAccessibleName?.includes("Mathieu Petroni")
+  || !caseStudySmallPhone.brandNameVisible
+  || caseStudySmallPhone.touchTargetFailures.length
+  || !caseStudySmallPhoneKeyboardOrder
+) {
+  throw new Error(`Case study small-phone contract failed: ${JSON.stringify(caseStudySmallPhone)}`);
+}
+
+const caseStudyTextResize = [];
+for (const width of [320, 768]) {
+  await page.setViewport({ width, height: width === 320 ? 568 : 900 });
+  await page.goto(caseStudyUrl, { waitUntil: "load" });
+  const result = await page.evaluate(async () => {
+    const textElements = [...document.querySelectorAll("body *")]
+      .filter((element) => [...element.childNodes].some((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim()))
+      .map((element) => ({
+        element,
+        fontSize: parseFloat(getComputedStyle(element).fontSize),
+        lineHeight: parseFloat(getComputedStyle(element).lineHeight)
+      }));
+    for (const { element, fontSize, lineHeight } of textElements) {
+      element.style.setProperty("font-size", `${fontSize * 2}px`, "important");
+      if (Number.isFinite(lineHeight)) element.style.setProperty("line-height", `${lineHeight * 2}px`, "important");
+    }
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const overflowers = [...document.querySelectorAll("body *")]
+      .filter((element) => {
+        const style = getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        return style.display !== "none"
+          && style.visibility !== "hidden"
+          && rect.width > 0
+          && rect.bottom > 0
+          && (rect.left < -1 || rect.right > innerWidth + 1);
+      })
+      .slice(0, 12)
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          selector: `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ""}${element.classList.length ? `.${[...element.classList].join(".")}` : ""}`,
+          left: Math.round(rect.left),
+          right: Math.round(rect.right)
+        };
+      });
+    return { documentWidth: document.documentElement.scrollWidth, viewportWidth: innerWidth, overflowers };
+  });
+  caseStudyTextResize.push({ width, ...result });
+}
+if (caseStudyTextResize.some((result) => result.documentWidth > result.viewportWidth || result.overflowers.length)) {
+  throw new Error(`Case study 200% text resize overflow: ${JSON.stringify(caseStudyTextResize)}`);
 }
 
 const portfolioWorkspaceUrl = `${baseUrl}/docs/workspace.html`;
@@ -789,7 +1008,7 @@ if (socialCard.productImage !== "assets/workspace-desktop.png" || !socialCard.pr
   throw new Error(`Social card contract failed: ${JSON.stringify(socialCard)}`);
 }
 await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
-await page.screenshot({ path: join(assetsDir, "social-card-v1-8.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+await page.screenshot({ path: join(assetsDir, "social-card-v1-9.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
 
 const labUrl = `${baseUrl}/docs/fix-lab.html`;
 await page.setViewport({ width: 1280, height: 900 });
@@ -857,7 +1076,9 @@ const lighthouseTargets = [
   { surface: "workspace", formFactor: "desktop", targetUrl: url, outputPath: join(evidenceDir, "workspace-lighthouse-accessibility-desktop.json") },
   { surface: "workspace", formFactor: "mobile", targetUrl: url, outputPath: join(evidenceDir, "workspace-lighthouse-accessibility-mobile.json") },
   { surface: "portfolio", formFactor: "desktop", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-accessibility-desktop.json") },
-  { surface: "portfolio", formFactor: "mobile", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-accessibility-mobile.json") }
+  { surface: "portfolio", formFactor: "mobile", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-accessibility-mobile.json") },
+  { surface: "caseStudy", formFactor: "desktop", targetUrl: caseStudyUrl, outputPath: join(evidenceDir, "case-study-lighthouse-accessibility-desktop.json") },
+  { surface: "caseStudy", formFactor: "mobile", targetUrl: caseStudyUrl, outputPath: join(evidenceDir, "case-study-lighthouse-accessibility-mobile.json") }
 ];
 
 for (const { formFactor, targetUrl, outputPath } of lighthouseTargets) {
@@ -879,7 +1100,7 @@ for (const { formFactor, targetUrl, outputPath } of lighthouseTargets) {
   });
 }
 
-const accessibility = { workspace: {}, portfolio: {} };
+const accessibility = { workspace: {}, portfolio: {}, caseStudy: {} };
 const seriousAccessibilityFailures = [];
 for (const { surface, formFactor, outputPath } of lighthouseTargets) {
   const lighthouseReport = JSON.parse(await readFile(outputPath, "utf8"));
@@ -904,12 +1125,14 @@ if (seriousAccessibilityFailures.length) {
 }
 
 const portfolioQualityTargets = [
-  { formFactor: "desktop", outputPath: join(evidenceDir, "portfolio-lighthouse-quality-desktop.json") },
-  { formFactor: "mobile", outputPath: join(evidenceDir, "portfolio-lighthouse-quality-mobile.json") }
+  { surface: "portfolio", formFactor: "desktop", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-quality-desktop.json") },
+  { surface: "portfolio", formFactor: "mobile", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-quality-mobile.json") },
+  { surface: "caseStudy", formFactor: "desktop", targetUrl: caseStudyUrl, outputPath: join(evidenceDir, "case-study-lighthouse-quality-desktop.json") },
+  { surface: "caseStudy", formFactor: "mobile", targetUrl: caseStudyUrl, outputPath: join(evidenceDir, "case-study-lighthouse-quality-mobile.json") }
 ];
-for (const { formFactor, outputPath } of portfolioQualityTargets) {
+for (const { formFactor, targetUrl, outputPath } of portfolioQualityTargets) {
   const args = [
-    portfolioUrl,
+    targetUrl,
     `--chrome-path=${chromePath}`,
     "--only-categories=performance,best-practices,seo",
     `--form-factor=${formFactor}`,
@@ -927,9 +1150,9 @@ for (const { formFactor, outputPath } of portfolioQualityTargets) {
 }
 
 const portfolioQuality = {};
-for (const { formFactor, outputPath } of portfolioQualityTargets) {
+for (const { surface, formFactor, outputPath } of portfolioQualityTargets) {
   const lighthouseReport = JSON.parse(await readFile(outputPath, "utf8"));
-  portfolioQuality[formFactor] = {
+  portfolioQuality[`${surface}_${formFactor}`] = {
     performanceScore: lighthouseReport.categories.performance.score,
     bestPracticesScore: lighthouseReport.categories["best-practices"].score,
     seoScore: lighthouseReport.categories.seo.score,
@@ -954,7 +1177,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v10",
+  contract_version: "workspace_runtime_qa.v13",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,
@@ -979,8 +1202,12 @@ const report = {
   reset,
   portfolio_page: portfolioPage,
   portfolio_mobile: portfolioMobile,
+  portfolio_small_phone: portfolioSmallPhone,
   portfolio_text_resize: portfolioTextResize,
   case_study_page: caseStudyPage,
+  case_study_mobile: caseStudyMobile,
+  case_study_small_phone: caseStudySmallPhone,
+  case_study_text_resize: caseStudyTextResize,
   portfolio_navigation: portfolioNavigation,
   responsive_asset_fidelity: responsiveAssetFidelity,
   social_card: socialCard,

@@ -38,7 +38,7 @@ jobs:
       - name: Static checks
         run: |
           uv run --frozen ruff check .
-          uv run --frozen mypy meta_importer/ai meta_importer/clock.py meta_importer/review_policy.py meta_importer/fix_lab.py meta_importer/portfolio_page.py
+          uv run --frozen mypy meta_importer/ai meta_importer/clock.py meta_importer/review_policy.py meta_importer/fix_lab.py meta_importer/portfolio_page.py meta_importer/portfolio_v19.py
       - name: Tests and branch coverage
         run: |
           uv run --frozen coverage run -m unittest discover -s tests -q

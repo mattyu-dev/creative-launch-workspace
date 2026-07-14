@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v10",
-  "tested_at": "2026-07-14T17:36:49.692Z",
+  "contract_version": "workspace_runtime_qa.v13",
+  "tested_at": "2026-07-14T18:38:17.443Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-14T17:35:50.801Z",
+      "occurredAt": "2026-07-14T18:36:39.614Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784050550801_8",
+        "event_id": "evt_local_1784054199614_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-14T17:35:50.801Z"
+        "occurred_at": "2026-07-14T18:36:39.614Z"
       }
     },
     "request_violations": [],
@@ -242,17 +242,17 @@
   "portfolio_page": {
     "title": "I built an AI workflow that catches creative launch errors before Ads Manager.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-8.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-9.png",
     "hasWorkspaceCta": true,
     "hasCaseStudyLink": true,
-    "mainSectionCount": 6,
-    "visibleWordCount": 533,
-    "scrollHeight": 4099,
+    "mainSectionCount": 5,
+    "visibleWordCount": 400,
+    "scrollHeight": 4442,
     "copyFreeze": {
       "mutationBoundary": true,
       "reviewState": true,
       "boundedAuthority": true,
-      "heroSecondaryCta": "See how it works →",
+      "heroSecondaryCta": "Read the case study →",
       "experienceSince": true,
       "structuredJobTitle": "AI Automation Builder"
     },
@@ -272,15 +272,15 @@
       "SoftwareSourceCode",
       "CreativeWork"
     ],
-    "governanceStepCount": 4,
+    "governanceStepCount": 3,
     "contributionCount": 3,
-    "evidenceCount": 4,
+    "evidenceCount": 3,
     "ownership": true,
     "primaryCtaVisible": true,
     "heroProductVisible": true,
-    "heroProductTop": 236,
+    "heroProductTop": 751,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:64035/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:51910/docs/assets/workspace-desktop.avif",
     "sectionNavTargetsResolve": true,
     "noDocumentOverflow": true
   },
@@ -289,13 +289,38 @@
     "headingVisible": true,
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
-    "productTop": 710,
-    "heroImageSource": "http://127.0.0.1:64035/docs/assets/workspace-mobile-hero.webp",
+    "productTop": 1012,
+    "heroImageSource": "http://127.0.0.1:51910/docs/assets/workspace-mobile-hero.webp",
     "heroAssetWidth": 390,
     "heroAssetHeight": 360,
-    "scrollHeight": 6131,
+    "scrollHeight": 5451,
     "bodyFontPx": 16,
     "evidenceColumns": 2
+  },
+  "portfolio_small_phone": {
+    "noDocumentOverflow": true,
+    "primaryCtaVisible": true,
+    "ctaBeforeProduct": true,
+    "brandNameVisible": true,
+    "touchTargetFailures": [],
+    "ctaTop": 514,
+    "ctaBottom": 558,
+    "headingHeight": 218,
+    "brandAccessibleName": "Mathieu Petroni",
+    "keyboardFocusOrder": [
+      {
+        "className": "skip-link",
+        "label": "Skip to the project"
+      },
+      {
+        "className": "brand",
+        "label": "MPMathieu PetroniCreative Launch Workspace"
+      },
+      {
+        "className": "button",
+        "label": "Try the demo"
+      }
+    ]
   },
   "portfolio_text_resize": [
     {
@@ -319,8 +344,60 @@
     "hasAcceptedProposal": true,
     "hasAbstention": true,
     "hasProductionBoundaries": true,
-    "noDocumentOverflow": true
+    "noDocumentOverflow": true,
+    "mainSectionCount": 6,
+    "visibleWordCount": 572,
+    "headingCount": 7,
+    "linkCount": 18,
+    "borderedSurfaceCount": 7,
+    "scrollHeight": 5372,
+    "productImagesUncropped": true,
+    "disclosureCount": 3
   },
+  "case_study_mobile": {
+    "noDocumentOverflow": true,
+    "scrollHeight": 6986,
+    "ctaVisible": true,
+    "ctaBeforeProduct": true,
+    "touchTargetFailures": [],
+    "bodyFontPx": 16
+  },
+  "case_study_small_phone": {
+    "noDocumentOverflow": true,
+    "primaryCtaVisible": true,
+    "ctaBeforeProduct": true,
+    "brandNameVisible": true,
+    "touchTargetFailures": [],
+    "brandAccessibleName": "Mathieu Petroni",
+    "keyboardFocusOrder": [
+      {
+        "className": "skip-link",
+        "label": "Skip to case study"
+      },
+      {
+        "className": "brand",
+        "label": "MPMathieu PetroniCreative Launch Workspace"
+      },
+      {
+        "className": "button",
+        "label": "Try the demo"
+      }
+    ]
+  },
+  "case_study_text_resize": [
+    {
+      "width": 320,
+      "documentWidth": 320,
+      "viewportWidth": 320,
+      "overflowers": []
+    },
+    {
+      "width": 768,
+      "documentWidth": 768,
+      "viewportWidth": 768,
+      "overflowers": []
+    }
+  ],
   "portfolio_navigation": {
     "brandHref": "index.html",
     "returnHref": "index.html",
@@ -398,11 +475,15 @@
     "portfolio": {
       "desktopScore": 1,
       "mobileScore": 1
+    },
+    "caseStudy": {
+      "desktopScore": 1,
+      "mobileScore": 1
     }
   },
   "serious_accessibility_failures": [],
   "lighthouse_portfolio_quality": {
-    "desktop": {
+    "portfolio_desktop": {
       "performanceScore": 0.97,
       "bestPracticesScore": 1,
       "seoScore": 1,
@@ -410,7 +491,23 @@
       "cls": 0,
       "tbtMs": 0
     },
-    "mobile": {
+    "portfolio_mobile": {
+      "performanceScore": 1,
+      "bestPracticesScore": 1,
+      "seoScore": 1,
+      "lcpMs": 900,
+      "cls": 0,
+      "tbtMs": 0
+    },
+    "caseStudy_desktop": {
+      "performanceScore": 0.97,
+      "bestPracticesScore": 1,
+      "seoScore": 1,
+      "lcpMs": 1126,
+      "cls": 0,
+      "tbtMs": 0
+    },
+    "caseStudy_mobile": {
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,

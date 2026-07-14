@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.0 — 2026-07-14
+
+- Replaced the duplicated editorial CSS with a shared Operator Nocturne design system: near-black canvas, one mint accent, semantic tokens, hairline elevation, compact component variants and a single sans-serif voice.
+- Rebuilt the landing around five blocks, a full-width uncropped product view, earlier personal positioning and 400 visible words.
+- Rebuilt the case study from 1,121 words, 19 headings and 20 competing modules into a six-chapter narrative with 572 visible words, seven headings and seven bordered surfaces.
+- Moved proposal receipts, architecture references and production planning into accessible disclosures while keeping the critical prototype limits visible.
+- Added dedicated case-study desktop/mobile screenshots, 200% text-resize checks, 44-pixel touch-target checks, small-phone CTA gates and Lighthouse accessibility/performance coverage.
+- Added a dark v1.9 social card and aligned all public Open Graph surfaces, package metadata and generated artifacts with the release.
+
 ## 1.8.0 — 2026-07-14
 
 - Replaced the packed 1,118-word public entry with a 533-word portfolio landing that puts Mathieu, the product and the two-minute demo first.
