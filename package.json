@@ -7,7 +7,7 @@
     "qa:frontend": "node scripts/workspace_runtime_qa.mjs"
   },
   "devDependencies": {
-    "lighthouse": "12.6.1",
+    "lighthouse": "13.4.0",
     "puppeteer-core": "25.3.0"
   }
 }
