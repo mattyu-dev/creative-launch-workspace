@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from meta_importer.asset_validation import validate_asset_metadata
 from meta_importer.browser_qa import audit_workspace_browser_contract
@@ -103,8 +104,24 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertIn('searchParams.delete("guided")', html)
         self.assertIn('document.getElementById("review-workspace").focus()', html)
         self.assertIn('class="brand" href="index.html"', html)
+        self.assertNotIn('class="brand" href="index.html" aria-label=', html)
         self.assertIn('id="guided-return" href="index.html"', html)
         self.assertIn("Return to the case study", html)
+        self.assertIn('id="guided-case-study" href="index.html#about"', html)
+        self.assertIn(
+            'id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/"',
+            html,
+        )
+        self.assertIn('id="guided-step-three-actions"', html)
+        self.assertIn('role="group" aria-label="Batch status"', html)
+        self.assertIn('role="group" aria-label="Batch filters"', html)
+        self.assertIn('role="img" aria-label="Synthetic creative preview"', html)
+        self.assertIn('href="data:image/svg+xml,%3Csvg%20xmlns%3D%22', html)
+        self.assertLess(html.index('id="guided-step-two"'), html.index('id="guided-case"'))
+        self.assertLess(
+            html.index('id="guided-step-three-actions"'),
+            html.index('class="guided-proof"'),
+        )
 
     def test_html_static_audit_checks_accessibility_and_network_boundary(self) -> None:
         rows = read_manifest(V2_FIXTURE)
@@ -160,6 +177,10 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertIn("completeGuidedDemo", html)
         self.assertIn("mutation_allowed:false", html)
         self.assertIn(".guided-dialog [hidden] { display: none !important; }", html)
+        self.assertIn(".guided-dialog[open]", html)
+        self.assertIn(".guided-title:focus", html)
+        self.assertIn("border-left: 4px solid var(--focus);", html)
+        self.assertIn("overflow-y: auto;", html)
         self.assertIn("clearDetail", html)
         self.assertIn("<span>Approval missing</span>", html)
         self.assertLess(html.index('class="focus-panel"'), html.index('class="table-shell"'))
@@ -403,6 +424,92 @@ class LaunchWorkspaceTests(unittest.TestCase):
             with self.assertRaises(SyntheticDataError):
                 read_manifest(manifest)
 
+    def test_synthetic_guard_accepts_existing_asset_within_fixture_root(self) -> None:
+        with tempfile.TemporaryDirectory(dir=".") as temp_dir:
+            temp_root = Path(temp_dir)
+            if temp_root.is_absolute():
+                temp_root = temp_root.relative_to(Path.cwd())
+            fixture_root = temp_root / "assets"
+            fixture_root.mkdir()
+            asset = fixture_root / "legitimate.jpg"
+            asset.write_bytes(b"synthetic fixture")
+            manifest = Path(temp_dir) / "manifest.csv"
+            manifest.write_text(
+                "creative_id,campaign_key,adset_key,format,asset_path,primary_text,headline,destination_url,approval_status,qa_issue\n"
+                f"cr_fixture,camp,adset,image,{asset},Copy,Head,https://example.invalid/page,approved,\n"
+            )
+
+            with patch("meta_importer.launch_workspace.SYNTHETIC_ASSET_PREFIX", fixture_root):
+                rows = read_manifest(manifest)
+
+        self.assertEqual(rows[0].asset_path, str(asset))
+
+    def test_synthetic_guard_blocks_parent_traversal_outside_fixture_root(self) -> None:
+        with tempfile.TemporaryDirectory(dir=".") as temp_dir:
+            temp_root = Path(temp_dir)
+            if temp_root.is_absolute():
+                temp_root = temp_root.relative_to(Path.cwd())
+            fixture_root = temp_root / "assets"
+            fixture_root.mkdir()
+            outside = fixture_root.parent / "outside.jpg"
+            outside.write_bytes(b"operator supplied")
+            traversing_asset = fixture_root / ".." / outside.name
+            manifest = Path(temp_dir) / "manifest.csv"
+            manifest.write_text(
+                "creative_id,campaign_key,adset_key,format,asset_path,primary_text,headline,destination_url,approval_status,qa_issue\n"
+                f"cr_traversal,camp,adset,image,{traversing_asset},Copy,Head,https://example.invalid/page,approved,\n"
+            )
+
+            with (
+                patch("meta_importer.launch_workspace.SYNTHETIC_ASSET_PREFIX", fixture_root),
+                self.assertRaises(SyntheticDataError),
+            ):
+                read_manifest(manifest)
+
+    def test_synthetic_guard_blocks_absolute_asset_path(self) -> None:
+        with tempfile.TemporaryDirectory(dir=".") as temp_dir:
+            temp_root = Path(temp_dir)
+            if temp_root.is_absolute():
+                temp_root = temp_root.relative_to(Path.cwd())
+            fixture_root = temp_root / "assets"
+            fixture_root.mkdir()
+            asset = (fixture_root / "absolute.jpg").resolve()
+            asset.write_bytes(b"synthetic fixture")
+            manifest = Path(temp_dir) / "manifest.csv"
+            manifest.write_text(
+                "creative_id,campaign_key,adset_key,format,asset_path,primary_text,headline,destination_url,approval_status,qa_issue\n"
+                f"cr_absolute,camp,adset,image,{asset},Copy,Head,https://example.invalid/page,approved,\n"
+            )
+
+            with (
+                patch("meta_importer.launch_workspace.SYNTHETIC_ASSET_PREFIX", fixture_root),
+                self.assertRaises(SyntheticDataError),
+            ):
+                read_manifest(manifest)
+
+    def test_synthetic_guard_blocks_symlink_escape_from_fixture_root(self) -> None:
+        with tempfile.TemporaryDirectory(dir=".") as temp_dir:
+            temp_root = Path(temp_dir)
+            if temp_root.is_absolute():
+                temp_root = temp_root.relative_to(Path.cwd())
+            fixture_root = temp_root / "assets"
+            fixture_root.mkdir()
+            outside = fixture_root.parent / "outside.jpg"
+            outside.write_bytes(b"operator supplied")
+            linked_asset = fixture_root / "linked.jpg"
+            linked_asset.symlink_to(outside.resolve())
+            manifest = Path(temp_dir) / "manifest.csv"
+            manifest.write_text(
+                "creative_id,campaign_key,adset_key,format,asset_path,primary_text,headline,destination_url,approval_status,qa_issue\n"
+                f"cr_symlink,camp,adset,image,{linked_asset},Copy,Head,https://example.invalid/page,approved,\n"
+            )
+
+            with (
+                patch("meta_importer.launch_workspace.SYNTHETIC_ASSET_PREFIX", fixture_root),
+                self.assertRaises(SyntheticDataError),
+            ):
+                read_manifest(manifest)
+
     def test_manifest_schema_guard_blocks_missing_required_columns(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             manifest = Path(temp_dir) / "manifest.csv"
@@ -531,6 +638,39 @@ class LaunchWorkspaceTests(unittest.TestCase):
             first["platform_sequence"][0]["payload"]["objective"],
             "OUTCOME_TRAFFIC",
         )
+
+    def test_allow_real_data_classification_is_consistent_across_cli_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base = Path(temp_dir)
+            manifest = base / "operator.csv"
+            manifest.write_text(
+                "creative_id,campaign_key,adset_key,format,asset_path,primary_text,headline,destination_url,approval_status,qa_issue\n"
+                "cr_operator,camp,adset,image,/tmp/operator.jpg,Copy,Head,https://example.invalid/page,approved,\n"
+            )
+            exit_code = main(
+                [
+                    "plan",
+                    str(manifest),
+                    "--allow-real-data",
+                    "--out",
+                    str(base / "launch_plan.json"),
+                    "--review",
+                    str(base / "review_packet.md"),
+                    "--state",
+                    str(base / "review_state.json"),
+                    "--platform-preview",
+                    str(base / "platform_preview.json"),
+                ]
+            )
+            plan_payload = json.loads((base / "launch_plan.json").read_text())
+            workspace_state = json.loads((base / "review_state.json").read_text())
+            platform_preview = json.loads((base / "platform_preview.json").read_text())
+
+        expected = "operator_supplied_manifest_no_live_mutation"
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(plan_payload["data_classification"], expected)
+        self.assertEqual(workspace_state["data_classification"], expected)
+        self.assertEqual(platform_preview["data_classification"], expected)
 
     def test_cli_writes_workspace_state_json(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

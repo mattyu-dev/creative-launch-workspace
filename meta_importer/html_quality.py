@@ -10,6 +10,9 @@ def audit_workspace_html(html: str) -> dict[str, object]:
     filter_buttons = [
         attrs for tag, attrs in parser.start_tags if tag == "button" and attrs.get("data-filter")
     ]
+    labelled_divs = [
+        attrs for tag, attrs in parser.start_tags if tag == "div" and attrs.get("aria-label")
+    ]
     checks = {
         "has_title": "Creative Launch Workspace for Meta Ads" in html,
         "has_row_detail": "Decision workspace" in html,
@@ -113,6 +116,35 @@ def audit_workspace_html(html: str) -> dict[str, object]:
         "has_guided_full_queue_exit": all(
             token in html
             for token in ('id="guided-explore"', 'searchParams.delete("guided")', 'setActiveFilter("all")')
+        ),
+        "has_mobile_guided_action_order": all(
+            token in html
+            for token in (
+                ".guided-dialog[open]",
+                "position: sticky;",
+                "overflow-y: auto;",
+                ".guided-title:focus",
+                "border-left: 4px solid var(--focus);",
+            )
+        )
+        and html.find('id="guided-step-two"') < html.find('id="guided-case"')
+        and html.find('id="guided-step-three-actions"') < html.find('class="guided-proof"'),
+        "has_guided_personal_exits": all(
+            token in html
+            for token in (
+                'id="guided-case-study" href="index.html#about"',
+                'id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/"',
+            )
+        ),
+        "brand_accessible_name_matches_visible_text": (
+            '<a class="brand" href="index.html">' in html
+            and '<a class="brand" href="index.html" aria-label=' not in html
+        ),
+        "labelled_generic_divs_have_roles": bool(labelled_divs)
+        and all(attrs.get("role") in {"group", "img"} for attrs in labelled_divs),
+        "has_encoded_data_favicon": (
+            'href="data:image/svg+xml,%3Csvg%20xmlns%3D%22' in html
+            and "data:image/svg+xml,%3Csvg xmlns='" not in html
         ),
         "has_skip_link": 'class="skip-link"' in html and 'href="#review-workspace"' in html,
         "has_active_row_semantics": 'setAttribute("aria-selected"' in html,
@@ -265,6 +297,31 @@ def _check_messages(checks: dict[str, bool]) -> list[tuple[str, bool, str]]:
             "has_guided_full_queue_exit",
             checks["has_guided_full_queue_exit"],
             "Guided review lacks a deterministic exit to the full queue.",
+        ),
+        (
+            "has_mobile_guided_action_order",
+            checks["has_mobile_guided_action_order"],
+            "Guided decisions and completion actions must precede scrollable evidence on small screens.",
+        ),
+        (
+            "has_guided_personal_exits",
+            checks["has_guided_personal_exits"],
+            "Guided completion lacks explicit routes to Mathieu's case study and LinkedIn profile.",
+        ),
+        (
+            "brand_accessible_name_matches_visible_text",
+            checks["brand_accessible_name_matches_visible_text"],
+            "The brand link accessible name must match its visible label.",
+        ),
+        (
+            "labelled_generic_divs_have_roles",
+            checks["labelled_generic_divs_have_roles"],
+            "Generic labelled containers must expose a valid ARIA role.",
+        ),
+        (
+            "has_encoded_data_favicon",
+            checks["has_encoded_data_favicon"],
+            "The inline favicon URL must be fully percent encoded.",
         ),
         ("has_skip_link", checks["has_skip_link"], "Skip-to-queue navigation is missing."),
         (

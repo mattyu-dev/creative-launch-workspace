@@ -4,7 +4,7 @@ from dataclasses import asdict
 from urllib.parse import parse_qsl, urlparse
 
 from .clock import today_iso
-from .launch_workspace import AdCandidate, LaunchPlan
+from .launch_workspace import AdCandidate, LaunchPlan, _data_classification
 
 OBJECTIVE_MAP = {
     "awareness": "OUTCOME_AWARENESS",
@@ -65,7 +65,7 @@ def build_platform_payload_preview(plan: LaunchPlan) -> dict[str, object]:
         "generated_at": today_iso(),
         "mutation_allowed": False,
         "meta_api_compatibility": "mapped_not_executed",
-        "data_classification": "synthetic_fixture_only",
+        "data_classification": _data_classification(plan.rows),
         "asset_storage_policy": {
             "strategy": "meta_native_zero_retention_candidate",
             "current_status": "designed_not_executed",

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "creative-launch-workspace"
-version = "1.6.3"
+version = "1.7.0"
 description = "Governed AI-assisted brief intake and offline creative launch review"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -29,7 +29,8 @@ Repository = "https://github.com/mattyu-dev/creative-launch-workspace"
 ai = ["openai>=2.0,<3"]
 dev = [
   "coverage[toml]>=7.6,<8",
-  "mypy>=1.15,<2",
+  "mypy>=1.15,<3",
+  "pip-audit>=2.10,<3; python_version >= '3.10'",
   "ruff>=0.12,<1",
 ]
 

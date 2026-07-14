@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.0 — 2026-07-14
+
+- Closed two trust-boundary gaps by canonicalizing fixture asset paths against traversal and symlink escapes and by propagating operator-supplied data classification into every preview artifact.
+- Rebuilt the guided review for 320×568 screens with a sticky header, scrollable body, visible decision controls, valid focus treatment and personal case-study/LinkedIn exits.
+- Made the public case study Mathieu-first, shortened its reading path by about 25%, added stronger hiring/client conversion, refreshed the social card and completed robots, sitemap and 404 surfaces.
+- Strengthened accessibility enforcement so serious WCAG failures cannot hide behind a rounded Lighthouse score, and brought all public HTML surfaces to zero W3C validation errors.
+- Locked Python installs to `uv.lock`, added strict Python dependency auditing, pinned CI actions and retained Lighthouse 12.6.1 because the proposed 13.4.0 graph introduced unresolved moderate advisories.
+
 ## 1.6.3 — 2026-07-13
 
 - Rewrote the public portfolio and README with the Humanizer 2.8.2 audit method, replacing slogan-like claims with concrete descriptions of the workflow, evidence and production boundary.

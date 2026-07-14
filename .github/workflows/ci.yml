@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  SOURCE_DATE_EPOCH: "1783814400"
+  SOURCE_DATE_EPOCH: "1783987200"
 
 jobs:
   python-quality:
@@ -29,17 +29,25 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ matrix.python }}
-          cache: pip
-      - name: Install package and quality tools
-        run: python -m pip install --disable-pip-version-check -e '.[dev,ai]'
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9 # v7
+        with:
+          enable-cache: true
+          version: "0.11.15"
+      - name: Install locked package and quality tools
+        run: uv sync --frozen --all-extras --python "${{ matrix.python }}"
       - name: Static checks
         run: |
-          ruff check .
-          mypy meta_importer/ai meta_importer/clock.py meta_importer/review_policy.py meta_importer/fix_lab.py meta_importer/portfolio_page.py
+          uv run --frozen ruff check .
+          uv run --frozen mypy meta_importer/ai meta_importer/clock.py meta_importer/review_policy.py meta_importer/fix_lab.py meta_importer/portfolio_page.py
       - name: Tests and branch coverage
         run: |
-          coverage run -m unittest discover -s tests -q
-          coverage report
+          uv run --frozen coverage run -m unittest discover -s tests -q
+          uv run --frozen coverage report
+      - name: Audit locked Python dependencies
+        if: matrix.python == '3.13'
+        run: |
+          uv --quiet export --frozen --all-extras --no-emit-project --python "${{ matrix.python }}" --output-file /tmp/locked-requirements.txt
+          uv run --frozen pip-audit --disable-pip --require-hashes --strict --requirement /tmp/locked-requirements.txt
 
   integration:
     runs-on: ubuntu-latest
@@ -49,28 +57,32 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.13"
-      - name: Install package
-        run: python -m pip install --disable-pip-version-check -e .
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9 # v7
+        with:
+          enable-cache: true
+          version: "0.11.15"
+      - name: Install locked package
+        run: uv sync --frozen --python "3.13"
       - name: Regenerate fixtures and AI evidence
         run: |
-          python scripts/enrich_fixture_v2.py
-          python scripts/materialize_synthetic_assets.py
-          python evals/brief_mapping/build_dataset.py
-          python scripts/rebuild_ai_evidence.py
-          python scripts/rebuild_fix_lab.py
-          python scripts/rebuild_portfolio_page.py
+          uv run --frozen python scripts/enrich_fixture_v2.py
+          uv run --frozen python scripts/materialize_synthetic_assets.py
+          uv run --frozen python evals/brief_mapping/build_dataset.py
+          uv run --frozen python scripts/rebuild_ai_evidence.py
+          uv run --frozen python scripts/rebuild_fix_lab.py
+          uv run --frozen python scripts/rebuild_portfolio_page.py
       - name: Rehearse v1 launch workspace
-        run: creative-launch plan fixtures/fake_agency_creatives/manifest.csv --out runs/fake_agency_creatives/launch_plan.json --review runs/fake_agency_creatives/review_packet.md --html runs/fake_agency_creatives/workspace.html --html-audit runs/fake_agency_creatives/workspace_audit.json --state runs/fake_agency_creatives/review_state.json --platform-preview runs/fake_agency_creatives/platform_preview.json --store-dir runs/fake_agency_creatives/store
+        run: uv run --frozen creative-launch plan fixtures/fake_agency_creatives/manifest.csv --out runs/fake_agency_creatives/launch_plan.json --review runs/fake_agency_creatives/review_packet.md --html runs/fake_agency_creatives/workspace.html --html-audit runs/fake_agency_creatives/workspace_audit.json --state runs/fake_agency_creatives/review_state.json --platform-preview runs/fake_agency_creatives/platform_preview.json --store-dir runs/fake_agency_creatives/store
       - name: Rehearse v2 launch workspace
-        run: creative-launch plan fixtures/fake_agency_creatives/manifest_v2.csv --out runs/fake_agency_creatives_v2/launch_plan.json --review runs/fake_agency_creatives_v2/review_packet.md --html runs/fake_agency_creatives_v2/workspace.html --html-audit runs/fake_agency_creatives_v2/workspace_audit.json --state runs/fake_agency_creatives_v2/review_state.json --platform-preview runs/fake_agency_creatives_v2/platform_preview.json --store-dir runs/fake_agency_creatives_v2/store --sqlite-db runs/fake_agency_creatives_v2/workspace.sqlite3 --asset-metadata fixtures/fake_agency_creatives/asset_metadata.csv
+        run: uv run --frozen creative-launch plan fixtures/fake_agency_creatives/manifest_v2.csv --out runs/fake_agency_creatives_v2/launch_plan.json --review runs/fake_agency_creatives_v2/review_packet.md --html runs/fake_agency_creatives_v2/workspace.html --html-audit runs/fake_agency_creatives_v2/workspace_audit.json --state runs/fake_agency_creatives_v2/review_state.json --platform-preview runs/fake_agency_creatives_v2/platform_preview.json --store-dir runs/fake_agency_creatives_v2/store --sqlite-db runs/fake_agency_creatives_v2/workspace.sqlite3 --asset-metadata fixtures/fake_agency_creatives/asset_metadata.csv
       - name: Check GitHub Pages demo freshness
         run: |
-          creative-launch plan fixtures/fake_agency_creatives/manifest_v2.csv --out /tmp/pages/launch_plan.json --review /tmp/pages/review_packet.md --html /tmp/pages/workspace.html --html-audit /tmp/pages/workspace_audit.json --state /tmp/pages/review_state.json --platform-preview /tmp/pages/platform_preview.json
+          uv run --frozen creative-launch plan fixtures/fake_agency_creatives/manifest_v2.csv --out /tmp/pages/launch_plan.json --review /tmp/pages/review_packet.md --html /tmp/pages/workspace.html --html-audit /tmp/pages/workspace_audit.json --state /tmp/pages/review_state.json --platform-preview /tmp/pages/platform_preview.json
           cmp docs/workspace.html /tmp/pages/workspace.html
       - name: Check browser and golden contracts
         run: |
-          python scripts/workspace_browser_qa.py runs/fake_agency_creatives_v2/workspace.html --out runs/browser_qa/workspace_v2_browser_qa.json
-          python scripts/check_golden_artifacts.py
+          uv run --frozen python scripts/workspace_browser_qa.py runs/fake_agency_creatives_v2/workspace.html --out runs/browser_qa/workspace_v2_browser_qa.json
+          uv run --frozen python scripts/check_golden_artifacts.py
       - name: Check every generated artifact is current
         run: git diff --exit-code
 
@@ -86,7 +98,7 @@ jobs:
       - name: Install locked frontend QA dependencies
         run: npm ci
       - name: Audit dependencies
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=moderate
       - name: Run browser and accessibility QA
         env:
           QA_ASSETS_DIR: /tmp/creative-launch-workspace/assets

@@ -121,29 +121,37 @@ def render_fix_lab(rule_pack: dict[str, Any]) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#113e31">
   <meta name="description" content="Fix a synthetic blocked creative row and replay Python-generated golden validation scenarios in the browser.">
+  <meta name="author" content="Mathieu Petroni">
   <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <title>Fix &amp; Revalidate Lab · Creative Launch Workspace</title>
+  <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
+  <meta property="og:type" content="article">
+  <meta property="article:author" content="https://www.linkedin.com/in/mathieu-petroni/">
+  <meta property="og:title" content="Fix &amp; Revalidate Lab · Mathieu Petroni">
+  <meta property="og:description" content="Replay Python-generated validation scenarios in a bounded interactive lab.">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-7.png">
+  <title>Fix &amp; Revalidate Lab · Mathieu Petroni</title>
   <style>
     :root {{ --canvas:#f7f5ef;--surface:#fffefa;--soft:#f1efe8;--ink:#1c211e;--body:#48504b;--muted:#6e756f;--line:#d8d3c8;--strong:#b8b2a6;--forest:#113e31;--oxide:#a9472e;--sand:#f2e7d2;--mint:#cfe2d7;--red:#a1362d;--red-soft:#f7e7e4;--font-serif:"Iowan Old Style",Charter,Georgia,serif;--font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;}}
     *{{box-sizing:border-box}} body{{margin:0;color:var(--ink);background:var(--canvas);font:400 14px/1.5 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}} a{{color:var(--forest)}}
-    header{{padding:17px max(18px,calc((100vw - 1120px)/2));border-bottom:1px solid var(--line);background:var(--surface)}} header a{{font-weight:700;text-decoration:none}}
+    header{{padding:14px max(18px,calc((100vw - 1120px)/2));border-bottom:1px solid var(--line);background:var(--surface)}} header nav{{min-height:32px;display:flex;align-items:center;justify-content:space-between;gap:18px}} header a{{font-weight:700;text-decoration:none}} header .linkedin{{font-size:12px;text-decoration:underline;text-underline-offset:3px}}
     main{{width:min(1120px,calc(100% - 32px));margin:auto;padding:46px 0 70px}} .eyebrow{{color:var(--oxide);font-size:11px;font-weight:750;letter-spacing:.1em;text-transform:uppercase}} h1{{max-width:860px;margin:10px 0 14px;font:500 clamp(40px,6vw,70px)/.98 var(--font-serif);letter-spacing:-.045em}} .lead{{max-width:760px;margin:0;color:var(--body);font-size:18px}}
     .contract{{display:flex;flex-wrap:wrap;gap:8px 18px;margin:25px 0 34px;padding-block:12px;border-block:1px solid var(--line);color:var(--muted);font:600 11px/1.4 var(--font-mono)}}
     .lab{{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);border:1px solid var(--line);background:var(--surface)}} .editor,.result{{padding:26px}} .result{{border-left:1px solid var(--line);background:#fbfaf6}}
     h2{{margin:0 0 6px;font:500 27px/1.1 var(--font-serif)}} .section-copy{{margin:0 0 22px;color:var(--muted);font-size:12px}}
     label{{display:grid;gap:6px;margin-top:14px;color:var(--body);font-weight:650}} label span{{color:var(--muted);font-size:11px;font-weight:500}} select{{width:100%;min-height:44px;padding:9px;border:1px solid var(--strong);border-radius:5px;color:var(--ink);background:var(--surface);font:inherit}}
-    .actions{{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}} button{{min-height:42px;padding:8px 12px;border:1px solid var(--strong);border-radius:5px;color:var(--ink);background:var(--surface);font:600 13px/1.2 inherit;cursor:pointer}} button.primary{{color:#fff;border-color:var(--forest);background:var(--forest)}} button:hover{{border-color:var(--ink)}} button:focus-visible,select:focus-visible,a:focus-visible{{outline:2px solid #275fb8;outline-offset:2px}}
+    .actions{{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}} button{{min-height:42px;padding:8px 12px;border:1px solid var(--strong);border-radius:5px;color:var(--ink);background:var(--surface);font:inherit;font-size:13px;font-weight:600;line-height:1.2;cursor:pointer}} button.primary{{color:#fff;border-color:var(--forest);background:var(--forest)}} button:hover{{border-color:var(--ink)}} button:focus-visible,select:focus-visible,a:focus-visible{{outline:2px solid #275fb8;outline-offset:2px}}
     .state{{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}} .state.blocked{{color:var(--red);background:var(--red-soft)}} .state.launch_ready{{color:var(--forest);background:var(--mint)}}
     .issue-list{{display:grid;gap:8px;margin:18px 0}} .issue{{padding:11px 12px;border-left:3px solid var(--red);background:var(--red-soft)}} .issue strong{{display:block;margin-bottom:3px;font-size:12px}} .issue small{{color:var(--muted)}} .clean{{padding:16px;border-left:3px solid var(--forest);background:#e7f0ea;color:var(--forest)}}
     details{{margin-top:16px;border-top:1px solid var(--line)}} summary{{padding:13px 0;cursor:pointer;font-weight:650}} pre{{max-height:230px;margin:0;overflow:auto;padding:13px;color:var(--body);background:var(--soft);font:500 11px/1.55 var(--font-mono);white-space:pre-wrap}}
-    .boundary{{margin-top:24px;padding:14px 16px;border-left:3px solid var(--oxide);background:var(--sand);color:var(--body)}} .links{{display:flex;flex-wrap:wrap;gap:14px;margin-top:22px;font-weight:700}}
-    @media(max-width:760px){{main{{padding-top:30px}}.lab{{grid-template-columns:1fr}}.result{{border-left:0;border-top:1px solid var(--line)}}.editor,.result{{padding:20px}}}}
+    .boundary{{margin-top:24px;padding:14px 16px;border-left:3px solid var(--oxide);background:var(--sand);color:var(--body)}} .links{{display:flex;flex-wrap:wrap;gap:14px;margin-top:22px;font-weight:700}} .creator-cta{{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:30px;padding:20px 22px;color:#fff;background:var(--forest)}} .creator-cta p{{margin:0;color:rgba(255,255,255,.78)}} .creator-cta strong{{display:block;color:#fff;font:500 22px/1.2 var(--font-serif)}} .creator-cta a{{flex:0 0 auto;padding:9px 12px;border:1px solid #fff;border-radius:4px;color:var(--forest);background:#fff;text-decoration:none;font-weight:750}}
+    @media(max-width:760px){{main{{padding-top:30px}}.lab{{grid-template-columns:1fr}}.result{{border-left:0;border-top:1px solid var(--line)}}.editor,.result{{padding:20px}}.creator-cta{{align-items:flex-start;flex-direction:column}}}}
   </style>
 </head>
 <body>
-  <header><a href="index.html">&larr; Creative Launch Workspace</a></header>
+  <header><nav aria-label="Case study navigation"><a href="index.html">&larr; Mathieu Petroni / Creative Launch Workspace</a><a class="linkedin" href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">LinkedIn</a></nav></header>
   <main>
     <div class="eyebrow">Interactive engineering proof</div><h1>Fix a blocked row. Revalidate without hand-waving.</h1>
     <p class="lead">Edit three bounded fields, then replay the exact scenarios generated by the Python validators. The browser does not invent or execute validation rules.</p>
@@ -153,12 +161,13 @@ def render_fix_lab(rule_pack: dict[str, Any]) -> str:
         <label>Placement <span>A story asset cannot run in feed.</span><select id="placement"><option value="feed">feed</option><option value="story">story</option></select></label>
         <label>Approval status <span>Only an approved creative can clear offline QA.</span><select id="approval_status"><option value="pending">pending</option><option value="approved">approved</option></select></label>
         <label>UTM campaign <span>The UTM must match the mapped campaign key.</span><select id="utm_campaign"><option value="camp_launch">camp_launch</option><option value="camp_sale">camp_sale</option></select></label>
-        <div class="actions"><button class="primary" id="revalidate">Revalidate</button><button id="fix-all">Apply proposed fixes</button><button id="reset">Reset</button></div>
+        <div class="actions"><button type="button" class="primary" id="revalidate">Revalidate</button><button type="button" id="fix-all">Apply proposed fixes</button><button type="button" id="reset">Reset</button></div>
       </div>
-      <div class="result" aria-live="polite"><h2>2. Inspect the result</h2><p class="section-copy">Only the selected golden scenario is replayed.</p><span class="state blocked" id="state">blocked</span><div class="issue-list" id="issues"></div><details><summary>Audit event preview</summary><pre id="audit"></pre></details></div>
+      <section class="result" aria-live="polite"><h2>2. Inspect the result</h2><p class="section-copy">Only the selected golden scenario is replayed.</p><span class="state blocked" id="state">blocked</span><div class="issue-list" id="issues"></div><details><summary>Audit event preview</summary><pre id="audit"></pre></details></section>
     </section>
     <p class="boundary"><strong>Boundary:</strong> this lab is a deterministic browser rehearsal over eight committed scenarios. It does not persist a patch, call a model, contact Meta or authorize a launch.</p>
     <div class="links"><a href="evidence/interactive-rule-pack.json">Raw rule pack JSON</a><a href="workspace.html">Open the 100-row workspace</a><a href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/meta_importer/fix_lab.py">Inspect the generator</a></div>
+    <aside class="creator-cta"><p><strong>Built by Mathieu Petroni</strong>Explore the full case study or start a hiring, product or client conversation.</p><a href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Connect on LinkedIn</a></aside>
   </main>
   <script type="application/json" id="rule-pack">{embedded}</script>
   <script>
