@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v8",
-  "tested_at": "2026-07-13T17:41:11.791Z",
+  "contract_version": "workspace_runtime_qa.v9",
+  "tested_at": "2026-07-14T15:13:58.953Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-13T17:40:12.790Z",
+      "occurredAt": "2026-07-14T15:12:59.942Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1783964412790_8",
+        "event_id": "evt_local_1784041979942_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-13T17:40:12.790Z"
+        "occurred_at": "2026-07-14T15:12:59.942Z"
       }
     },
     "request_violations": [],
@@ -138,6 +138,29 @@
       "noDocumentOverflow": true,
       "dialogWithinViewport": true,
       "progress": "1 of 3 · Find"
+    },
+    "small_phone_step_two": {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "progress": "2 of 3 · Decide",
+      "headerPosition": "sticky",
+      "bodyOverflowY": "auto",
+      "bodyScrollable": true,
+      "actionsBeforeCase": true,
+      "everyDecisionVisible": true,
+      "titleUsesCustomFocus": true,
+      "dialogHeight": 550,
+      "bodyClientHeight": 474,
+      "bodyScrollHeight": 644
+    },
+    "small_phone_step_three": {
+      "progress": "3 of 3 · Verify",
+      "bodyScrollable": true,
+      "footerVisible": true,
+      "personalCaseStudyHref": "index.html#about",
+      "linkedinHref": "https://www.linkedin.com/in/mathieu-petroni/"
     }
   },
   "mobile_drawer": {
@@ -217,9 +240,9 @@
     "status": "Browser review state reset."
   },
   "portfolio_page": {
-    "title": "Catch creative launch errors before they delay campaigns or waste spend.",
+    "title": "Catch creative launch errors before Ads Manager with a governed AI workflow I built.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-6.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-7.png",
     "hasWorkspaceCta": true,
     "hasLabCta": true,
     "hasBusinessCase": true,
@@ -256,9 +279,9 @@
     "proofPathCount": 3,
     "ownership": true,
     "heroProductVisible": true,
-    "heroProductTop": 250,
+    "heroProductTop": 268,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:62156/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:57022/docs/assets/workspace-desktop.avif",
     "differenceCount": 3,
     "metricGroupCount": 3,
     "sectionNavTargetsResolve": true,
@@ -275,9 +298,9 @@
     "authorAfterProduct": true,
     "ctaAfterProduct": true,
     "productVisible": true,
-    "productTop": 458,
-    "productVisibleHeight": 270,
-    "heroImageSource": "http://127.0.0.1:62156/docs/assets/workspace-mobile-hero.webp",
+    "productTop": 495,
+    "productVisibleHeight": 332,
+    "heroImageSource": "http://127.0.0.1:57022/docs/assets/workspace-mobile-hero.webp",
     "heroAssetWidth": 390,
     "heroAssetHeight": 360,
     "visibleAnnotations": 0,
@@ -365,6 +388,7 @@
       "mobileScore": 1
     }
   },
+  "serious_accessibility_failures": [],
   "lighthouse_portfolio_quality": {
     "desktop": {
       "performanceScore": 0.98,
@@ -378,7 +402,7 @@
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 900,
+      "lcpMs": 901,
       "cls": 0,
       "tbtMs": 0
     }

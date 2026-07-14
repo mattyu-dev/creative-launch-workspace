@@ -197,6 +197,58 @@ const guidedMobile = await page.evaluate(() => ({
   dialogWithinViewport: document.querySelector("#guided-dialog")?.getBoundingClientRect().width <= innerWidth,
   progress: document.querySelector("#guided-progress")?.textContent
 }));
+
+await page.setViewport({ width: 320, height: 568 });
+await page.goto(`${url}?guided=1`, { waitUntil: "load" });
+await page.click("#guided-next");
+const guidedSmallPhoneStepTwo = await page.evaluate(() => {
+  const dialog = document.querySelector("#guided-dialog");
+  const body = document.querySelector(".guided-body");
+  const header = document.querySelector(".guided-head");
+  const actions = document.querySelector("#guided-step-two");
+  const caseCard = document.querySelector("#guided-case");
+  const buttons = [...actions.querySelectorAll("button")];
+  const dialogRect = dialog.getBoundingClientRect();
+  const actionsRect = actions.getBoundingClientRect();
+  const caseRect = caseCard.getBoundingClientRect();
+  const headingStyle = getComputedStyle(document.querySelector("#guided-title"));
+  return {
+    viewport: { width: innerWidth, height: innerHeight },
+    progress: document.querySelector("#guided-progress")?.textContent,
+    headerPosition: getComputedStyle(header).position,
+    bodyOverflowY: getComputedStyle(body).overflowY,
+    bodyScrollable: body.scrollHeight > body.clientHeight,
+    actionsBeforeCase: actionsRect.top < caseRect.top,
+    everyDecisionVisible: buttons.every((button) => {
+      const rect = button.getBoundingClientRect();
+      return rect.top >= dialogRect.top && rect.bottom <= dialogRect.bottom;
+    }),
+    titleUsesCustomFocus: headingStyle.outlineStyle === "none"
+      && (headingStyle.boxShadow !== "none" || parseFloat(headingStyle.borderLeftWidth) > 0),
+    dialogHeight: Math.round(dialogRect.height),
+    bodyClientHeight: body.clientHeight,
+    bodyScrollHeight: body.scrollHeight
+  };
+});
+await page.screenshot({ path: join(assetsDir, "guided-review-mobile-step-2.png") });
+await page.click("#guided-confirm");
+const guidedSmallPhoneStepThree = await page.evaluate(() => {
+  const dialog = document.querySelector("#guided-dialog");
+  const body = document.querySelector(".guided-body");
+  const footer = document.querySelector("#guided-step-three-actions");
+  const dialogRect = dialog.getBoundingClientRect();
+  const footerRect = footer.getBoundingClientRect();
+  return {
+    progress: document.querySelector("#guided-progress")?.textContent,
+    bodyScrollable: body.scrollHeight > body.clientHeight,
+    footerVisible: !footer.hidden
+      && footerRect.top >= dialogRect.top
+      && footerRect.bottom <= dialogRect.bottom,
+    personalCaseStudyHref: document.querySelector("#guided-case-study")?.getAttribute("href"),
+    linkedinHref: document.querySelector("#guided-linkedin")?.getAttribute("href")
+  };
+});
+await page.screenshot({ path: join(assetsDir, "guided-review-mobile-step-3.png") });
 recordGuidedRequests = false;
 await page.evaluate(() => localStorage.clear());
 
@@ -236,8 +288,18 @@ if (
   || !guidedMobile.open
   || !guidedMobile.noDocumentOverflow
   || !guidedMobile.dialogWithinViewport
+  || guidedSmallPhoneStepTwo.progress !== "2 of 3 · Decide"
+  || guidedSmallPhoneStepTwo.headerPosition !== "sticky"
+  || !["auto", "scroll"].includes(guidedSmallPhoneStepTwo.bodyOverflowY)
+  || !guidedSmallPhoneStepTwo.actionsBeforeCase
+  || !guidedSmallPhoneStepTwo.everyDecisionVisible
+  || !guidedSmallPhoneStepTwo.titleUsesCustomFocus
+  || guidedSmallPhoneStepThree.progress !== "3 of 3 · Verify"
+  || !guidedSmallPhoneStepThree.footerVisible
+  || guidedSmallPhoneStepThree.personalCaseStudyHref !== "index.html#about"
+  || guidedSmallPhoneStepThree.linkedinHref !== "https://www.linkedin.com/in/mathieu-petroni/"
 ) {
-  throw new Error(`Guided review contract failed: ${JSON.stringify({ guidedStepOne, guidedStepTwo, guidedStepThree, guidedRequestViolations, guidedExit, guidedPersistence, guidedMobile })}`);
+  throw new Error(`Guided review contract failed: ${JSON.stringify({ guidedStepOne, guidedStepTwo, guidedStepThree, guidedRequestViolations, guidedExit, guidedPersistence, guidedMobile, guidedSmallPhoneStepTwo, guidedSmallPhoneStepThree })}`);
 }
 
 await page.setViewport({ width: 390, height: 844 });
@@ -481,7 +543,7 @@ const portfolioPage = await page.evaluate(() => ({
 if (
   !portfolioPage.title?.includes("Catch creative launch errors")
   || !portfolioPage.canonical?.endsWith("/creative-launch-workspace/")
-  || !portfolioPage.ogImage?.endsWith("/assets/social-card-v1-6.png")
+  || !portfolioPage.ogImage?.endsWith("/assets/social-card-v1-7.png")
   || !portfolioPage.hasWorkspaceCta
   || !portfolioPage.hasLabCta
   || !portfolioPage.hasBusinessCase
@@ -667,7 +729,7 @@ if (socialCard.productImage !== "assets/workspace-desktop.png" || !socialCard.pr
   throw new Error(`Social card contract failed: ${JSON.stringify(socialCard)}`);
 }
 await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
-await page.screenshot({ path: join(assetsDir, "social-card-v1-6.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+await page.screenshot({ path: join(assetsDir, "social-card-v1-7.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
 
 const labUrl = `${baseUrl}/docs/fix-lab.html`;
 await page.setViewport({ width: 1280, height: 900 });
@@ -758,12 +820,27 @@ for (const { formFactor, targetUrl, outputPath } of lighthouseTargets) {
 }
 
 const accessibility = { workspace: {}, portfolio: {} };
+const seriousAccessibilityFailures = [];
 for (const { surface, formFactor, outputPath } of lighthouseTargets) {
   const lighthouseReport = JSON.parse(await readFile(outputPath, "utf8"));
   accessibility[surface][`${formFactor}Score`] = lighthouseReport.categories.accessibility.score;
+  for (const [auditId, audit] of Object.entries(lighthouseReport.audits)) {
+    const impact = audit.details?.debugData?.impact;
+    const tags = audit.details?.debugData?.tags || [];
+    if (
+      audit.score === 0
+      && ["serious", "critical"].includes(impact)
+      && tags.some((tag) => String(tag).startsWith("wcag"))
+    ) {
+      seriousAccessibilityFailures.push({ surface, formFactor, auditId, impact, tags });
+    }
+  }
 }
 if (Object.values(accessibility).some((surface) => Object.values(surface).some((score) => score !== 1))) {
   throw new Error(`Lighthouse accessibility score regressed: ${JSON.stringify(accessibility)}`);
+}
+if (seriousAccessibilityFailures.length) {
+  throw new Error(`Serious WCAG audit failures cannot be hidden by a rounded Lighthouse score: ${JSON.stringify(seriousAccessibilityFailures)}`);
 }
 
 const portfolioQualityTargets = [
@@ -817,7 +894,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v8",
+  contract_version: "workspace_runtime_qa.v9",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,
@@ -828,7 +905,9 @@ const report = {
     request_violations: guidedRequestViolations,
     exit: guidedExit,
     persistence: guidedPersistence,
-    mobile: guidedMobile
+    mobile: guidedMobile,
+    small_phone_step_two: guidedSmallPhoneStepTwo,
+    small_phone_step_three: guidedSmallPhoneStepThree
   },
   mobile_drawer: { opened: drawerOpened, closed: drawerClosed },
   mobile_hero_capture: mobileHeroCapture,
@@ -847,6 +926,7 @@ const report = {
   evidence_page: evidencePage,
   console_errors: consoleErrors,
   lighthouse_accessibility: accessibility,
+  serious_accessibility_failures: seriousAccessibilityFailures,
   lighthouse_portfolio_quality: portfolioQuality,
   mutation_allowed: false,
   meta_api_compatibility: "not_claimed"

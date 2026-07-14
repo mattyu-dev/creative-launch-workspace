@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mattyu-dev.github.io/creative-launch-workspace/sitemap.xml

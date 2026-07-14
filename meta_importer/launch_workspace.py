@@ -487,9 +487,9 @@ def render_html_workspace(plan: LaunchPlan) -> str:
   <meta property="og:type" content="website">
   <meta property="og:title" content="Interactive review workspace · Creative Launch Workspace">
   <meta property="og:description" content="A task-first review queue for approval, destination, placement, mapping and duplicate issues.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-6.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-7.png">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23113e31'/%3E%3C/svg%3E" type="image/svg+xml">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20fill%3D%22%23113e31%22%2F%3E%3C%2Fsvg%3E" type="image/svg+xml">
   <title>Creative Launch Workspace for Meta Ads</title>
   <style>
     :root {
@@ -659,13 +659,15 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       background: var(--forest);
     }
     .focus-copy { max-width: 720px; }
-    .focus-copy strong {
+    .focus-copy .focus-title {
       display: block;
       margin-top: 6px;
+      color: inherit;
       font-size: clamp(24px, 3vw, 36px);
       font-weight: 400;
       line-height: 1.08;
       letter-spacing: -.035em;
+      text-transform: none;
     }
     .focus-copy p { margin: 10px 0 0; color: rgba(255, 255, 255, .72); font-size: 13px; }
     .focus-actions { display: flex; align-items: center; gap: 8px; }
@@ -933,16 +935,24 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       width: min(660px, calc(100% - 28px));
       max-height: min(760px, calc(100vh - 28px));
       padding: 0;
-      overflow: auto;
+      overflow: hidden;
       border: 1px solid var(--line-strong);
       border-radius: 10px;
       color: var(--ink);
       background: var(--surface);
     }
+    .guided-dialog[open] {
+      display: flex;
+      flex-direction: column;
+    }
     .guided-dialog:not([open]) { display: none; }
     .guided-dialog [hidden] { display: none !important; }
     .guided-dialog::backdrop { background: rgba(11, 45, 36, .72); }
     .guided-head {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      flex: 0 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -958,7 +968,12 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     }
     .guided-close { color: #fff; border-color: rgba(255, 255, 255, .4); background: transparent; }
     .guided-close:hover { border-color: #fff; }
-    .guided-body { padding: 24px; }
+    .guided-body {
+      min-height: 0;
+      padding: 24px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
     .guided-title {
       margin: 0 0 8px;
       color: var(--ink);
@@ -967,6 +982,12 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       line-height: 1.08;
       letter-spacing: -.035em;
       text-transform: none;
+    }
+    .guided-title:focus {
+      margin-left: -14px;
+      padding-left: 10px;
+      border-left: 4px solid var(--focus);
+      outline: none;
     }
     .guided-copy { margin: 0 0 20px; color: var(--body); }
     .guided-case {
@@ -1290,7 +1311,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       .header-proof { display: none; }
       .focus-panel { margin: 0 10px; grid-template-columns:minmax(0,1fr) auto; gap: 10px 14px; padding: 14px 16px; border-radius: 10px; }
       .focus-copy .eyebrow,.focus-copy p,.status-legend { display:none; }
-      .focus-copy strong { margin:0; font-size:21px; }
+      .focus-copy .focus-title { margin:0; font-size:21px; }
       .focus-actions { align-items:center; flex-direction:row; }
       .focus-actions button { min-height:40px; width:auto; padding-inline:11px; font-size:12px; }
       .batch-disclosure { margin: 0 10px; }
@@ -1412,7 +1433,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
 <body>
   <a class="skip-link" href="#review-workspace">Skip to review queue</a>
   <header>
-    <a class="brand" href="index.html" aria-label="Return to the Creative Launch Workspace case study">
+    <a class="brand" href="index.html">
       <div class="brand-mark" aria-hidden="true"><span></span></div>
       <div>
         <h1>Creative Launch Workspace for Meta Ads</h1>
@@ -1429,14 +1450,14 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     <section class="focus-panel" aria-labelledby="focus-title">
       <div class="focus-copy">
         <div class="eyebrow">Review session</div>
-        <strong id="focus-title">__REVIEW_COUNT__ creatives need a human decision.</strong>
+        <h2 class="focus-title" id="focus-title">__REVIEW_COUNT__ creatives need a human decision.</h2>
         <p>Start with the ambiguous rows. Creatives that pass offline checks need no exception review; blocked creatives return to their owners with a specific fix.</p>
       </div>
       <div class="focus-actions">
         <button class="button-primary" id="start-guided" data-quick-filter="needs_review">Start guided review</button>
         <button class="button-secondary" data-quick-filter="blocked">Inspect __BLOCKED_COUNT__ blockers</button>
       </div>
-      <div class="status-legend" aria-label="Batch status">
+      <div class="status-legend" role="group" aria-label="Batch status">
         <span class="status-chip"><strong>__LAUNCH_READY__</strong> pass offline checks</span>
         <span class="status-chip"><strong>__REVIEW_COUNT__</strong> need your decision</span>
         <span class="status-chip"><strong>__BLOCKED_COUNT__</strong> routed for fixes</span>
@@ -1450,6 +1471,11 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       <div class="guided-body">
         <h2 class="guided-title" id="guided-title" tabindex="-1">Find the ambiguous row.</h2>
         <p class="guided-copy" id="guided-copy">The workflow has separated a possible duplicate from the rows that can pass or must return for fixes.</p>
+        <div class="guided-actions" id="guided-step-two" hidden>
+          <button class="button-primary" id="guided-confirm" type="button">Confirm reuse for dry-run export</button>
+          <button id="guided-fix-action" type="button">Return for fix</button>
+          <button class="danger" id="guided-block" type="button">Block from dry-run export</button>
+        </div>
         <div class="guided-case" id="guided-case">
           <div><span>Creative</span><strong id="guided-creative"></strong></div>
           <div><span>Issue</span><strong id="guided-issue"></strong></div>
@@ -1459,12 +1485,14 @@ def render_html_workspace(plan: LaunchPlan) -> str:
         <div class="guided-actions" id="guided-step-one">
           <button class="button-primary" id="guided-next" type="button">Make a human decision</button>
         </div>
-        <div class="guided-actions" id="guided-step-two" hidden>
-          <button class="button-primary" id="guided-confirm" type="button">Confirm reuse for dry-run export</button>
-          <button id="guided-fix-action" type="button">Return for fix</button>
-          <button class="danger" id="guided-block" type="button">Block from dry-run export</button>
-        </div>
         <div id="guided-step-three" hidden>
+          <div class="guided-actions" id="guided-step-three-actions">
+            <button class="button-primary" id="guided-explore" type="button">Explore the full queue</button>
+            <a class="guided-return" id="guided-case-study" href="index.html#about">See Mathieu's role in the case study</a>
+            <a class="guided-return" id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/">Connect with Mathieu on LinkedIn</a>
+            <a class="guided-return" id="guided-return" href="index.html">Return to the case study</a>
+            <button id="guided-replay" type="button">Review another case</button>
+          </div>
           <dl class="guided-proof">
             <div><dt>Local state</dt><dd id="guided-result-state"></dd></div>
             <div><dt>Reviewer role</dt><dd id="guided-result-role"></dd></div>
@@ -1473,7 +1501,6 @@ def render_html_workspace(plan: LaunchPlan) -> str:
             <div><dt>Occurred at</dt><dd id="guided-result-time"></dd></div>
           </dl>
           <p class="guided-copy" id="guided-result-copy"></p>
-          <div class="guided-actions"><button class="button-primary" id="guided-explore" type="button">Explore the full queue</button><a class="guided-return" id="guided-return" href="index.html">Return to the case study</a><button id="guided-replay" type="button">Review another case</button></div>
         </div>
       </div>
     </dialog>
@@ -1506,7 +1533,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     </details>
     <div class="workspace" id="review-workspace" tabindex="-1">
       <section class="table-shell" aria-label="Creative review queue">
-        <div class="toolbar" aria-label="Batch filters">
+        <div class="toolbar" role="group" aria-label="Batch filters">
           <div class="filter-set" role="group" aria-label="Readiness filter">
             <button class="active" data-filter="needs_review" aria-pressed="true">To review</button>
             <button data-filter="blocked" aria-pressed="false">Blocked</button>
@@ -1595,7 +1622,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
           <div class="detail-disclosure-content">
             <div class="proof">
               <div class="proof-label">Creative proof &middot; not final media</div>
-              <div class="proof-visual" id="preview-art" aria-label="Synthetic creative preview">
+              <div class="proof-visual" id="preview-art" role="img" aria-label="Synthetic creative preview">
                 <span id="preview-format"></span><i></i><b></b>
               </div>
               <p id="preview-text"></p>
@@ -2973,24 +3000,45 @@ def _summarize(
 
 def _assert_synthetic(rows: list[ManifestRow]) -> None:
     for row in rows:
-        host = urlparse(row.destination_url).hostname
-        asset = Path(row.asset_path)
-        if host != SYNTHETIC_HOST:
-            raise SyntheticDataError(
-                f"row {row.source_row} uses non-synthetic destination host `{host}`; pass --allow-real-data only after a privacy decision"
-            )
-        if not _is_relative_to(asset, SYNTHETIC_ASSET_PREFIX):
-            raise SyntheticDataError(
-                f"row {row.source_row} uses asset path outside `{SYNTHETIC_ASSET_PREFIX}`; pass --allow-real-data only after a privacy decision"
-            )
-        if row.account_id_alias and _looks_like_live_meta_account(row.account_id_alias):
-            raise SyntheticDataError(
-                f"row {row.source_row} uses live-looking account alias `{row.account_id_alias}`; use a fixture alias such as acct_demo_001"
-            )
-        if row.post_id and row.post_id.isdigit():
-            raise SyntheticDataError(
-                f"row {row.source_row} uses live-looking numeric post_id; use a fixture alias such as post_demo_001"
-            )
+        violation = _synthetic_row_violation(row)
+        if violation:
+            raise SyntheticDataError(violation)
+
+
+def _synthetic_row_violation(row: ManifestRow) -> str:
+    host = urlparse(row.destination_url).hostname
+    asset = Path(row.asset_path)
+    if host != SYNTHETIC_HOST:
+        return (
+            f"row {row.source_row} uses non-synthetic destination host `{host}`; "
+            "pass --allow-real-data only after a privacy decision"
+        )
+    if asset.is_absolute() or ".." in asset.parts:
+        return (
+            f"row {row.source_row} uses asset path outside `{SYNTHETIC_ASSET_PREFIX}`; "
+            "pass --allow-real-data only after a privacy decision"
+        )
+    try:
+        resolved_prefix = SYNTHETIC_ASSET_PREFIX.resolve(strict=True)
+        resolved_asset = asset.resolve(strict=False)
+    except (OSError, RuntimeError):
+        return f"row {row.source_row} uses missing or invalid synthetic asset path `{asset}`"
+    if not _is_relative_to(resolved_asset, resolved_prefix):
+        return (
+            f"row {row.source_row} uses asset path outside `{SYNTHETIC_ASSET_PREFIX}`; "
+            "pass --allow-real-data only after a privacy decision"
+        )
+    if row.account_id_alias and _looks_like_live_meta_account(row.account_id_alias):
+        return (
+            f"row {row.source_row} uses live-looking account alias `{row.account_id_alias}`; "
+            "use a fixture alias such as acct_demo_001"
+        )
+    if row.post_id and row.post_id.isdigit():
+        return (
+            f"row {row.source_row} uses live-looking numeric post_id; "
+            "use a fixture alias such as post_demo_001"
+        )
+    return ""
 
 
 def _is_relative_to(path: Path, prefix: Path) -> bool:
@@ -3039,7 +3087,7 @@ def _source_manifest_sha256(source_manifest: str) -> str:
 
 
 def _data_classification(rows: tuple[ManifestRow, ...]) -> str:
-    if all(urlparse(row.destination_url).hostname == SYNTHETIC_HOST for row in rows):
+    if all(not _synthetic_row_violation(row) for row in rows):
         return "synthetic_fixture_only"
     return "operator_supplied_manifest_no_live_mutation"
 

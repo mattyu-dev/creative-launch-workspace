@@ -74,15 +74,13 @@ The browser does not duplicate the validation logic. CI regenerates the [rule pa
 ```bash
 git clone https://github.com/mattyu-dev/creative-launch-workspace.git
 cd creative-launch-workspace
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e '.[dev]'
+uv sync --frozen --all-extras
 ```
 
 Create a review-only brief proposal:
 
 ```bash
-creative-launch brief-propose \
+uv run --frozen creative-launch brief-propose \
   fixtures/synthetic_campaign_brief.txt \
   --out runs/brief/proposal.json
 ```
@@ -90,7 +88,7 @@ creative-launch brief-propose \
 Record an explicit decision for every field, then materialize the accepted mapping into a two-row synthetic manifest and run the existing launch validators:
 
 ```bash
-creative-launch brief-review runs/brief/proposal.json \
+uv run --frozen creative-launch brief-review runs/brief/proposal.json \
   --brief fixtures/synthetic_campaign_brief.txt \
   --reviewer 'Synthetic Approver' \
   --decision campaign_key=accepted --decision adset_key=accepted \
@@ -99,7 +97,7 @@ creative-launch brief-review runs/brief/proposal.json \
   --decision destination_url=accepted --decision utm_campaign=accepted \
   --out runs/brief/review.json
 
-creative-launch brief-materialize \
+uv run --frozen creative-launch brief-materialize \
   runs/brief/proposal.json fixtures/synthetic_creative_template.csv \
   --brief fixtures/synthetic_campaign_brief.txt \
   --reviewer 'Synthetic Approver' \
@@ -117,7 +115,7 @@ Materialization performs the review again in the same process. A saved review re
 Run the 36-case benchmark:
 
 ```bash
-creative-launch brief-eval \
+uv run --frozen creative-launch brief-eval \
   --dataset evals/brief_mapping/dataset_v1.jsonl \
   --out runs/evals/brief-mapping.json
 ```
@@ -125,7 +123,7 @@ creative-launch brief-eval \
 The dataset also contains 12 natural-prose/adversarial cases reserved for a repeated live-provider run:
 
 ```bash
-creative-launch brief-eval \
+uv run --frozen creative-launch brief-eval \
   --dataset evals/brief_mapping/dataset_v1.jsonl \
   --provider openai --model gpt-5.6-terra --repetitions 3 \
   --out runs/evals/openai-live.json
@@ -134,7 +132,7 @@ creative-launch brief-eval \
 Build the 100-row workspace:
 
 ```bash
-creative-launch plan \
+uv run --frozen creative-launch plan \
   fixtures/fake_agency_creatives/manifest_v2.csv \
   --out runs/launch/plan.json \
   --review runs/launch/review.md \
@@ -150,9 +148,9 @@ Open `runs/launch/workspace.html`. Filter blocked rows, inspect the proposed fix
 ### Optional live provider
 
 ```bash
-pip install -e '.[ai]'
+uv sync --frozen --all-extras
 export OPENAI_API_KEY='...'
-creative-launch brief-propose fixtures/synthetic_campaign_brief.txt \
+uv run --frozen creative-launch brief-propose fixtures/synthetic_campaign_brief.txt \
   --provider openai \
   --model gpt-5.6-terra \
   --out runs/brief/openai-proposal.json
@@ -171,7 +169,7 @@ The included 100-row fixture spans three campaigns and ten ad sets:
 
 The repo-native benchmark contains 36 labelled contract cases for the deterministic baseline plus 12 natural-prose and adversarial cases for repeated live-provider evaluation. The deterministic baseline passes every contract gate. That is harness proof, not model-quality proof; no live model score is committed without an authenticated run.
 
-Browser QA exercises seven viewport widths and real interactions. The committed workspace and portfolio Lighthouse accessibility reports score 100/100 on desktop and mobile.
+Browser QA exercises seven viewport widths plus a dedicated 320×568 guided-decision contract. The committed workspace and portfolio Lighthouse accessibility reports score 100/100 on desktop and mobile, while a separate gate fails any serious or critical WCAG audit even if the category score rounds to 100.
 
 The same QA run completes the guided 1→2→3 decision path, verifies that it creates only browser-local state and audit evidence, confirms the next pending ambiguous case survives reload, and enforces portfolio Lighthouse budgets of at least 90 performance, 95 best practices and 95 SEO, with LCP ≤ 2.5 s, CLS ≤ 0.1 and total blocking time ≤ 200 ms. These are reproducible local Lighthouse measurements, not production RUM.
 
@@ -194,7 +192,7 @@ The same QA run completes the guided 1→2→3 decision path, verifies that it c
 - a shared fail-closed review policy across browser and SQLite paths;
 - real decodable JPEG/MP4 synthetic fixtures with byte and metadata checks;
 - reproducible generated artifacts through `SOURCE_DATE_EPOCH`;
-- Ruff, mypy on trust boundaries, branch coverage, CodeQL and browser QA in CI;
+- locked `uv` installs, Ruff, mypy on trust boundaries, branch coverage, `pip-audit`, CodeQL and browser QA in CI;
 - no network dependency in the static workspace.
 
 ## Scope
