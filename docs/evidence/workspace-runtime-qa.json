@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v9",
-  "tested_at": "2026-07-14T15:13:58.953Z",
+  "contract_version": "workspace_runtime_qa.v10",
+  "tested_at": "2026-07-14T17:36:49.692Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-14T15:12:59.942Z",
+      "occurredAt": "2026-07-14T17:35:50.801Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784041979942_8",
+        "event_id": "evt_local_1784050550801_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-14T15:12:59.942Z"
+        "occurred_at": "2026-07-14T17:35:50.801Z"
       }
     },
     "request_violations": [],
@@ -240,21 +240,21 @@
     "status": "Browser review state reset."
   },
   "portfolio_page": {
-    "title": "Catch creative launch errors before Ads Manager with a governed AI workflow I built.",
+    "title": "I built an AI workflow that catches creative launch errors before Ads Manager.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-7.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-8.png",
     "hasWorkspaceCta": true,
-    "hasLabCta": true,
-    "hasBusinessCase": true,
-    "hasSpreadsheetCase": true,
-    "hasDemoBoundary": true,
+    "hasCaseStudyLink": true,
+    "mainSectionCount": 6,
+    "visibleWordCount": 533,
+    "scrollHeight": 4099,
     "copyFreeze": {
       "mutationBoundary": true,
       "reviewState": true,
       "boundedAuthority": true,
-      "heroSecondaryCta": "See how the system works →",
+      "heroSecondaryCta": "See how it works →",
       "experienceSince": true,
-      "structuredJobTitle": "AI Automation Lead"
+      "structuredJobTitle": "AI Automation Builder"
     },
     "humanizedCopy": {
       "noLongDash": true,
@@ -265,49 +265,61 @@
       "personalContribution": true,
       "oldSlogansRemoved": true
     },
-    "aiProofCount": 2,
-    "hasAcceptedProposal": true,
-    "hasAbstentionProof": true,
-    "hasBoundaries": true,
-    "hasProductionPath": true,
+    "denseTechnicalContentRemoved": true,
     "hasContact": true,
     "structuredTypes": [
       "Person",
       "SoftwareSourceCode",
       "CreativeWork"
     ],
-    "proofPathCount": 3,
+    "governanceStepCount": 4,
+    "contributionCount": 3,
+    "evidenceCount": 4,
     "ownership": true,
+    "primaryCtaVisible": true,
     "heroProductVisible": true,
-    "heroProductTop": 268,
+    "heroProductTop": 236,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:57022/docs/assets/workspace-desktop.avif",
-    "differenceCount": 3,
-    "metricGroupCount": 3,
+    "heroImageSource": "http://127.0.0.1:64035/docs/assets/workspace-desktop.avif",
     "sectionNavTargetsResolve": true,
-    "architectureDiagramVisible": true,
-    "architectureStackHidden": true,
     "noDocumentOverflow": true
   },
   "portfolio_mobile": {
     "noDocumentOverflow": true,
     "headingVisible": true,
-    "compactAuthorCount": 0,
-    "authorBlockCount": 1,
-    "authorBlockDisplayed": true,
-    "authorAfterProduct": true,
-    "ctaAfterProduct": true,
-    "productVisible": true,
-    "productTop": 495,
-    "productVisibleHeight": 332,
-    "heroImageSource": "http://127.0.0.1:57022/docs/assets/workspace-mobile-hero.webp",
+    "primaryCtaVisible": true,
+    "ctaBeforeProduct": true,
+    "productTop": 710,
+    "heroImageSource": "http://127.0.0.1:64035/docs/assets/workspace-mobile-hero.webp",
     "heroAssetWidth": 390,
     "heroAssetHeight": 360,
-    "visibleAnnotations": 0,
-    "architectureDiagramHidden": true,
-    "architectureStackVisible": true,
-    "architectureStepCount": 7,
-    "architectureMinFontPx": 12
+    "scrollHeight": 6131,
+    "bodyFontPx": 16,
+    "evidenceColumns": 2
+  },
+  "portfolio_text_resize": [
+    {
+      "width": 320,
+      "documentWidth": 320,
+      "viewportWidth": 320,
+      "overflowers": []
+    },
+    {
+      "width": 768,
+      "documentWidth": 768,
+      "viewportWidth": 768,
+      "overflowers": []
+    }
+  ],
+  "case_study_page": {
+    "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/case-study.html",
+    "brandHref": "index.html",
+    "ctaBeforeProduct": true,
+    "hasArchitecture": true,
+    "hasAcceptedProposal": true,
+    "hasAbstention": true,
+    "hasProductionBoundaries": true,
+    "noDocumentOverflow": true
   },
   "portfolio_navigation": {
     "brandHref": "index.html",
@@ -391,10 +403,10 @@
   "serious_accessibility_failures": [],
   "lighthouse_portfolio_quality": {
     "desktop": {
-      "performanceScore": 0.98,
+      "performanceScore": 0.97,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1050,
+      "lcpMs": 1125,
       "cls": 0,
       "tbtMs": 0
     },
