@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v14",
-  "tested_at": "2026-07-14T18:44:00.006Z",
+  "contract_version": "workspace_runtime_qa.v15",
+  "tested_at": "2026-07-14T18:47:25.779Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-14T18:42:22.377Z",
+      "occurredAt": "2026-07-14T18:45:48.022Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784054542377_8",
+        "event_id": "evt_local_1784054748022_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-14T18:42:22.377Z"
+        "occurred_at": "2026-07-14T18:45:48.022Z"
       }
     },
     "request_violations": [],
@@ -280,7 +280,7 @@
     "heroProductVisible": true,
     "heroProductTop": 751,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:52353/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:52708/docs/assets/workspace-desktop.avif",
     "sectionNavTargetsResolve": true,
     "noDocumentOverflow": true
   },
@@ -290,7 +290,7 @@
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
     "productTop": 1012,
-    "heroImageSource": "http://127.0.0.1:52353/docs/assets/workspace-mobile-hero.webp",
+    "heroImageSource": "http://127.0.0.1:52708/docs/assets/workspace-mobile-hero.webp",
     "heroAssetWidth": 390,
     "heroAssetHeight": 360,
     "scrollHeight": 5451,
@@ -356,7 +356,7 @@
   },
   "case_study_mobile": {
     "noDocumentOverflow": true,
-    "scrollHeight": 6986,
+    "scrollHeight": 6946,
     "ctaVisible": true,
     "ctaBeforeProduct": true,
     "touchTargetFailures": [],
@@ -487,7 +487,7 @@
       "performanceScore": 0.97,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1125,
+      "lcpMs": 1126,
       "cls": 0,
       "tbtMs": 0
     },
