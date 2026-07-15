@@ -278,6 +278,8 @@ def render_product_landing_v21() -> str:
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preload" href="assets/geist-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/workspace-desktop.avif" as="image" type="image/avif" media="(min-width:721px)" fetchpriority="high">
+  <link rel="preload" href="assets/workspace-mobile-hero.webp" as="image" type="image/webp" media="(max-width:720px)" fetchpriority="high">
   <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
   <link rel="me" href="https://github.com/mattyu-dev">
   <meta property="og:type" content="website">
