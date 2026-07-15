@@ -104,3 +104,5 @@ jobs:
           QA_ASSETS_DIR: /tmp/creative-launch-workspace/assets
           QA_EVIDENCE_DIR: /tmp/creative-launch-workspace/evidence
         run: npm run qa:frontend
+      - name: Check committed landing bundles are current
+        run: git diff --exit-code -- frontend/generated docs/assets/launch-control-motion.js docs/assets/launch-control-motion.css docs/assets/launch-control-chunks

@@ -70,6 +70,7 @@ await mkdir(evidenceDir, { recursive: true });
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
@@ -78,7 +79,7 @@ const mimeTypes = {
   ".webp": "image/webp",
   ".avif": "image/avif"
 };
-const compressedTypes = new Set([".html", ".js", ".json", ".svg"]);
+const compressedTypes = new Set([".html", ".css", ".js", ".json", ".svg"]);
 
 const server = createServer((request, response) => {
   const rawPath = decodeURIComponent(new URL(request.url || "/", "http://127.0.0.1").pathname);
@@ -120,13 +121,16 @@ const browser = await puppeteer.launch({
 const page = await browser.newPage();
 const consoleErrors = [];
 const guidedRequests = [];
+const productRequests = [];
 let recordGuidedRequests = false;
+let recordProductRequests = false;
 page.on("console", (message) => {
   if (["error", "warning"].includes(message.type())) consoleErrors.push(message.text());
 });
 page.on("pageerror", (error) => consoleErrors.push(error.message));
 page.on("request", (request) => {
   if (recordGuidedRequests) guidedRequests.push({ url: request.url(), method: request.method() });
+  if (recordProductRequests) productRequests.push({ url: request.url(), method: request.method() });
 });
 
 const viewports = [];
@@ -539,8 +543,55 @@ await page.screenshot({ path: join(assetsDir, "workspace-desktop.png") });
 await page.screenshot({ path: join(assetsDir, "workspace-desktop.webp"), type: "webp", quality: 90 });
 
 const productUrl = `${baseUrl}/docs/index.html`;
+const captureBlackPixelRatio = async (outputPath) => {
+  const screenshot = await page.screenshot({ path: outputPath });
+  return page.evaluate(async (encoded) => {
+    const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
+    const bitmap = await createImageBitmap(new Blob([bytes], { type: "image/png" }));
+    const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    context.drawImage(bitmap, 0, 0);
+    const pixels = context.getImageData(0, 0, bitmap.width, bitmap.height).data;
+    let blackPixels = 0;
+    for (let index = 0; index < pixels.length; index += 4) {
+      if (pixels[index] < 48 && pixels[index + 1] < 48 && pixels[index + 2] < 48 && pixels[index + 3] > 240) {
+        blackPixels += 1;
+      }
+    }
+    return blackPixels / (bitmap.width * bitmap.height);
+  }, Buffer.from(screenshot).toString("base64"));
+};
 await page.setViewport({ width: 1366, height: 768 });
+recordProductRequests = true;
 await page.goto(productUrl, { waitUntil: "load" });
+await page.waitForFunction(() => window.__launchControlMotion?.ready === true, { timeout: 15000 });
+await page.waitForFunction(() => Number.isFinite(window.__launchControlMotion?.mesh?.positionX), { timeout: 15000 });
+const productMotionStart = await page.evaluate(() => ({
+  ...window.__launchControlMotion,
+  mesh: { ...window.__launchControlMotion.mesh },
+  astryxMounted: Boolean(document.querySelector('[data-astryx-theme="launch-control"] .trace-card')),
+  canvasMounted: Boolean(document.querySelector('#meshGL')),
+  oldRasterAbsent: !document.documentElement.innerHTML.includes('launch-control-core-v3')
+}));
+await new Promise((resolve) => setTimeout(resolve, 320));
+const productMotionEnd = await page.evaluate(() => ({ ...window.__launchControlMotion.mesh }));
+recordProductRequests = false;
+const productMotion = {
+  start: productMotionStart,
+  end: productMotionEnd,
+  yChanged: productMotionStart.mesh?.positionY !== productMotionEnd.positionY,
+  externalRequests: productRequests.filter(({ url }) => new URL(url).origin !== new URL(productUrl).origin)
+};
+await page.waitForFunction(() => (
+  window.__launchControlMotion?.state === 'complete'
+  && window.__launchControlMotion?.mesh?.rafActive === false
+), { timeout: 9000 });
+productMotion.complete = await page.evaluate(() => ({
+  state: window.__launchControlMotion.state,
+  phase: document.querySelector('.lc-motion')?.dataset.phase,
+  frameCount: window.__launchControlMotion.mesh?.frameCount,
+  rafActive: window.__launchControlMotion.mesh?.rafActive
+}));
 const productHoverState = await page.evaluate(() => {
   const styles = [...document.querySelectorAll("style")].map((item) => item.textContent).join("\n");
   return {
@@ -601,6 +652,9 @@ const productPage = await page.evaluate(() => ({
   queueRowCount: document.querySelectorAll(".queue-row").length,
   nativeProduct: Boolean(document.querySelector(".app-stage .app-shell"))
     && !document.querySelector(".app-stage picture"),
+  astryxMotion: Boolean(document.querySelector('[data-astryx-theme="launch-control"] .trace-card'))
+    && Boolean(document.querySelector('#meshGL')),
+  oldRasterAbsent: !document.documentElement.innerHTML.includes('launch-control-core-v3'),
   legacyScreenshotReferences: [...document.querySelectorAll("img,source")]
     .map((item) => item.getAttribute("src") || item.getAttribute("srcset") || "")
     .filter((src) => /(workspace-(?:mobile-hero|desktop)|guided-review|brief-evidence)/.test(src)),
@@ -614,15 +668,15 @@ const productPage = await page.evaluate(() => ({
     && document.querySelector('#panel-receipt [title="4b09268ddcb1f49020f66777d0bcdd734e22add2e77657578d68201ad38ccabf"]')),
   singlePrimaryReviewAction: document.querySelectorAll('#panel-review .button[data-variant="orange"]').length === 1,
   primaryCtaVisible: document.querySelector(".hero-copy .button")?.getBoundingClientRect().top < innerHeight,
-  heroProductVisible: document.querySelector(".app-stage")?.getBoundingClientRect().top < innerHeight,
-  heroProductTop: Math.round(document.querySelector(".app-stage")?.getBoundingClientRect().top || 0),
+  heroProductVisible: document.querySelector(".hero-motion-host")?.getBoundingClientRect().top < innerHeight,
+  heroProductTop: Math.round(document.querySelector(".hero-motion-host")?.getBoundingClientRect().top || 0),
   sectionNavTargetsResolve: [...document.querySelectorAll('.nav-links a[href^="#"]')].every((link) => document.querySelector(link.getAttribute("href"))),
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
 }));
 if (
   productPage.title !== "Catch creative launch mistakes before Ads Manager."
   || !productPage.canonical?.endsWith("/creative-launch-workspace/")
-  || !productPage.ogImage?.endsWith("/assets/social-card-v3.png")
+  || !productPage.ogImage?.endsWith("/assets/social-card-v4.png")
   || !productPage.hasWorkspaceCta
   || productPage.hasCaseStudyLink
   || productPage.mainSectionCount !== 5
@@ -657,12 +711,33 @@ if (
   || productPage.productPanelCount !== 3
   || productPage.queueRowCount !== 4
   || !productPage.nativeProduct
+  || !productPage.astryxMotion
+  || !productPage.oldRasterAbsent
   || productPage.legacyScreenshotReferences.length
   || !productPage.exactFixture
   || !productPage.exactReceipt
   || !productPage.singlePrimaryReviewAction
   || !productPage.primaryCtaVisible
   || !productPage.heroProductVisible
+  || !productMotion.start.astryxMounted
+  || !productMotion.start.canvasMounted
+  || !productMotion.start.oldRasterAbsent
+  || productMotion.start.mesh?.geometry !== "IcosahedronGeometry"
+  || productMotion.start.mesh?.radius !== 3
+  || productMotion.start.mesh?.detail !== 0
+  || productMotion.start.mesh?.color !== "#E34A32"
+  || productMotion.start.mesh?.roughness !== 0.3
+  || productMotion.start.mesh?.metalness !== 0.6
+  || !productMotion.start.mesh?.flatShading
+  || productMotion.start.mesh?.anchorX !== 4.5
+  || productMotion.start.mesh?.positionX !== 4.5
+  || productMotion.end.positionX !== 4.5
+  || productMotion.end.frameCount < 2
+  || !productMotion.yChanged
+  || productMotion.complete.state !== "complete"
+  || productMotion.complete.phase !== "prove"
+  || productMotion.complete.rafActive !== false
+  || productMotion.externalRequests.length
   || !productPage.sectionNavTargetsResolve
   || !productPage.noDocumentOverflow
   || !productHoverState.exactOrangeHoverRule
@@ -672,7 +747,7 @@ if (
   || productHoverState.hover !== "#F05A3C"
   || productHoverState.foreground !== "#171719"
 ) {
-  throw new Error(`Product entry contract failed: ${JSON.stringify({ productPage, productHoverState })}`);
+  throw new Error(`Product entry contract failed: ${JSON.stringify({ productPage, productHoverState, productMotion })}`);
 }
 
 await page.evaluate(() => localStorage.clear());
@@ -752,10 +827,11 @@ await page.screenshot({ path: join(assetsDir, "product-desktop.png"), fullPage: 
 
 await page.setViewport({ width: 390, height: 844 });
 await page.goto(productUrl, { waitUntil: "load" });
+await page.waitForFunction(() => window.__launchControlMotion?.ready === true, { timeout: 15000 });
 const productMobile = await page.evaluate(() => {
   const heroCta = document.querySelector(".hero-copy .button");
-  const heroProduct = document.querySelector(".app-stage");
-  const touchTargets = [...document.querySelectorAll(".site-header a,.hero-actions a,.app-shell button")]
+  const heroProduct = document.querySelector(".hero-motion-host");
+  const touchTargets = [...document.querySelectorAll(".site-header a,.hero-actions a,.hero-motion-host button,.app-shell button")]
     .filter((element) => {
       const rect = element.getBoundingClientRect();
       return getComputedStyle(element).display !== "none" && rect.width > 0 && rect.height > 0;
@@ -779,7 +855,13 @@ const productMobile = await page.evaluate(() => {
       .slice(0, 8)
       .map((element) => {
         const rect = element.getBoundingClientRect();
-        return { selector: `${element.tagName.toLowerCase()}.${[...element.classList].join(".")}`, left: Math.round(rect.left), right: Math.round(rect.right) };
+        return {
+          selector: `${element.tagName.toLowerCase()}.${[...element.classList].join(".")}`,
+          parent: `${element.parentElement?.tagName.toLowerCase() || ""}.${[...(element.parentElement?.classList || [])].join(".")}`,
+          text: element.textContent.trim().replace(/\s+/g, " ").slice(0, 80),
+          left: Math.round(rect.left),
+          right: Math.round(rect.right)
+        };
       }),
     headingVisible: document.querySelector("h1")?.getBoundingClientRect().top < innerHeight,
     primaryCtaVisible: heroCta?.getBoundingClientRect().top >= 0
@@ -787,14 +869,16 @@ const productMobile = await page.evaluate(() => {
     ctaBeforeProduct: Boolean(heroCta?.compareDocumentPosition(heroProduct) & Node.DOCUMENT_POSITION_FOLLOWING),
     productTop: Math.round(heroProduct?.getBoundingClientRect().top || 0),
     nativeProductVisible: heroProduct?.getBoundingClientRect().top < innerHeight
-      && Boolean(heroProduct.querySelector(".app-shell")),
+      && Boolean(heroProduct.querySelector(".lc-motion")),
     legacyScreenshotReferences: [...document.querySelectorAll("img,source")]
       .map((item) => item.getAttribute("src") || item.getAttribute("srcset") || "")
       .filter((src) => /(workspace-(?:mobile-hero|desktop)|guided-review|brief-evidence)/.test(src)),
     activePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id,
     touchTargetFailures: touchTargets.filter((target) => target.width < 44 || target.height < 44),
     scrollHeight: document.body.scrollHeight,
-    bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize)
+    bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize),
+    meshAnchorX: window.__launchControlMotion?.mesh?.anchorX,
+    meshPositionX: window.__launchControlMotion?.mesh?.positionX
   };
 });
 if (
@@ -808,8 +892,20 @@ if (
   || productMobile.touchTargetFailures.length
   || productMobile.scrollHeight > 7000
   || productMobile.bodyFontPx < 16
+  || productMobile.meshAnchorX !== 0
+  || productMobile.meshPositionX !== 0
 ) {
   throw new Error(`Product mobile contract failed: ${JSON.stringify(productMobile)}`);
+}
+await page.click('.trace-steps li:nth-child(2) button');
+await new Promise((resolve) => setTimeout(resolve, 500));
+const routeBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-route.png"));
+await page.click('.trace-steps li:nth-child(3) button');
+await new Promise((resolve) => setTimeout(resolve, 500));
+const proveBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-prove.png"));
+const productCompositor = { routeBlackPixelRatio, proveBlackPixelRatio };
+if (routeBlackPixelRatio > 0.2 || proveBlackPixelRatio > 0.2) {
+  throw new Error(`Product WebGL compositor corruption detected: ${JSON.stringify(productCompositor)}`);
 }
 await page.evaluate(async () => {
   const visibleImages = [...document.images].filter((image) => !image.closest("[hidden]"));
@@ -827,12 +923,13 @@ await page.screenshot({ path: join(assetsDir, "product-mobile.png"), fullPage: t
 
 await page.setViewport({ width: 320, height: 568 });
 await page.goto(productUrl, { waitUntil: "load" });
+await page.waitForSelector(".hero-motion-host .lc-motion", { timeout: 15000 });
 const productSmallPhone = await page.evaluate(() => {
   const primaryCta = document.querySelector(".hero-copy .button");
   const ctaRect = primaryCta?.getBoundingClientRect();
   const brandName = document.querySelector(".brand-copy strong");
   const brandNameRect = brandName?.getBoundingClientRect();
-  const independentTargets = [...document.querySelectorAll(".site-nav a,.hero-actions a,.app-shell button")]
+  const independentTargets = [...document.querySelectorAll(".site-nav a,.hero-actions a,.hero-motion-host button,.app-shell button")]
     .filter((element) => {
       const rect = element.getBoundingClientRect();
       return getComputedStyle(element).display !== "none" && rect.width > 0 && rect.height > 0;
@@ -845,7 +942,7 @@ const productSmallPhone = await page.evaluate(() => {
   return {
     noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
     primaryCtaVisible: ctaRect?.top >= 0 && ctaRect?.bottom <= innerHeight,
-    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".app-stage")) & Node.DOCUMENT_POSITION_FOLLOWING),
+    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".hero-motion-host")) & Node.DOCUMENT_POSITION_FOLLOWING),
     brandNameVisible: getComputedStyle(brandName).display !== "none"
       && brandNameRect?.top >= 0
       && brandNameRect?.bottom <= innerHeight,
@@ -853,8 +950,9 @@ const productSmallPhone = await page.evaluate(() => {
     ctaTop: Math.round(ctaRect?.top || 0),
     ctaBottom: Math.round(ctaRect?.bottom || 0),
     headingHeight: Math.round(document.querySelector("h1")?.getBoundingClientRect().height || 0),
-    productTop: Math.round(document.querySelector(".app-stage")?.getBoundingClientRect().top || 0),
-    nativeProductVisible: document.querySelector(".app-stage")?.getBoundingClientRect().top < innerHeight,
+    productTop: Math.round(document.querySelector(".hero-motion-host")?.getBoundingClientRect().top || 0),
+    nativeProductVisible: document.querySelector(".hero-motion-host")?.getBoundingClientRect().top < innerHeight
+      && Boolean(document.querySelector(".hero-motion-host .lc-motion")),
     activePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id
   };
 });
@@ -904,7 +1002,7 @@ for (const width of [320, 768]) {
       .filter((element) => {
         const style = getComputedStyle(element);
         const rect = element.getBoundingClientRect();
-        const clipper = element.closest(".creative-preview,.sculpture");
+        const clipper = element.closest(".creative-preview,.trace-workspace");
         if (clipper && ["hidden", "clip"].includes(getComputedStyle(clipper).overflow)) return false;
         return style.display !== "none"
           && style.visibility !== "hidden"
@@ -917,6 +1015,8 @@ for (const width of [320, 768]) {
         const rect = element.getBoundingClientRect();
         return {
           selector: `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ""}${element.classList.length ? `.${[...element.classList].join(".")}` : ""}`,
+          parent: `${element.parentElement?.tagName.toLowerCase() || ""}${element.parentElement?.classList.length ? `.${[...element.parentElement.classList].join(".")}` : ""}`,
+          text: element.textContent.trim().replace(/\s+/g, " ").slice(0, 80),
           left: Math.round(rect.left),
           right: Math.round(rect.right)
         };
@@ -987,6 +1087,41 @@ if (
 await page.setViewport({ width: 390, height: 844 });
 await page.goto(productUrl, { waitUntil: "load" });
 
+await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
+await page.goto(productUrl, { waitUntil: "load" });
+await page.waitForFunction(() => window.__launchControlMotion?.ready === true, { timeout: 15000 });
+await new Promise((resolve) => setTimeout(resolve, 160));
+const reducedMotionStart = await page.evaluate(() => ({
+  phase: document.querySelector('.lc-motion')?.dataset.phase,
+  frameCount: window.__launchControlMotion.mesh?.frameCount,
+  rafActive: window.__launchControlMotion.mesh?.rafActive,
+  reducedMotion: window.__launchControlMotion.mesh?.reducedMotion
+}));
+await new Promise((resolve) => setTimeout(resolve, 260));
+const reducedMotionEnd = await page.evaluate(() => ({
+  frameCount: window.__launchControlMotion.mesh?.frameCount,
+  rafActive: window.__launchControlMotion.mesh?.rafActive
+}));
+const productReducedMotion = {
+  start: reducedMotionStart,
+  end: reducedMotionEnd,
+  noRenderLoop: reducedMotionStart.frameCount === reducedMotionEnd.frameCount
+};
+const reducedBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-reduced.png"));
+productReducedMotion.blackPixelRatio = reducedBlackPixelRatio;
+if (
+  reducedMotionStart.phase !== "prove"
+  || !reducedMotionStart.reducedMotion
+  || reducedMotionStart.rafActive !== false
+  || reducedMotionEnd.rafActive !== false
+  || !productReducedMotion.noRenderLoop
+  || reducedBlackPixelRatio > 0.2
+) {
+  throw new Error(`Product reduced-motion contract failed: ${JSON.stringify(productReducedMotion)}`);
+}
+await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "no-preference" }]);
+await page.goto(productUrl, { waitUntil: "load" });
+
 const responsiveAssetFidelity = await page.evaluate(async () => {
   const loadImage = (src) => new Promise((resolve, reject) => {
     const item = new Image();
@@ -1046,27 +1181,29 @@ await page.setViewport({ width: 1200, height: 630 });
 await page.goto(socialCardUrl, { waitUntil: "load" });
 const socialCard = await page.evaluate(() => ({
   title: document.querySelector("h1")?.textContent.trim(),
-  productImage: document.querySelector(".visual img")?.getAttribute("src"),
-  productLoaded: document.querySelector(".visual img")?.naturalWidth > 0,
+  decisionTrace: Boolean(document.querySelector(".visual .trace")),
+  decisionTraceSteps: document.querySelectorAll(".visual .trace-node").length,
   nativeProduct: Boolean(document.querySelector(".visual .app")),
   productTabCount: document.querySelectorAll(".visual .tabs b").length,
+  oldRasterAbsent: !document.documentElement.innerHTML.includes("launch-control-core-v3"),
   legacyScreenshotAbsent: !/(workspace-(?:mobile-hero|desktop)|guided-review|brief-evidence)/
     .test(document.documentElement.innerHTML),
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth && document.documentElement.scrollHeight <= innerHeight
 }));
 if (
   socialCard.title !== "Catch creative launch mistakes before Ads Manager."
-  || socialCard.productImage !== "assets/launch-control-core-v3.webp"
-  || !socialCard.productLoaded
+  || !socialCard.decisionTrace
+  || socialCard.decisionTraceSteps !== 3
   || !socialCard.nativeProduct
   || socialCard.productTabCount !== 3
+  || !socialCard.oldRasterAbsent
   || !socialCard.legacyScreenshotAbsent
   || !socialCard.noDocumentOverflow
 ) {
   throw new Error(`Social card contract failed: ${JSON.stringify(socialCard)}`);
 }
 await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
-await page.screenshot({ path: join(assetsDir, "social-card-v3.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+await page.screenshot({ path: join(assetsDir, "social-card-v4.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
 
 const labUrl = `${baseUrl}/docs/fix-lab.html`;
 await page.setViewport({ width: 1280, height: 900 });
@@ -1142,12 +1279,12 @@ for (const { formFactor, targetUrl, outputPath } of lighthouseTargets) {
     targetUrl,
     `--chrome-path=${chromePath}`,
     "--only-categories=accessibility",
-    `--form-factor=${formFactor}`,
     "--output=json",
     `--output-path=${outputPath}`,
     "--quiet"
   ];
-  if (formFactor === "desktop") args.push("--screenEmulation.disabled");
+  if (formFactor === "desktop") args.push("--preset=desktop");
+  else args.push("--form-factor=mobile");
   args.push(`--chrome-flags=${lighthouseChromeFlags.join(" ")}`);
   await runFile(lighthouseBin, args, {
     cwd: root,
@@ -1189,12 +1326,12 @@ for (const { formFactor, targetUrl, outputPath } of productQualityTargets) {
     targetUrl,
     `--chrome-path=${chromePath}`,
     "--only-categories=performance,best-practices,seo",
-    `--form-factor=${formFactor}`,
     "--output=json",
     `--output-path=${outputPath}`,
     "--quiet"
   ];
-  if (formFactor === "desktop") args.push("--screenEmulation.disabled");
+  if (formFactor === "desktop") args.push("--preset=desktop");
+  else args.push("--form-factor=mobile");
   args.push(`--chrome-flags=${lighthouseChromeFlags.join(" ")}`);
   await runFile(lighthouseBin, args, {
     cwd: root,
@@ -1240,7 +1377,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v19",
+  contract_version: "workspace_runtime_qa.v20",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,
@@ -1266,6 +1403,9 @@ const report = {
   reset,
   product_page: productPage,
   product_hover_state: productHoverState,
+  product_motion: productMotion,
+  product_compositor: productCompositor,
+  product_reduced_motion: productReducedMotion,
   product_interaction: {
     initial: productInitialInteraction,
     arrow_navigation: productArrowNavigation,

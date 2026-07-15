@@ -52,7 +52,7 @@ def render_evidence_page(
   <meta property="article:author" content="https://www.linkedin.com/in/mathieu-petroni/">
   <meta property="og:title" content="Governed intake evidence · Mathieu Petroni">
   <meta property="og:description" content="Source evidence, bounded proposals, policy checks and explicit human decisions.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v3.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v4.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/mona-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin>

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-VERSION = "3.0.0"
+VERSION = "4.0.0"
 UPDATED_DATE = "2026-07-15"
-SOCIAL_CARD = "social-card-v3.png"
+SOCIAL_CARD = "social-card-v4.png"
 
 
 def _shared_styles() -> str:
@@ -85,7 +85,7 @@ def _shared_styles() -> str:
     .button-arrow{display:inline-block;transition:transform 160ms var(--ease-out)}
     .hero{position:relative;padding:72px 0 0}
     .hero:before{content:"";position:absolute;right:-120px;top:-270px;width:720px;height:720px;border-radius:50%;background:radial-gradient(circle,rgba(227,74,50,.19),transparent 67%);filter:blur(20px);pointer-events:none}
-    .hero-main{min-height:445px;position:relative;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(310px,.55fr);gap:34px;align-items:center}
+    .hero-main{min-height:510px;position:relative;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(420px,.82fr);gap:46px;align-items:center}
     .hero-copy{min-width:0;position:relative;z-index:2;padding:30px 0 84px}
     .eyebrow{margin-bottom:20px;color:var(--orange);font-size:11px;font-weight:700;letter-spacing:.075em;text-transform:uppercase}
     .display{max-width:860px;margin:0;font-size:clamp(56px,4.45vw,64px);font-weight:600;line-height:.96;letter-spacing:-.052em;text-wrap:wrap;overflow-wrap:anywhere}
@@ -94,10 +94,19 @@ def _shared_styles() -> str:
     .lead{max-width:690px;margin:26px 0 0;color:var(--body);font-size:18px;line-height:1.58}
     .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:28px}
     .cta-note{width:100%;margin:1px 0 0 4px;color:var(--muted);font-size:11px}
-    .sculpture{min-width:0;position:relative;align-self:stretch;margin-right:-80px;overflow:hidden}
-    .sculpture picture,.sculpture img{width:100%;height:100%;display:block}
-    .sculpture img{object-fit:cover;object-position:center}
-    .sculpture:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--shell) 0,transparent 28%),linear-gradient(0deg,var(--shell) 0,transparent 24%);pointer-events:none}
+    .hero-motion-host{min-width:0;position:relative;z-index:2;align-self:center}
+    .motion-fallback{min-height:430px;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.9);box-shadow:var(--shadow-card)}
+    .motion-fallback header{min-height:51px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:11px;font-weight:650}
+    .motion-fallback header span:last-child{color:var(--muted);font-weight:500}
+    .motion-fallback ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:0 10px;border-bottom:1px solid var(--line);list-style:none}
+    .motion-fallback li{min-width:0;min-height:60px;display:flex;align-items:center;gap:8px;padding:8px;color:var(--muted);font-size:11px}
+    .motion-fallback li b{width:23px;height:23px;display:grid;place-items:center;border:1px solid rgba(227,74,50,.2);border-radius:50%;color:var(--orange);background:var(--orange-soft);font-size:9px}
+    .motion-fallback article{flex:1;display:grid;place-items:center;padding:24px;background:linear-gradient(180deg,#FCFCFB,#F8F8F6)}
+    .motion-fallback article div{width:100%;padding:18px;border:1px solid rgba(227,74,50,.17);border-radius:14px;background:#FFF9F7}
+    .motion-fallback article small{color:var(--orange);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    .motion-fallback article strong{display:block;margin-top:7px;font-size:16px}
+    .motion-fallback article span{display:block;margin-top:7px;color:var(--muted);font-size:11px}
+    .motion-fallback footer{min-height:64px;display:flex;align-items:center;padding:12px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:10px}
     .app-stage{position:relative;z-index:3;margin-top:-28px;padding:18px;border:1px solid rgba(23,23,25,.07);border-radius:var(--radius-stage);background:rgba(255,255,255,.54);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 36px 82px -48px rgba(35,36,39,.5);backdrop-filter:blur(18px)}
     .app-stage:before{content:"";position:absolute;inset:-1px;border-radius:inherit;box-shadow:0 1px 0 rgba(255,255,255,.9) inset;pointer-events:none}
     .app-shell{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius-app);background:#FCFCFB;box-shadow:0 20px 44px -35px rgba(35,36,39,.5)}
@@ -283,8 +292,7 @@ def _shared_styles() -> str:
       .evidence-link:hover{z-index:1;transform:translateY(-3px);border-color:rgba(227,74,50,.25);box-shadow:0 20px 44px -27px rgba(35,36,39,.45)}
     }
     @media(max-width:1040px){
-      .hero-main{grid-template-columns:minmax(0,1.25fr) minmax(300px,.55fr);gap:20px}
-      .sculpture{margin-right:-42px}
+      .hero-main{grid-template-columns:minmax(0,1fr) minmax(390px,.82fr);gap:28px}
       .app-panel,.queue-layout,.review-layout,.receipt-panel{min-height:540px}
       .queue-row{grid-template-columns:80px minmax(150px,1fr) minmax(130px,.7fr)}
       .row-status{display:none}
@@ -299,7 +307,7 @@ def _shared_styles() -> str:
       .queue-head .badge{max-width:170px;justify-content:center;white-space:normal;text-align:center;overflow-wrap:anywhere}
       .hero-main{grid-template-columns:1fr;min-height:auto}
       .hero-copy{padding-bottom:0}
-      .sculpture{height:270px;margin:0 -20px;opacity:.92}
+      .hero-motion-host{width:min(620px,100%);margin:26px auto 0}
       .app-stage{margin-top:-34px}
       .queue-layout{grid-template-columns:150px minmax(0,1fr)}
       .review-layout{grid-template-columns:1fr}
@@ -328,7 +336,7 @@ def _shared_styles() -> str:
       .hero-actions{align-items:stretch;flex-direction:column}
       .hero-actions .button{width:100%}
       .hero-actions .button[data-variant="outline"],.cta-note{display:none}
-      .sculpture{display:none}
+      .hero-motion-host{margin-top:22px}
       .app-stage{margin-top:16px;padding:7px;backdrop-filter:none}
       .app-topbar{align-items:flex-start;padding:10px}
       .app-title{font-size:12px}
@@ -504,7 +512,6 @@ def render_product_landing_v30() -> str:
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preload" href="assets/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/launch-control-core-v3.avif" as="image" type="image/avif" fetchpriority="high">
   <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
   <link rel="me" href="https://github.com/mattyu-dev">
   <meta property="og:type" content="website">
@@ -540,7 +547,7 @@ def render_product_landing_v30() -> str:
         <div class="container">
           <div class="hero-main">
             <div class="hero-copy"><div class="eyebrow" data-rise>Pre-launch QA for Meta Ads</div><h1 class="display" id="hero-title" data-rise data-wchar>Catch creative launch mistakes before Ads Manager.</h1><p class="lead" data-rise>Validate approvals, placements, destinations, naming and UTMs across every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.</p><div class="hero-actions" data-rise><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">↗</span></a><a class="button" data-variant="outline" href="#workflow">See how it works <span aria-hidden="true">↓</span></a><span class="cta-note">Interactive demo / no signup</span></div></div>
-            <figure class="sculpture" aria-label="Abstract orange control object"><picture><source type="image/avif" srcset="assets/launch-control-core-v3.avif"><source type="image/webp" srcset="assets/launch-control-core-v3.webp"><img src="assets/launch-control-core-v3.png" width="1586" height="992" alt="Abstract orange control object representing a routed checkpoint" decoding="async" fetchpriority="high"></picture></figure>
+            <div class="hero-motion-host" id="hero-motion-root" aria-label="Recorded product trace from detection to receipt"><div class="motion-fallback"><header><span>Recorded synthetic run</span><span>Read-only replay</span></header><ol><li><b>01</b>Detect</li><li><b>02</b>Route</li><li><b>03</b>Prove</li></ol><article><div><small>Recorded decision</small><strong>cr_007 · Possible duplicate</strong><span>Routed to Creative Ops Manager, then saved locally after human review.</span></div></article><footer>One exception. One owner. One receipt.</footer></div></div>
           </div>
           __PRODUCT_SHELL__
           <div class="run-proof" aria-label="Current synthetic run summary" data-reveal><div class="proof-label"><span>Current synthetic run</span><strong>Fixture data, no external writes</strong></div><div class="proof-number"><strong>100</strong><span>creative rows</span></div><div class="proof-number"><strong>70</strong><span>issues routed</span></div><div class="proof-number"><strong>10</strong><span>human reviews</span></div><div class="proof-number"><strong>0</strong><span>external writes</span></div></div>
@@ -609,6 +616,10 @@ def render_product_landing_v30() -> str:
       if(title&&!reduced.matches&&!window.matchMedia('(max-width: 360px)').matches){title.addEventListener('pointerenter',()=>{const label=title.textContent;title.setAttribute('aria-label',label);const fragment=document.createDocumentFragment();label.split(' ').forEach((word,index)=>{if(index)fragment.append(document.createTextNode(' '));const wordNode=document.createElement('span');wordNode.className='wchar-word';wordNode.setAttribute('aria-hidden','true');[...word].forEach((letter)=>{const charNode=document.createElement('span');charNode.className='wchar';charNode.textContent=letter;wordNode.append(charNode)});fragment.append(wordNode)});title.replaceChildren(fragment);const chars=[...title.querySelectorAll('.wchar')];let point=null;let raf=0;title.addEventListener('pointermove',(event)=>{point={x:event.clientX,y:event.clientY};if(raf)return;raf=requestAnimationFrame(()=>{chars.forEach((char)=>{const rect=char.getBoundingClientRect();const d=Math.hypot(point.x-(rect.left+rect.width/2),point.y-(rect.top+rect.height/2));const weight=d<200?600+(1-d/200)*300:600;char.style.fontVariationSettings=`'wght' ${Math.round(weight)}`});raf=0})});title.addEventListener('pointerleave',()=>chars.forEach((char)=>char.style.fontVariationSettings="'wght' 600"))},{once:true})}
     })();
   </script>
+  <script type="module">
+    const loadLaunchControlMotion=()=>import("./assets/launch-control-motion.js");
+    requestAnimationFrame(()=>setTimeout(loadLaunchControlMotion,0));
+  </script>
 </body>
 </html>
 """.replace("__PRODUCT_SHELL__", _product_shell().strip())
@@ -618,5 +629,5 @@ def render_product_landing_v30() -> str:
 def render_social_card_page_v30() -> str:
     return r"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1200, initial-scale=1"><meta name="author" content="Mathieu Petroni"><style>
-@font-face{font-family:"Inter";src:url("assets/inter-latin-variable.woff2") format("woff2-variations");font-weight:100 900;font-display:swap}@font-face{font-family:"Instrument Serif";src:url("assets/instrument-serif-latin-italic.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap}*{box-sizing:border-box}html,body{width:1200px;height:630px;margin:0;overflow:hidden}body{padding:18px;color:#232427;background:#ECEDEE;font-family:"Inter",sans-serif}main{width:1164px;height:594px;position:relative;overflow:hidden;display:grid;grid-template-columns:535px 629px;border:1px solid rgba(255,255,255,.75);border-radius:40px;background:#F4F5F5;box-shadow:0 1px 0 rgba(255,255,255,.9) inset}.copy{z-index:2;display:flex;flex-direction:column;padding:43px 18px 40px 48px}.brand{display:flex;align-items:center;gap:11px}.mark{width:31px;height:31px;position:relative}.mark:before,.mark:after{content:"";position:absolute;top:6px;width:19px;height:19px;border-radius:50%}.mark:before{left:0;background:#171719}.mark:after{left:12px;background:#E34A32}.brand-copy{display:grid;line-height:1}.brand-copy strong{font-size:15px}.brand-copy span{margin-top:6px;color:#7B7D82;font-size:10px}.hero{margin-top:65px}.eyebrow{color:#E34A32;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}.hero h1{max-width:500px;margin:15px 0 0;font-size:56px;font-weight:620;line-height:.94;letter-spacing:-.05em}.hero p{max-width:455px;margin:20px 0 0;color:#55575C;font-size:15px;line-height:1.5}.copy footer{display:flex;justify-content:space-between;margin-top:auto;color:#7B7D82;font-size:10px}.visual{position:relative}.sculpture{position:absolute;inset:-30px -60px 96px -40px}.sculpture img{width:100%;height:100%;object-fit:cover}.sculpture:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#F4F5F5,transparent 28%),linear-gradient(0deg,#F4F5F5,transparent 28%)}.app{position:absolute;left:-12px;right:30px;bottom:34px;height:245px;overflow:hidden;border:8px solid rgba(255,255,255,.68);border-radius:22px;background:#FCFCFB;box-shadow:0 26px 60px -36px rgba(35,36,39,.7)}.bar{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border-bottom:1px solid rgba(23,23,25,.09);font-size:8px;font-weight:650}.bar span:last-child{padding:3px 7px;border-radius:999px;color:#B93624;background:#FFF0EC}.tabs{display:flex;gap:5px;padding:7px 11px;border-bottom:1px solid rgba(23,23,25,.09)}.tabs b{padding:5px 12px;border-radius:7px;color:#777;font-size:8px}.tabs b:first-child{color:#232427;background:#F0F0EE}.window{display:grid;grid-template-columns:100px 1fr;height:176px}.side{padding:12px 10px;border-right:1px solid rgba(23,23,25,.09);background:#F8F8F6}.side span{display:block;height:8px;margin-bottom:8px;border-radius:5px;background:#E4E4E1}.side span:nth-child(2){background:#FFF0EC}.rows{padding:13px}.rows h2{margin:0 0 12px;font-size:15px}.row{height:32px;display:grid;grid-template-columns:55px 1fr 110px;align-items:center;border-top:1px solid rgba(23,23,25,.08);font-size:7px}.row:first-of-type{box-shadow:3px 0 0 #E34A32 inset;background:#FFF9F7}.row b{font-family:monospace}.route{position:absolute;right:28px;top:42px;padding:6px 9px;border:1px solid rgba(255,255,255,.7);border-radius:999px;color:white;background:rgba(23,23,25,.45);font-size:9px;font-weight:650;backdrop-filter:blur(12px)}
-</style></head><body><main><section class="copy"><div class="brand"><span class="mark"></span><span class="brand-copy"><strong>Launch Control</strong><span>Pre-launch QA for Meta Ads</span></span></div><div class="hero"><div class="eyebrow">Detect / Route / Prove</div><h1>Catch creative launch mistakes before Ads Manager.</h1><p>Validate every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.</p></div><footer><strong>Interactive product</strong><span>Mathieu Petroni</span></footer></section><section class="visual"><div class="sculpture"><picture><source srcset="assets/launch-control-core-v3.avif" type="image/avif"><img src="assets/launch-control-core-v3.webp" alt=""></picture></div><span class="route">CURRENT SYNTHETIC RUN</span><div class="app"><div class="bar"><span>Launch Control</span><span>Demo data / local only</span></div><div class="tabs"><b>Queue</b><b>Review</b><b>Receipt</b></div><div class="window"><div class="side"><span></span><span></span><span></span><span></span></div><div class="rows"><h2>10 creatives need a decision</h2><div class="row"><b>cr_007</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_017</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_027</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div></div></div></div></section></main></body></html>"""
+@font-face{font-family:"Inter";src:url("assets/inter-latin-variable.woff2") format("woff2-variations");font-weight:100 900;font-display:swap}@font-face{font-family:"Instrument Serif";src:url("assets/instrument-serif-latin-italic.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap}*{box-sizing:border-box}html,body{width:1200px;height:630px;margin:0;overflow:hidden}body{padding:18px;color:#232427;background:#ECEDEE;font-family:"Inter",sans-serif}main{width:1164px;height:594px;position:relative;overflow:hidden;display:grid;grid-template-columns:535px 629px;border:1px solid rgba(255,255,255,.75);border-radius:40px;background:#F4F5F5;box-shadow:0 1px 0 rgba(255,255,255,.9) inset}.copy{z-index:2;display:flex;flex-direction:column;padding:43px 18px 40px 48px}.brand{display:flex;align-items:center;gap:11px}.mark{width:31px;height:31px;position:relative}.mark:before,.mark:after{content:"";position:absolute;top:6px;width:19px;height:19px;border-radius:50%}.mark:before{left:0;background:#171719}.mark:after{left:12px;background:#E34A32}.brand-copy{display:grid;line-height:1}.brand-copy strong{font-size:15px}.brand-copy span{margin-top:6px;color:#7B7D82;font-size:10px}.hero{margin-top:65px}.eyebrow{color:#E34A32;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}.hero h1{max-width:500px;margin:15px 0 0;font-size:56px;font-weight:620;line-height:.94;letter-spacing:-.05em}.hero p{max-width:455px;margin:20px 0 0;color:#55575C;font-size:15px;line-height:1.5}.copy footer{display:flex;justify-content:space-between;margin-top:auto;color:#7B7D82;font-size:10px}.visual{position:relative}.trace{position:absolute;left:18px;right:50px;top:92px;height:112px;padding:18px 22px;border:1px solid rgba(23,23,25,.08);border-radius:18px;background:rgba(255,255,255,.82);box-shadow:0 22px 50px -36px rgba(35,36,39,.65)}.trace-line{height:2px;position:absolute;left:54px;right:54px;top:54px;background:linear-gradient(90deg,rgba(227,74,50,.2),#E34A32,rgba(227,74,50,.2))}.trace-node{width:34px;height:34px;position:absolute;top:38px;display:grid;place-items:center;border:2px solid #E34A32;border-radius:50%;color:#E34A32;background:#FFF9F7;font-size:9px;font-weight:760}.trace-node:nth-child(2){left:38px}.trace-node:nth-child(3){left:50%;transform:translateX(-50%)}.trace-node:nth-child(4){right:38px}.trace-labels{display:flex;justify-content:space-between;margin-top:52px;color:#55575C;font-size:8px;font-weight:650;text-transform:uppercase}.app{position:absolute;left:-12px;right:30px;bottom:34px;height:245px;overflow:hidden;border:8px solid rgba(255,255,255,.68);border-radius:22px;background:#FCFCFB;box-shadow:0 26px 60px -36px rgba(35,36,39,.7)}.bar{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border-bottom:1px solid rgba(23,23,25,.09);font-size:8px;font-weight:650}.bar span:last-child{padding:3px 7px;border-radius:999px;color:#B93624;background:#FFF0EC}.tabs{display:flex;gap:5px;padding:7px 11px;border-bottom:1px solid rgba(23,23,25,.09)}.tabs b{padding:5px 12px;border-radius:7px;color:#777;font-size:8px}.tabs b:first-child{color:#232427;background:#F0F0EE}.window{display:grid;grid-template-columns:100px 1fr;height:176px}.side{padding:12px 10px;border-right:1px solid rgba(23,23,25,.09);background:#F8F8F6}.side span{display:block;height:8px;margin-bottom:8px;border-radius:5px;background:#E4E4E1}.side span:nth-child(2){background:#FFF0EC}.rows{padding:13px}.rows h2{margin:0 0 12px;font-size:15px}.row{height:32px;display:grid;grid-template-columns:55px 1fr 110px;align-items:center;border-top:1px solid rgba(23,23,25,.08);font-size:7px}.row:first-of-type{box-shadow:3px 0 0 #E34A32 inset;background:#FFF9F7}.row b{font-family:monospace}.route{position:absolute;right:50px;top:45px;color:#E34A32;font-size:9px;font-weight:720;letter-spacing:.06em}
+</style></head><body><main><section class="copy"><div class="brand"><span class="mark"></span><span class="brand-copy"><strong>Launch Control</strong><span>Pre-launch QA for Meta Ads</span></span></div><div class="hero"><div class="eyebrow">Detect / Route / Prove</div><h1>Catch creative launch mistakes before Ads Manager.</h1><p>Validate every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.</p></div><footer><strong>Interactive product</strong><span>Mathieu Petroni</span></footer></section><section class="visual"><span class="route">RECORDED DECISION TRACE</span><div class="trace"><div class="trace-line"></div><b class="trace-node">01</b><b class="trace-node">02</b><b class="trace-node">✓</b><div class="trace-labels"><span>Detect</span><span>Route</span><span>Prove</span></div></div><div class="app"><div class="bar"><span>Launch Control</span><span>Demo data / local only</span></div><div class="tabs"><b>Queue</b><b>Review</b><b>Receipt</b></div><div class="window"><div class="side"><span></span><span></span><span></span><span></span></div><div class="rows"><h2>10 creatives need a decision</h2><div class="row"><b>cr_007</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_017</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_027</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div></div></div></div></section></main></body></html>"""

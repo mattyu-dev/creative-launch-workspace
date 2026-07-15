@@ -1,0 +1,32 @@
+import {defineTheme} from '@astryxdesign/core/theme';
+
+export const launchControlTheme = defineTheme({
+  name: 'launch-control',
+  tokens: {
+    '--color-accent': ['#E34A32', '#F05A3C'],
+    '--color-accent-muted': ['#FFF0EC', '#40231E'],
+    '--color-on-accent': '#FFFFFF',
+    '--color-background-body': ['#F4F5F5', '#171719'],
+    '--color-background-surface': ['#FFFFFF', '#202024'],
+    '--color-background-card': ['#FFFFFF', '#202024'],
+    '--color-background-muted': ['#F7F7F5', '#28282C'],
+    '--color-border': ['rgba(23,23,25,0.09)', 'rgba(255,255,255,0.12)'],
+    '--color-border-emphasized': ['rgba(23,23,25,0.16)', 'rgba(255,255,255,0.22)'],
+    '--color-text-primary': ['#232427', '#F4F5F5'],
+    '--color-text-secondary': ['#55575C', '#B7B8BA'],
+    '--color-text-accent': ['#B93624', '#FF806A'],
+    '--color-icon-accent': ['#E34A32', '#F05A3C'],
+    '--color-track': ['#DEDEDB', '#45454A'],
+    '--color-warning': ['#B93624', '#FF806A'],
+    '--color-warning-muted': ['#FFF0EC', '#40231E'],
+    '--color-on-warning': ['#232427', '#FFFFFF'],
+    '--font-family-body': 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    '--font-family-heading': 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    '--radius-container': '16px',
+    '--radius-element': '10px',
+    '--duration-fast': '125ms',
+    '--duration-medium': '300ms',
+    '--duration-slow': '700ms',
+    '--ease-standard': 'cubic-bezier(.24,1,.4,1)',
+  },
+});

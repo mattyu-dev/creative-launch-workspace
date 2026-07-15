@@ -11,7 +11,7 @@ Launch Control is a B2B pre-launch QA product for Meta Ads. It must read as a re
 
 The direction is Industrial AI Elegance, combining Apple-like hierarchy and material restraint with Linear-like product proof. The signature is the orange route from Detect to Route to Prove. The page never uses portfolio, personal-project or case-study framing.
 
-The hero may use one abstract orange control sculpture as a secondary brand object on desktop. The native Queue, Review and Receipt interface is always the primary proof. The sculpture disappears on mobile so useful product state reaches the first viewport.
+The hero demonstrates a recorded decision trace from Detect to Route to Prove. Astryx provides the accessible product controls and Three.js r128 renders a faceted orange decision token that moves once through the workflow and stops. No generated raster or decorative product sculpture is allowed.
 
 ## Foundations
 
@@ -68,12 +68,14 @@ Tabs use WAI-ARIA semantics, arrow-key navigation and a Transitions.dev sliding 
 ## Motion
 
 - Hero rise: 620ms with 60ms stagger.
+- Recorded trace: 6600ms from Detect to Route to Prove, then a complete stop.
+- Three.js token: `IcosahedronGeometry(3, 0)`, orange `#E34A32`, flat-shaded metal material, DPR capped at 1.5.
 - Tab pill: 250ms cubic-bezier(.22,1,.36,1).
 - Inspector entrance: 280ms, 12px horizontal travel.
 - Receipt timeline: 260ms with 60ms stagger.
 - Button press: scale .98 for 100ms.
 
-No `transition: all`, ease-in entrance, autoplay carousel, permanent drift or decorative parallax. Reduced-motion mode removes translation and variable-weight behavior while keeping all content visible.
+No `transition: all`, ease-in entrance, autoplay carousel, permanent drift or decorative parallax. Reduced-motion mode renders the final receipt in one static WebGL frame and runs no RAF loop.
 
 ## Content and conversion
 
@@ -92,7 +94,7 @@ Synthetic counts must always be labeled as a current synthetic run. Never add fa
 - No horizontal overflow at 320px or 200% text zoom.
 - Keyboard tabs and visible focus.
 - Reduced motion, reduced transparency and increased contrast modes.
-- Responsive AVIF and WebP for the brand sculpture. PNG is fallback only.
+- No hero raster. Astryx and Three.js bundles are self-hosted, split and gzip-budgeted.
 - Target Lighthouse: 90+ performance and 100 accessibility.
 
 ## No-go rules
