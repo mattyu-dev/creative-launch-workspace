@@ -129,10 +129,10 @@ def audit_workspace_html(html: str) -> dict[str, object]:
         )
         and html.find('id="guided-step-two"') < html.find('id="guided-case"')
         and html.find('id="guided-step-three-actions"') < html.find('class="guided-proof"'),
-        "has_guided_personal_exits": all(
+        "has_guided_architecture_and_contact_exits": all(
             token in html
             for token in (
-                'id="guided-product-builder" href="index.html#about"',
+                'id="guided-product-builder" href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md"',
                 'id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/"',
             )
         ),
@@ -304,9 +304,9 @@ def _check_messages(checks: dict[str, bool]) -> list[tuple[str, bool, str]]:
             "Guided decisions and completion actions must precede scrollable evidence on small screens.",
         ),
         (
-            "has_guided_personal_exits",
-            checks["has_guided_personal_exits"],
-            "Guided completion lacks explicit routes to Mathieu's product page and LinkedIn profile.",
+            "has_guided_architecture_and_contact_exits",
+            checks["has_guided_architecture_and_contact_exits"],
+            "Guided completion lacks explicit routes to the product architecture and contact profile.",
         ),
         (
             "brand_accessible_name_matches_visible_text",
