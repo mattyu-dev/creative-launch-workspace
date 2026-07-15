@@ -73,6 +73,7 @@ const mimeTypes = {
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
   ".svg": "image/svg+xml",
+  ".woff2": "font/woff2",
   ".webp": "image/webp",
   ".avif": "image/avif"
 };
@@ -245,7 +246,7 @@ const guidedSmallPhoneStepThree = await page.evaluate(() => {
     footerVisible: !footer.hidden
       && footerRect.top >= dialogRect.top
       && footerRect.bottom <= dialogRect.bottom,
-    personalCaseStudyHref: document.querySelector("#guided-case-study")?.getAttribute("href"),
+    productBuilderHref: document.querySelector("#guided-product-builder")?.getAttribute("href"),
     linkedinHref: document.querySelector("#guided-linkedin")?.getAttribute("href")
   };
 });
@@ -334,7 +335,7 @@ if (
   || !guidedSmallPhoneStepTwo.titleUsesCustomFocus
   || guidedSmallPhoneStepThree.progress !== "3 of 3 · Verify"
   || !guidedSmallPhoneStepThree.footerVisible
-  || guidedSmallPhoneStepThree.personalCaseStudyHref !== "index.html#about"
+  || guidedSmallPhoneStepThree.productBuilderHref !== "index.html#about"
   || guidedSmallPhoneStepThree.linkedinHref !== "https://www.linkedin.com/in/mathieu-petroni/"
   || !guidedReceiptMobile.hasReceipt
   || guidedReceiptMobile.hasPersonalCta
@@ -519,20 +520,20 @@ await page.setViewport({ width: 1440, height: 1000 });
 await page.goto(url, { waitUntil: "load" });
 await page.screenshot({ path: join(assetsDir, "workspace-desktop.png") });
 
-const portfolioUrl = `${baseUrl}/docs/index.html`;
+const productUrl = `${baseUrl}/docs/index.html`;
 await page.setViewport({ width: 1366, height: 768 });
-await page.goto(portfolioUrl, { waitUntil: "load" });
-const portfolioHoverState = await page.evaluate(() => {
+await page.goto(productUrl, { waitUntil: "load" });
+const productHoverState = await page.evaluate(() => {
   const styles = [...document.querySelectorAll("style")].map((item) => item.textContent).join("\n");
   return {
-    exactHoverRule: styles.includes('.button[data-variant="primary"]:hover{background:var(--brand-hover)}'),
-    exactPressedRule: styles.includes('.button:active{transform:scale(.98)}'),
-    brand: getComputedStyle(document.documentElement).getPropertyValue("--brand").trim(),
-    hover: getComputedStyle(document.documentElement).getPropertyValue("--brand-hover").trim(),
-    foreground: getComputedStyle(document.documentElement).getPropertyValue("--brand-foreground").trim()
+    exactHoverRule: styles.includes('.button[data-variant="primary"]:hover{background:var(--primary-hover)}'),
+    exactPressedRule: styles.includes('.button:active{transform:scale(.97)'),
+    primary: getComputedStyle(document.documentElement).getPropertyValue("--primary").trim(),
+    hover: getComputedStyle(document.documentElement).getPropertyValue("--primary-hover").trim(),
+    foreground: getComputedStyle(document.documentElement).getPropertyValue("--primary-foreground").trim()
   };
 });
-const portfolioPage = await page.evaluate(() => ({
+const productPage = await page.evaluate(() => ({
   title: document.querySelector("h1")?.textContent,
   canonical: document.querySelector('link[rel="canonical"]')?.href,
   ogImage: document.querySelector('meta[property="og:image"]')?.content,
@@ -543,8 +544,9 @@ const portfolioPage = await page.evaluate(() => ({
   scrollHeight: document.body.scrollHeight,
   copyFreeze: {
     mutationBoundary: document.body.textContent.includes("no Meta credentials and no publishing path"),
-    reviewState: document.body.textContent.includes("routes every detected exception to an owner"),
-    boundedAuthority: document.body.textContent.includes("The model cannot validate, approve or publish"),
+    reviewScope: document.body.textContent.includes("approval, destination, placement, UTM, format and naming issues"),
+    reviewState: document.body.textContent.includes("Route each detected exception"),
+    boundedAuthority: document.body.textContent.includes("AI proposes. Rules verify. People decide."),
     heroSecondaryCta: document.querySelector(".hero-copy .text-link")?.textContent.trim(),
     experienceSince: document.body.textContent.includes("since 2017"),
     structuredJobTitle: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "Person")?.jobTitle
@@ -552,27 +554,32 @@ const portfolioPage = await page.evaluate(() => ({
   humanizedCopy: {
     noLongDash: !/[—–]/.test(`${document.title}\n${document.body.innerText}`),
     concreteHero: document.body.textContent.includes("Catch launch blockers before Ads Manager"),
-    concreteProblem: document.body.textContent.includes("Briefs, trackers, folders"),
-    plainAiBoundary: document.body.textContent.includes("The model cannot validate, approve or publish"),
+    concreteProblem: document.body.textContent.includes("Every blocker needs evidence, an owner and a decision"),
+    plainAiBoundary: document.body.textContent.includes("AI proposes. Rules verify. People decide."),
     concreteProductionBoundary: document.body.textContent.includes("no Meta credentials and no publishing path"),
-    personalContribution: document.body.textContent.includes("Product judgment and implementation, in one system")
+    productBuilder: document.body.textContent.includes("Designed by a performance marketer. Implemented end to end.")
   },
   exactTokens: Object.fromEntries([
-    "--canvas", "--surface", "--raised", "--ink", "--muted", "--border",
-    "--border-strong", "--brand", "--brand-hover", "--brand-soft"
+    "--background", "--card", "--foreground", "--body", "--muted-foreground", "--border",
+    "--border-strong", "--primary", "--primary-hover", "--primary-pressed", "--primary-soft"
   ].map((token) => [token, getComputedStyle(document.documentElement).getPropertyValue(token).trim()])),
   noAtmosphericEffects: !document.querySelector("style")?.textContent.includes("linear-gradient")
     && !document.querySelector("style")?.textContent.includes("body:before"),
   productFirst: !document.querySelector("main")?.innerHTML.split('id="about"')[0].includes("Mathieu")
     && !document.querySelector("main")?.innerHTML.split('id="about"')[0].includes("I built")
     && !document.querySelector("main")?.innerHTML.split('id="about"')[0].includes("Personal project")
-    && !document.querySelector("main")?.innerHTML.split('id="about"')[0].toLowerCase().includes("case study"),
+    && !document.querySelector("main")?.innerHTML.split('id="about"')[0].toLowerCase().includes("case study")
+    && !document.querySelector("main")?.innerHTML.toLowerCase().includes("portfolio")
+    && !document.querySelector("main")?.innerHTML.toLowerCase().includes("hiring"),
   hasContact: Boolean(document.querySelector('a[href="https://www.linkedin.com/in/mathieu-petroni/"]')),
   structuredTypes: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.map((item) => item["@type"]) || [],
   workflowStepCount: document.querySelectorAll(".workflow-layout .step-list li").length,
   controlCount: document.querySelectorAll(".system-flow li").length,
   evidenceCount: document.querySelectorAll(".sample-metrics li").length,
-  ownership: document.body.textContent.includes("Mathieu Petroni combined growth and performance marketing"),
+  proofCellCount: document.querySelectorAll(".proof-grid > .proof-cell").length,
+  eyebrowCount: document.querySelectorAll(".eyebrow").length,
+  aiAbsentFromHero: !document.querySelector(".hero")?.innerText.includes("AI"),
+  ownership: document.body.textContent.includes("Mathieu Petroni brought growth and performance marketing experience"),
   primaryCtaVisible: document.querySelector(".hero-copy .button")?.getBoundingClientRect().top < innerHeight,
   heroProductVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
   heroProductTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
@@ -582,53 +589,57 @@ const portfolioPage = await page.evaluate(() => ({
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
 }));
 if (
-  !portfolioPage.title?.includes("Catch launch blockers before Ads Manager")
-  || !portfolioPage.canonical?.endsWith("/creative-launch-workspace/")
-  || !portfolioPage.ogImage?.endsWith("/assets/social-card-v2-0.png")
-  || !portfolioPage.hasWorkspaceCta
-  || portfolioPage.hasCaseStudyLink
-  || portfolioPage.mainSectionCount !== 5
-  || portfolioPage.visibleWordCount > 650
-  || portfolioPage.scrollHeight > 6200
-  || !portfolioPage.copyFreeze.mutationBoundary
-  || !portfolioPage.copyFreeze.reviewState
-  || !portfolioPage.copyFreeze.boundedAuthority
-  || portfolioPage.copyFreeze.heroSecondaryCta !== "Explore the full workspace →"
-  || !portfolioPage.copyFreeze.experienceSince
-  || portfolioPage.copyFreeze.structuredJobTitle !== "AI Automation Builder"
-  || !Object.values(portfolioPage.humanizedCopy).every(Boolean)
-  || JSON.stringify(portfolioPage.exactTokens) !== JSON.stringify({
-    "--canvas": "#f4f1ea",
-    "--surface": "#fbf9f5",
-    "--raised": "#fffdf8",
-    "--ink": "#1d1f1c",
-    "--muted": "#666b64",
-    "--border": "#d7d8d2",
-    "--border-strong": "#b8bbb4",
-    "--brand": "#b83b1f",
-    "--brand-hover": "#972d18",
-    "--brand-soft": "#f4dcd4"
+  !productPage.title?.includes("Catch launch blockers before Ads Manager")
+  || !productPage.canonical?.endsWith("/creative-launch-workspace/")
+  || !productPage.ogImage?.endsWith("/assets/social-card-v2-1.png")
+  || !productPage.hasWorkspaceCta
+  || productPage.hasCaseStudyLink
+  || productPage.mainSectionCount !== 6
+  || productPage.visibleWordCount > 850
+  || productPage.scrollHeight > 9000
+  || !productPage.copyFreeze.mutationBoundary
+  || !productPage.copyFreeze.reviewState
+  || !productPage.copyFreeze.boundedAuthority
+  || productPage.copyFreeze.heroSecondaryCta !== "See how it works"
+  || !productPage.copyFreeze.experienceSince
+  || productPage.copyFreeze.structuredJobTitle !== "AI Automation Builder"
+  || !Object.values(productPage.humanizedCopy).every(Boolean)
+  || JSON.stringify(productPage.exactTokens) !== JSON.stringify({
+    "--background": "#f6f7f5",
+    "--card": "#ffffff",
+    "--foreground": "#151817",
+    "--body": "#3e4541",
+    "--muted-foreground": "#636b66",
+    "--border": "#d8ddd9",
+    "--border-strong": "#b8c0ba",
+    "--primary": "#c83b24",
+    "--primary-hover": "#ae311d",
+    "--primary-pressed": "#8d2414",
+    "--primary-soft": "#fbe8e2"
   })
-  || !portfolioPage.noAtmosphericEffects
-  || !portfolioPage.productFirst
-  || !portfolioPage.hasContact
-  || !["Person", "SoftwareApplication", "WebSite"].every((item) => portfolioPage.structuredTypes.includes(item))
-  || portfolioPage.workflowStepCount !== 3
-  || portfolioPage.controlCount !== 4
-  || portfolioPage.evidenceCount !== 4
-  || !portfolioPage.ownership
-  || !portfolioPage.primaryCtaVisible
-  || !portfolioPage.heroProductVisible
-  || !portfolioPage.heroImageLoaded
-  || !portfolioPage.sectionNavTargetsResolve
-  || !portfolioPage.noDocumentOverflow
-  || !portfolioHoverState.exactHoverRule
-  || !portfolioHoverState.exactPressedRule
-  || portfolioHoverState.brand !== "#b83b1f"
-  || portfolioHoverState.hover !== "#972d18"
-  || portfolioHoverState.foreground !== "#ffffff"
+  || !productPage.noAtmosphericEffects
+  || !productPage.productFirst
+  || !productPage.hasContact
+  || !["Person", "SoftwareApplication", "WebSite"].every((item) => productPage.structuredTypes.includes(item))
+  || productPage.workflowStepCount !== 3
+  || productPage.controlCount !== 4
+  || productPage.evidenceCount !== 4
+  || productPage.proofCellCount !== 3
+  || productPage.eyebrowCount !== 2
+  || !productPage.aiAbsentFromHero
+  || !productPage.ownership
+  || !productPage.primaryCtaVisible
+  || !productPage.heroProductVisible
+  || !productPage.heroImageLoaded
+  || !productPage.sectionNavTargetsResolve
+  || !productPage.noDocumentOverflow
+  || !productHoverState.exactHoverRule
+  || !productHoverState.exactPressedRule
+  || productHoverState.primary !== "#c83b24"
+  || productHoverState.hover !== "#ae311d"
+  || productHoverState.foreground !== "#ffffff"
 ) {
-  throw new Error(`Portfolio entry contract failed: ${JSON.stringify({ portfolioPage, portfolioHoverState })}`);
+  throw new Error(`Product entry contract failed: ${JSON.stringify({ productPage, productHoverState })}`);
 }
 await page.evaluate(async () => {
   for (const image of document.images) {
@@ -636,14 +647,16 @@ await page.evaluate(async () => {
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   }
   await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)));
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   window.scrollTo(0, 0);
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 });
-await page.screenshot({ path: join(assetsDir, "portfolio-desktop.png"), fullPage: true });
+await page.addStyleTag({ content: ".skip-link{display:none!important}.site-header{position:static!important}" });
+await page.screenshot({ path: join(assetsDir, "product-desktop.png"), fullPage: true });
 
 await page.setViewport({ width: 390, height: 844 });
-await page.goto(portfolioUrl, { waitUntil: "load" });
-const portfolioMobile = await page.evaluate(async () => {
+await page.goto(productUrl, { waitUntil: "load" });
+const productMobile = await page.evaluate(async () => {
   const heroImage = document.querySelector(".product-window img");
   const heroAsset = await createImageBitmap(await (await fetch(heroImage.currentSrc)).blob());
   const heroCta = document.querySelector(".hero-copy .button");
@@ -680,18 +693,18 @@ const portfolioMobile = await page.evaluate(async () => {
   return result;
 });
 if (
-  !portfolioMobile.noDocumentOverflow
-  || !portfolioMobile.headingVisible
-  || !portfolioMobile.primaryCtaVisible
-  || !portfolioMobile.ctaBeforeProduct
-  || !portfolioMobile.heroImageSource?.endsWith("/assets/workspace-mobile-hero.webp")
-  || portfolioMobile.heroAssetWidth !== 780
-  || portfolioMobile.heroAssetHeight !== 720
-  || portfolioMobile.scrollHeight > 8000
-  || portfolioMobile.bodyFontPx < 16
-  || portfolioMobile.evidenceColumns !== 2
+  !productMobile.noDocumentOverflow
+  || !productMobile.headingVisible
+  || !productMobile.primaryCtaVisible
+  || !productMobile.ctaBeforeProduct
+  || !productMobile.heroImageSource?.endsWith("/assets/workspace-mobile-hero.webp")
+  || productMobile.heroAssetWidth !== 780
+  || productMobile.heroAssetHeight !== 720
+  || productMobile.scrollHeight > 8000
+  || productMobile.bodyFontPx < 16
+  || productMobile.evidenceColumns !== 2
 ) {
-  throw new Error(`Portfolio mobile contract failed: ${JSON.stringify(portfolioMobile)}`);
+  throw new Error(`Product mobile contract failed: ${JSON.stringify(productMobile)}`);
 }
 await page.evaluate(async () => {
   for (const image of document.images) {
@@ -699,14 +712,16 @@ await page.evaluate(async () => {
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   }
   await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)));
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   window.scrollTo(0, 0);
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 });
-await page.screenshot({ path: join(assetsDir, "portfolio-mobile.png"), fullPage: true });
+await page.addStyleTag({ content: ".skip-link{display:none!important}.site-header{position:static!important}" });
+await page.screenshot({ path: join(assetsDir, "product-mobile.png"), fullPage: true });
 
 await page.setViewport({ width: 320, height: 568 });
-await page.goto(portfolioUrl, { waitUntil: "load" });
-const portfolioSmallPhone = await page.evaluate(() => {
+await page.goto(productUrl, { waitUntil: "load" });
+const productSmallPhone = await page.evaluate(() => {
   const primaryCta = document.querySelector(".hero-copy .button");
   const ctaRect = primaryCta?.getBoundingClientRect();
   const brandName = document.querySelector(".brand-copy strong");
@@ -731,41 +746,41 @@ const portfolioSmallPhone = await page.evaluate(() => {
     productTop: Math.round(document.querySelector(".hero-product")?.getBoundingClientRect().top || 0)
   };
 });
-const portfolioBrandHandle = await page.$(".brand");
-const portfolioBrandAccessibility = portfolioBrandHandle
-  ? await page.accessibility.snapshot({ root: portfolioBrandHandle })
+const productBrandHandle = await page.$(".brand");
+const productBrandAccessibility = productBrandHandle
+  ? await page.accessibility.snapshot({ root: productBrandHandle })
   : null;
-portfolioSmallPhone.brandAccessibleName = portfolioBrandAccessibility?.name || "";
-await portfolioBrandHandle?.dispose();
-const portfolioSmallPhoneFocusOrder = [];
+productSmallPhone.brandAccessibleName = productBrandAccessibility?.name || "";
+await productBrandHandle?.dispose();
+const productSmallPhoneFocusOrder = [];
 for (let index = 0; index < 3; index += 1) {
   await page.keyboard.press("Tab");
-  portfolioSmallPhoneFocusOrder.push(await page.evaluate(() => ({
+  productSmallPhoneFocusOrder.push(await page.evaluate(() => ({
     className: document.activeElement?.className || "",
     label: document.activeElement?.getAttribute("aria-label") || document.activeElement?.textContent.trim() || ""
   })));
 }
-portfolioSmallPhone.keyboardFocusOrder = portfolioSmallPhoneFocusOrder;
-const portfolioSmallPhoneKeyboardOrder = portfolioSmallPhoneFocusOrder[0]?.className.includes("skip-link")
-  && portfolioSmallPhoneFocusOrder[1]?.className.includes("brand")
-  && portfolioSmallPhoneFocusOrder[2]?.label.includes("Review a sample");
+productSmallPhone.keyboardFocusOrder = productSmallPhoneFocusOrder;
+const productSmallPhoneKeyboardOrder = productSmallPhoneFocusOrder[0]?.className.includes("skip-link")
+  && productSmallPhoneFocusOrder[1]?.className.includes("brand")
+  && productSmallPhoneFocusOrder[2]?.label.includes("Review sample");
 if (
-  !portfolioSmallPhone.noDocumentOverflow
-  || !portfolioSmallPhone.primaryCtaVisible
-  || !portfolioSmallPhone.ctaBeforeProduct
-  || !portfolioSmallPhone.brandAccessibleName?.includes("Creative Launch Workspace")
-  || !portfolioSmallPhone.brandNameVisible
-  || portfolioSmallPhone.touchTargetFailures.length
-  || !portfolioSmallPhoneKeyboardOrder
-  || portfolioSmallPhone.productTop >= 568
+  !productSmallPhone.noDocumentOverflow
+  || !productSmallPhone.primaryCtaVisible
+  || !productSmallPhone.ctaBeforeProduct
+  || !productSmallPhone.brandAccessibleName?.includes("Creative Launch Workspace")
+  || !productSmallPhone.brandNameVisible
+  || productSmallPhone.touchTargetFailures.length
+  || !productSmallPhoneKeyboardOrder
+  || productSmallPhone.productTop >= 568
 ) {
-  throw new Error(`Portfolio small-phone contract failed: ${JSON.stringify(portfolioSmallPhone)}`);
+  throw new Error(`Product small-phone contract failed: ${JSON.stringify(productSmallPhone)}`);
 }
 
-const portfolioTextResize = [];
+const productTextResize = [];
 for (const width of [320, 768]) {
   await page.setViewport({ width, height: width === 320 ? 568 : 900 });
-  await page.goto(portfolioUrl, { waitUntil: "load" });
+  await page.goto(productUrl, { waitUntil: "load" });
   const result = await page.evaluate(async () => {
     const textElements = [...document.querySelectorAll("body *")]
       .filter((element) => [...element.childNodes].some((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim()))
@@ -797,35 +812,37 @@ for (const width of [320, 768]) {
       overflowers
     };
   });
-  portfolioTextResize.push({ width, ...result });
+  productTextResize.push({ width, ...result });
 }
-if (portfolioTextResize.some((result) => result.documentWidth > result.viewportWidth || result.overflowers.length)) {
-  throw new Error(`Portfolio 200% text resize overflow: ${JSON.stringify(portfolioTextResize)}`);
+if (productTextResize.some((result) => result.documentWidth > result.viewportWidth || result.overflowers.length)) {
+  throw new Error(`Product 200% text resize overflow: ${JSON.stringify(productTextResize)}`);
 }
 
-const caseStudyUrl = `${baseUrl}/docs/case-study.html`;
-const legacyRouteSource = await readFile(join(root, "docs/case-study.html"), "utf8");
-const legacyRouteRedirect = {
-  canonicalRoot: legacyRouteSource.includes('<link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">'),
-  noIndex: legacyRouteSource.includes('name="robots" content="noindex,follow"'),
-  refreshesToArchitecture: legacyRouteSource.includes('http-equiv="refresh" content="0; url=./#architecture"'),
-  replacesToArchitecture: legacyRouteSource.includes('window.location.replace("./#architecture")'),
+const removedRouteUrl = `${baseUrl}/docs/case-study.html`;
+const removedRoute = {
+  fileAbsent: !existsSync(join(root, "docs/case-study.html")),
   excludedFromSitemap: !(await readFile(join(root, "docs/sitemap.xml"), "utf8")).includes("case-study.html")
 };
 await page.setViewport({ width: 1366, height: 768 });
-await page.goto(caseStudyUrl, { waitUntil: "load" });
-legacyRouteRedirect.destination = page.url();
+const removedRouteConsoleStart = consoleErrors.length;
+const removedRouteResponse = await page.goto(removedRouteUrl, { waitUntil: "load" });
+removedRoute.httpStatus = removedRouteResponse?.status();
+removedRoute.destination = page.url();
+removedRoute.consoleMessages = consoleErrors.splice(removedRouteConsoleStart);
 if (
-  !Object.values(legacyRouteRedirect).every(Boolean)
-  || !legacyRouteRedirect.destination.endsWith("/docs/#architecture")
+  !removedRoute.fileAbsent
+  || !removedRoute.excludedFromSitemap
+  || removedRoute.httpStatus !== 404
+  || !removedRoute.destination.endsWith("/docs/case-study.html")
+  || removedRoute.consoleMessages.some((message) => !message.includes("status of 404"))
 ) {
-  throw new Error(`Legacy route redirect failed: ${JSON.stringify(legacyRouteRedirect)}`);
+  throw new Error(`Removed route contract failed: ${JSON.stringify(removedRoute)}`);
 }
 
-const portfolioWorkspaceUrl = `${baseUrl}/docs/workspace.html`;
-await page.goto(portfolioWorkspaceUrl, { waitUntil: "load" });
+const productWorkspaceUrl = `${baseUrl}/docs/workspace.html`;
+await page.goto(productWorkspaceUrl, { waitUntil: "load" });
 await page.evaluate(() => localStorage.clear());
-const portfolioNavigation = await page.evaluate(() => ({
+const productNavigation = await page.evaluate(() => ({
   brandHref: document.querySelector(".brand")?.getAttribute("href"),
   returnHref: document.querySelector("#guided-return")?.getAttribute("href")
 }));
@@ -833,8 +850,8 @@ await Promise.all([
   page.waitForNavigation({ waitUntil: "load" }),
   page.click(".brand")
 ]);
-portfolioNavigation.brandDestination = new URL(page.url()).pathname;
-await page.goto(`${portfolioWorkspaceUrl}?guided=1`, { waitUntil: "load" });
+productNavigation.brandDestination = new URL(page.url()).pathname;
+await page.goto(`${productWorkspaceUrl}?guided=1`, { waitUntil: "load" });
 await page.evaluate(() => localStorage.clear());
 await page.reload({ waitUntil: "load" });
 await page.click("#guided-next");
@@ -843,17 +860,17 @@ await Promise.all([
   page.waitForNavigation({ waitUntil: "load" }),
   page.click("#guided-return")
 ]);
-portfolioNavigation.completionDestination = new URL(page.url()).pathname;
+productNavigation.completionDestination = new URL(page.url()).pathname;
 if (
-  portfolioNavigation.brandHref !== "index.html"
-  || portfolioNavigation.returnHref !== "index.html"
-  || !portfolioNavigation.brandDestination.endsWith("/docs/index.html")
-  || !portfolioNavigation.completionDestination.endsWith("/docs/index.html")
+  productNavigation.brandHref !== "index.html"
+  || productNavigation.returnHref !== "index.html"
+  || !productNavigation.brandDestination.endsWith("/docs/index.html")
+  || !productNavigation.completionDestination.endsWith("/docs/index.html")
 ) {
-  throw new Error(`Portfolio navigation contract failed: ${JSON.stringify(portfolioNavigation)}`);
+  throw new Error(`Product navigation contract failed: ${JSON.stringify(productNavigation)}`);
 }
 await page.setViewport({ width: 390, height: 844 });
-await page.goto(portfolioUrl, { waitUntil: "load" });
+await page.goto(productUrl, { waitUntil: "load" });
 
 const responsiveAssetFidelity = await page.evaluate(async () => {
   const loadImage = (src) => new Promise((resolve, reject) => {
@@ -922,7 +939,7 @@ if (socialCard.productImage !== "assets/workspace-desktop.png" || !socialCard.pr
   throw new Error(`Social card contract failed: ${JSON.stringify(socialCard)}`);
 }
 await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
-await page.screenshot({ path: join(assetsDir, "social-card-v2-0.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+await page.screenshot({ path: join(assetsDir, "social-card-v2-1.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
 
 const labUrl = `${baseUrl}/docs/fix-lab.html`;
 await page.setViewport({ width: 1280, height: 900 });
@@ -989,8 +1006,8 @@ if (process.platform === "linux") lighthouseChromeFlags.push("--no-sandbox");
 const lighthouseTargets = [
   { surface: "workspace", formFactor: "desktop", targetUrl: url, outputPath: join(evidenceDir, "workspace-lighthouse-accessibility-desktop.json") },
   { surface: "workspace", formFactor: "mobile", targetUrl: url, outputPath: join(evidenceDir, "workspace-lighthouse-accessibility-mobile.json") },
-  { surface: "portfolio", formFactor: "desktop", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-accessibility-desktop.json") },
-  { surface: "portfolio", formFactor: "mobile", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-accessibility-mobile.json") }
+  { surface: "product", formFactor: "desktop", targetUrl: productUrl, outputPath: join(evidenceDir, "product-lighthouse-accessibility-desktop.json") },
+  { surface: "product", formFactor: "mobile", targetUrl: productUrl, outputPath: join(evidenceDir, "product-lighthouse-accessibility-mobile.json") }
 ];
 
 for (const { formFactor, targetUrl, outputPath } of lighthouseTargets) {
@@ -1012,7 +1029,7 @@ for (const { formFactor, targetUrl, outputPath } of lighthouseTargets) {
   });
 }
 
-const accessibility = { workspace: {}, portfolio: {} };
+const accessibility = { workspace: {}, product: {} };
 const seriousAccessibilityFailures = [];
 for (const { surface, formFactor, outputPath } of lighthouseTargets) {
   const lighthouseReport = JSON.parse(await readFile(outputPath, "utf8"));
@@ -1036,11 +1053,11 @@ if (seriousAccessibilityFailures.length) {
   throw new Error(`Serious WCAG audit failures cannot be hidden by a rounded Lighthouse score: ${JSON.stringify(seriousAccessibilityFailures)}`);
 }
 
-const portfolioQualityTargets = [
-  { surface: "portfolio", formFactor: "desktop", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-quality-desktop.json") },
-  { surface: "portfolio", formFactor: "mobile", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-quality-mobile.json") }
+const productQualityTargets = [
+  { surface: "product", formFactor: "desktop", targetUrl: productUrl, outputPath: join(evidenceDir, "product-lighthouse-quality-desktop.json") },
+  { surface: "product", formFactor: "mobile", targetUrl: productUrl, outputPath: join(evidenceDir, "product-lighthouse-quality-mobile.json") }
 ];
-for (const { formFactor, targetUrl, outputPath } of portfolioQualityTargets) {
+for (const { formFactor, targetUrl, outputPath } of productQualityTargets) {
   const args = [
     targetUrl,
     `--chrome-path=${chromePath}`,
@@ -1059,10 +1076,19 @@ for (const { formFactor, targetUrl, outputPath } of portfolioQualityTargets) {
   });
 }
 
-const portfolioQuality = {};
-for (const { surface, formFactor, outputPath } of portfolioQualityTargets) {
+const productQuality = {};
+const productQualityBudget = {
+  performanceTarget: 0.9,
+  performanceCiFloor: 0.89,
+  bestPracticesFloor: 0.95,
+  seoFloor: 0.95,
+  lcpCeilingMs: 2500,
+  clsCeiling: 0.1,
+  tbtCeilingMs: 200
+};
+for (const { surface, formFactor, outputPath } of productQualityTargets) {
   const lighthouseReport = JSON.parse(await readFile(outputPath, "utf8"));
-  portfolioQuality[`${surface}_${formFactor}`] = {
+  productQuality[`${surface}_${formFactor}`] = {
     performanceScore: lighthouseReport.categories.performance.score,
     bestPracticesScore: lighthouseReport.categories["best-practices"].score,
     seoScore: lighthouseReport.categories.seo.score,
@@ -1071,15 +1097,15 @@ for (const { surface, formFactor, outputPath } of portfolioQualityTargets) {
     tbtMs: Math.round(lighthouseReport.audits["total-blocking-time"].numericValue)
   };
 }
-if (Object.values(portfolioQuality).some((result) =>
-  result.performanceScore < 0.9
-  || result.bestPracticesScore < 0.95
-  || result.seoScore < 0.95
-  || result.lcpMs > 2500
-  || result.cls > 0.1
-  || result.tbtMs > 200
+if (Object.values(productQuality).some((result) =>
+  result.performanceScore < productQualityBudget.performanceCiFloor
+  || result.bestPracticesScore < productQualityBudget.bestPracticesFloor
+  || result.seoScore < productQualityBudget.seoFloor
+  || result.lcpMs > productQualityBudget.lcpCeilingMs
+  || result.cls > productQualityBudget.clsCeiling
+  || result.tbtMs > productQualityBudget.tbtCeilingMs
 )) {
-  throw new Error(`Portfolio Lighthouse quality budget regressed: ${JSON.stringify(portfolioQuality)}`);
+  throw new Error(`Product Lighthouse quality budget regressed: ${JSON.stringify({ productQualityBudget, productQuality })}`);
 }
 
 if (consoleErrors.length) {
@@ -1087,7 +1113,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v17",
+  contract_version: "workspace_runtime_qa.v18",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,
@@ -1111,13 +1137,13 @@ const report = {
   filter_reconciliation: filterReconciliation,
   persistence,
   reset,
-  portfolio_page: portfolioPage,
-  portfolio_hover_state: portfolioHoverState,
-  portfolio_mobile: portfolioMobile,
-  portfolio_small_phone: portfolioSmallPhone,
-  portfolio_text_resize: portfolioTextResize,
-  legacy_route_redirect: legacyRouteRedirect,
-  portfolio_navigation: portfolioNavigation,
+  product_page: productPage,
+  product_hover_state: productHoverState,
+  product_mobile: productMobile,
+  product_small_phone: productSmallPhone,
+  product_text_resize: productTextResize,
+  removed_route: removedRoute,
+  product_navigation: productNavigation,
   responsive_asset_fidelity: responsiveAssetFidelity,
   social_card: socialCard,
   fix_lab: { initial: labInitial, fixed: labFixed, reset: labReset },
@@ -1125,7 +1151,8 @@ const report = {
   console_errors: consoleErrors,
   lighthouse_accessibility: accessibility,
   serious_accessibility_failures: seriousAccessibilityFailures,
-  lighthouse_portfolio_quality: portfolioQuality,
+  lighthouse_product_quality: productQuality,
+  lighthouse_product_quality_budget: productQualityBudget,
   mutation_allowed: false,
   meta_api_compatibility: "not_claimed"
 };
@@ -1134,4 +1161,4 @@ await writeFile(join(evidenceDir, "workspace-runtime-qa.json"), `${JSON.stringif
 await new Promise((resolve, reject) => {
   server.close((error) => (error ? reject(error) : resolve()));
 });
-console.log(JSON.stringify({ status: "pass", accessibility, portfolioQuality, viewports: viewports.length }, null, 2));
+console.log(JSON.stringify({ status: "pass", accessibility, productQuality, viewports: viewports.length }, null, 2));

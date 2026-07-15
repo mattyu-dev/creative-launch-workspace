@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "creative-launch-workspace"
-version = "2.0.0"
+version = "2.1.0"
 description = "Governed AI-assisted brief intake and offline creative launch review"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -53,7 +53,7 @@ ignore = ["E501", "UP017"]
 "scripts/workspace_browser_qa.py" = ["E402"]
 "scripts/rebuild_ai_evidence.py" = ["E402"]
 "scripts/rebuild_fix_lab.py" = ["E402"]
-"scripts/rebuild_portfolio_page.py" = ["E402"]
+"scripts/rebuild_product_page.py" = ["E402"]
 
 [tool.mypy]
 python_version = "3.11"

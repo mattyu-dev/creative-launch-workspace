@@ -1,4 +1,40 @@
-<!doctype html>
+from __future__ import annotations
+
+from meta_importer.product_landing_v21 import (
+    render_product_landing_v21,
+    render_social_card_page_v21,
+)
+
+
+def render_product_page() -> str:
+    return render_product_landing_v21()
+
+
+def render_social_card_page() -> str:
+    return render_social_card_page_v21()
+
+
+def render_robots_txt() -> str:
+    return """User-agent: *
+Allow: /
+
+Sitemap: https://mattyu-dev.github.io/creative-launch-workspace/sitemap.xml
+"""
+
+
+def render_sitemap() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://mattyu-dev.github.io/creative-launch-workspace/</loc></url>
+  <url><loc>https://mattyu-dev.github.io/creative-launch-workspace/workspace.html</loc></url>
+  <url><loc>https://mattyu-dev.github.io/creative-launch-workspace/brief-evidence.html</loc></url>
+  <url><loc>https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html</loc></url>
+</urlset>
+"""
+
+
+def render_not_found_page() -> str:
+    return """<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -16,3 +52,4 @@
 </head>
 <body><main><div class="eyebrow">404 · Creative Launch Workspace</div><h1>This route does not exist.</h1><p>Return to the product, review the sample workspace or inspect the source.</p><div class="links"><a href="https://mattyu-dev.github.io/creative-launch-workspace/">Back to the product</a><a href="https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1">Review a sample batch</a><a href="https://github.com/mattyu-dev/creative-launch-workspace">Open the source</a><a href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Contact Mathieu</a></div></main></body>
 </html>
+"""

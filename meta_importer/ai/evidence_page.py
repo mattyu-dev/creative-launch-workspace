@@ -52,12 +52,12 @@ def render_evidence_page(
   <meta property="article:author" content="https://www.linkedin.com/in/mathieu-petroni/">
   <meta property="og:title" content="Governed intake evidence · Mathieu Petroni">
   <meta property="og:description" content="Source evidence, bounded proposals, policy checks and explicit human decisions.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-0.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-1.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <title>Brief mapping evidence · Mathieu Petroni</title>
   <style>
-    :root {{ --ink:#1d1f1c; --body:#454943; --muted:#666b64; --canvas:#f4f1ea; --paper:#fffdf8; --line:#d7d8d2; --brand:#b83b1f; --brand-soft:#f4dcd4; --success:#176143; --success-soft:#e3eee8; }}
+    :root {{ --ink:#151817; --body:#3e4541; --muted:#636b66; --canvas:#f6f7f5; --paper:#ffffff; --line:#d8ddd9; --brand:#c83b24; --brand-soft:#fbe8e2; --success:#176143; --success-soft:#e3eee8; }}
     * {{ box-sizing:border-box; }}
     body {{ margin:0; color:var(--ink); background:var(--canvas); font:400 15px/1.5 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }}
     header {{ padding:14px max(20px,calc((100vw - 1180px)/2)); border-bottom:1px solid var(--line); background:var(--paper); }}

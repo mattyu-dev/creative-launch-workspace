@@ -38,7 +38,7 @@ jobs:
       - name: Static checks
         run: |
           uv run --frozen ruff check .
-          uv run --frozen mypy meta_importer/ai meta_importer/clock.py meta_importer/review_policy.py meta_importer/fix_lab.py meta_importer/portfolio_page.py meta_importer/portfolio_v20.py
+          uv run --frozen mypy meta_importer/ai meta_importer/clock.py meta_importer/review_policy.py meta_importer/fix_lab.py meta_importer/product_page.py meta_importer/product_landing_v21.py
       - name: Tests and branch coverage
         run: |
           uv run --frozen coverage run -m unittest discover -s tests -q
@@ -70,7 +70,7 @@ jobs:
           uv run --frozen python evals/brief_mapping/build_dataset.py
           uv run --frozen python scripts/rebuild_ai_evidence.py
           uv run --frozen python scripts/rebuild_fix_lab.py
-          uv run --frozen python scripts/rebuild_portfolio_page.py
+          uv run --frozen python scripts/rebuild_product_page.py
       - name: Rehearse v1 launch workspace
         run: uv run --frozen creative-launch plan fixtures/fake_agency_creatives/manifest.csv --out runs/fake_agency_creatives/launch_plan.json --review runs/fake_agency_creatives/review_packet.md --html runs/fake_agency_creatives/workspace.html --html-audit runs/fake_agency_creatives/workspace_audit.json --state runs/fake_agency_creatives/review_state.json --platform-preview runs/fake_agency_creatives/platform_preview.json --store-dir runs/fake_agency_creatives/store
       - name: Rehearse v2 launch workspace
