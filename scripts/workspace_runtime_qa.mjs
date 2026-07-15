@@ -8,6 +8,7 @@ import { homedir } from "node:os";
 import { basename, dirname, extname, join, normalize, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
+import { createGzip } from "node:zlib";
 
 import puppeteer from "puppeteer-core";
 
@@ -77,6 +78,7 @@ const mimeTypes = {
   ".webp": "image/webp",
   ".avif": "image/avif"
 };
+const compressedTypes = new Set([".html", ".js", ".json", ".svg"]);
 
 const server = createServer((request, response) => {
   const rawPath = decodeURIComponent(new URL(request.url || "/", "http://127.0.0.1").pathname);
@@ -90,7 +92,18 @@ const server = createServer((request, response) => {
     return;
   }
   if (statSync(requested).isDirectory()) requested = join(requested, "index.html");
-  response.writeHead(200, { "Content-Type": mimeTypes[extname(requested)] || "application/octet-stream" });
+  const extension = extname(requested);
+  const acceptsGzip = /(?:^|,)\s*gzip\s*(?:,|$)/i.test(request.headers["accept-encoding"] || "");
+  const headers = {
+    "Content-Type": mimeTypes[extension] || "application/octet-stream",
+    "Vary": "Accept-Encoding"
+  };
+  if (acceptsGzip && compressedTypes.has(extension)) {
+    response.writeHead(200, { ...headers, "Content-Encoding": "gzip" });
+    createReadStream(requested).pipe(createGzip()).pipe(response);
+    return;
+  }
+  response.writeHead(200, headers);
   createReadStream(requested).pipe(response);
 });
 
