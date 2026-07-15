@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.1.0 — 2026-07-15
+
+- Promoted the complete product narrative to the canonical homepage and removed the legacy secondary route instead of redirecting it.
+- Reframed every public section as a SaaS product story: problem, review workflow, controls, evidence, pilot and one compact builder block.
+- Replaced the warm editorial palette with a cold-neutral Geist system and one accessible coral action color, while reserving green, amber and red for status.
+- Applied compact shadcn-style controls, pointer-gated states, tactile press feedback and explicit reduced-motion, reduced-transparency and increased-contrast behavior.
+- Renamed active landing generators, tests and evidence from portfolio terminology to product terminology.
+
 ## 2.0.0 — 2026-07-15
 
 - Rebuilt the public entry as one product landing: pre-launch outcome first, a real interactive workspace in the first viewport, concrete checks, a focused review loop and one closing builder block.

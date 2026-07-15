@@ -132,7 +132,7 @@ def audit_workspace_html(html: str) -> dict[str, object]:
         "has_guided_personal_exits": all(
             token in html
             for token in (
-                'id="guided-case-study" href="index.html#about"',
+                'id="guided-product-builder" href="index.html#about"',
                 'id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/"',
             )
         ),

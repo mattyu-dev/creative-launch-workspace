@@ -36,7 +36,7 @@ The system never publishes ads. The final artifact is intentionally non-executab
 - 48 synthetic brief cases: 36 baseline contract cases plus 12 natural-prose/adversarial live-provider cases.
 - Browser interaction QA at seven viewport widths plus a dedicated 320×568 guided-review contract.
 - Lighthouse accessibility 100/100 on desktop and mobile.
-- Portfolio Lighthouse quality budgets for performance, best practices, SEO, LCP, CLS and total blocking time.
+- Product landing Lighthouse quality budgets for performance, best practices, SEO, LCP, CLS and total blocking time.
 - Eight correction/revalidation scenarios generated from the Python validators and exercised in the browser.
 
 These numbers describe the included fixtures. They are not customer or production results.

@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml)
-[![Live demo](https://img.shields.io/badge/live_demo-open_product-b83b1f)](https://mattyu-dev.github.io/creative-launch-workspace/)
+[![Live demo](https://img.shields.io/badge/live_demo-open_product-c83b24)](https://mattyu-dev.github.io/creative-launch-workspace/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f4ead4)](LICENSE)
 
 Catch approval, mapping, destination and placement errors before a large Meta creative launch reaches Ads Manager.
@@ -17,7 +17,7 @@ Deterministic rules check each AI proposal before a person decides an ambiguous 
 
 [![Creative Launch Workspace desktop](docs/assets/workspace-desktop.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html)
 
-The public landing and interactive workspace share one warm operational system: an ivory `#f4f1ea` canvas, ink typography and a single ember `#b83b1f` action color. Success, warning and blocked colors remain reserved for status, while the product and its proof now live on one canonical page.
+The public landing and interactive workspace share one cold-neutral product system: a `#f6f7f5` canvas, Geist typography and one accessible coral `#c83b24` action color. Success, warning and blocked colors remain reserved for status, while the product and its proof live on one canonical page.
 
 [![Guided human review with local audit evidence](docs/assets/guided-review-step-3.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1)
 
@@ -178,10 +178,10 @@ The same QA run completes the guided 1→2→3 decision path, verifies that it c
 - [Runtime browser QA](docs/evidence/workspace-runtime-qa.json)
 - [Desktop accessibility](docs/evidence/workspace-lighthouse-accessibility-desktop.json)
 - [Mobile accessibility](docs/evidence/workspace-lighthouse-accessibility-mobile.json)
-- [Portfolio desktop accessibility](docs/evidence/portfolio-lighthouse-accessibility-desktop.json)
-- [Portfolio mobile accessibility](docs/evidence/portfolio-lighthouse-accessibility-mobile.json)
-- [Portfolio desktop quality budget](docs/evidence/portfolio-lighthouse-quality-desktop.json)
-- [Portfolio mobile quality budget](docs/evidence/portfolio-lighthouse-quality-mobile.json)
+- [Product desktop accessibility](docs/evidence/product-lighthouse-accessibility-desktop.json)
+- [Product mobile accessibility](docs/evidence/product-lighthouse-accessibility-mobile.json)
+- [Product desktop quality budget](docs/evidence/product-lighthouse-quality-desktop.json)
+- [Product mobile quality budget](docs/evidence/product-lighthouse-quality-mobile.json)
 
 ## Engineering choices
 

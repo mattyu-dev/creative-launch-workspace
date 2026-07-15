@@ -107,8 +107,8 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertNotIn('class="brand" href="index.html" aria-label=', html)
         self.assertIn('id="guided-return" href="index.html"', html)
         self.assertIn("Back to the product", html)
-        self.assertIn("See how Mathieu built the product", html)
-        self.assertIn('id="guided-case-study" href="index.html#about"', html)
+        self.assertIn("Meet the product builder", html)
+        self.assertIn('id="guided-product-builder" href="index.html#about"', html)
         self.assertIn(
             'id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/"',
             html,

@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v17",
-  "tested_at": "2026-07-15T11:06:27.906Z",
+  "contract_version": "workspace_runtime_qa.v18",
+  "tested_at": "2026-07-15T12:29:04.937Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-15T11:05:28.425Z",
+      "occurredAt": "2026-07-15T12:28:04.632Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784113528425_8",
+        "event_id": "evt_local_1784118484632_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-15T11:05:28.425Z"
+        "occurred_at": "2026-07-15T12:28:04.632Z"
       }
     },
     "request_violations": [],
@@ -159,7 +159,7 @@
       "progress": "3 of 3 · Verify",
       "bodyScrollable": true,
       "footerVisible": true,
-      "personalCaseStudyHref": "index.html#about",
+      "productBuilderHref": "index.html#about",
       "linkedinHref": "https://www.linkedin.com/in/mathieu-petroni/"
     },
     "receipt_mobile": {
@@ -247,20 +247,21 @@
     "rowTwoDecision": "No exception review",
     "status": "Browser review state reset."
   },
-  "portfolio_page": {
+  "product_page": {
     "title": "Catch launch blockers before Ads Manager.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-0.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-1.png",
     "hasWorkspaceCta": true,
     "hasCaseStudyLink": false,
-    "mainSectionCount": 5,
-    "visibleWordCount": 590,
-    "scrollHeight": 4329,
+    "mainSectionCount": 6,
+    "visibleWordCount": 515,
+    "scrollHeight": 6097,
     "copyFreeze": {
       "mutationBoundary": true,
+      "reviewScope": true,
       "reviewState": true,
       "boundedAuthority": true,
-      "heroSecondaryCta": "Explore the full workspace →",
+      "heroSecondaryCta": "See how it works",
       "experienceSince": true,
       "structuredJobTitle": "AI Automation Builder"
     },
@@ -270,19 +271,20 @@
       "concreteProblem": true,
       "plainAiBoundary": true,
       "concreteProductionBoundary": true,
-      "personalContribution": true
+      "productBuilder": true
     },
     "exactTokens": {
-      "--canvas": "#f4f1ea",
-      "--surface": "#fbf9f5",
-      "--raised": "#fffdf8",
-      "--ink": "#1d1f1c",
-      "--muted": "#666b64",
-      "--border": "#d7d8d2",
-      "--border-strong": "#b8bbb4",
-      "--brand": "#b83b1f",
-      "--brand-hover": "#972d18",
-      "--brand-soft": "#f4dcd4"
+      "--background": "#f6f7f5",
+      "--card": "#ffffff",
+      "--foreground": "#151817",
+      "--body": "#3e4541",
+      "--muted-foreground": "#636b66",
+      "--border": "#d8ddd9",
+      "--border-strong": "#b8c0ba",
+      "--primary": "#c83b24",
+      "--primary-hover": "#ae311d",
+      "--primary-pressed": "#8d2414",
+      "--primary-soft": "#fbe8e2"
     },
     "noAtmosphericEffects": true,
     "productFirst": true,
@@ -295,23 +297,26 @@
     "workflowStepCount": 3,
     "controlCount": 4,
     "evidenceCount": 4,
+    "proofCellCount": 3,
+    "eyebrowCount": 2,
+    "aiAbsentFromHero": true,
     "ownership": true,
     "primaryCtaVisible": true,
     "heroProductVisible": true,
-    "heroProductTop": 182,
+    "heroProductTop": 530,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:54134/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:58559/docs/assets/workspace-desktop.avif",
     "sectionNavTargetsResolve": true,
     "noDocumentOverflow": true
   },
-  "portfolio_hover_state": {
+  "product_hover_state": {
     "exactHoverRule": true,
     "exactPressedRule": true,
-    "brand": "#b83b1f",
-    "hover": "#972d18",
+    "primary": "#c83b24",
+    "hover": "#ae311d",
     "foreground": "#ffffff"
   },
-  "portfolio_mobile": {
+  "product_mobile": {
     "noDocumentOverflow": true,
     "documentWidth": 390,
     "viewportWidth": 390,
@@ -320,24 +325,24 @@
     "headingVisible": true,
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
-    "productTop": 603,
-    "heroImageSource": "http://127.0.0.1:54134/docs/assets/workspace-mobile-hero.webp",
+    "productTop": 499,
+    "heroImageSource": "http://127.0.0.1:58559/docs/assets/workspace-mobile-hero.webp",
     "heroAssetWidth": 780,
     "heroAssetHeight": 720,
-    "scrollHeight": 7345,
+    "scrollHeight": 7314,
     "bodyFontPx": 16,
     "evidenceColumns": 2
   },
-  "portfolio_small_phone": {
+  "product_small_phone": {
     "noDocumentOverflow": true,
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
     "brandNameVisible": true,
     "touchTargetFailures": [],
-    "ctaTop": 452,
-    "ctaBottom": 496,
-    "headingHeight": 116,
-    "productTop": 561,
+    "ctaTop": 441,
+    "ctaBottom": 485,
+    "headingHeight": 119,
+    "productTop": 507,
     "brandAccessibleName": "Creative Launch Workspace",
     "keyboardFocusOrder": [
       {
@@ -350,11 +355,11 @@
       },
       {
         "className": "button",
-        "label": "Review a sample"
+        "label": "Review sample"
       }
     ]
   },
-  "portfolio_text_resize": [
+  "product_text_resize": [
     {
       "width": 320,
       "documentWidth": 320,
@@ -368,15 +373,16 @@
       "overflowers": []
     }
   ],
-  "legacy_route_redirect": {
-    "canonicalRoot": true,
-    "noIndex": true,
-    "refreshesToArchitecture": true,
-    "replacesToArchitecture": true,
+  "removed_route": {
+    "fileAbsent": true,
     "excludedFromSitemap": true,
-    "destination": "http://127.0.0.1:54134/docs/#architecture"
+    "httpStatus": 404,
+    "destination": "http://127.0.0.1:58559/docs/case-study.html",
+    "consoleMessages": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ]
   },
-  "portfolio_navigation": {
+  "product_navigation": {
     "brandHref": "index.html",
     "returnHref": "index.html",
     "brandDestination": "/docs/index.html",
@@ -387,31 +393,31 @@
       "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.avif",
       "dimensionsMatch": true,
-      "psnr": 45.59
+      "psnr": 50.84
     },
     {
       "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.webp",
       "dimensionsMatch": true,
-      "psnr": 37.95
+      "psnr": 38.44
     },
     {
       "referenceSrc": "assets/workspace-mobile.png",
       "candidateSrc": "assets/workspace-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 40.88
+      "psnr": 40.52
     },
     {
       "referenceSrc": "assets/workspace-mobile-hero.png",
       "candidateSrc": "assets/workspace-mobile-hero.webp",
       "dimensionsMatch": true,
-      "psnr": 41.43
+      "psnr": 41.1
     },
     {
       "referenceSrc": "assets/guided-receipt-mobile.png",
       "candidateSrc": "assets/guided-receipt-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 40.85
+      "psnr": 39.9
     }
   ],
   "social_card": {
@@ -450,26 +456,26 @@
       "desktopScore": 1,
       "mobileScore": 1
     },
-    "portfolio": {
+    "product": {
       "desktopScore": 1,
       "mobileScore": 1
     }
   },
   "serious_accessibility_failures": [],
-  "lighthouse_portfolio_quality": {
-    "portfolio_desktop": {
-      "performanceScore": 0.97,
+  "lighthouse_product_quality": {
+    "product_desktop": {
+      "performanceScore": 0.9,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1200,
+      "lcpMs": 1876,
       "cls": 0,
       "tbtMs": 0
     },
-    "portfolio_mobile": {
+    "product_mobile": {
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1125,
+      "lcpMs": 1576,
       "cls": 0,
       "tbtMs": 0
     }

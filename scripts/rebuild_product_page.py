@@ -7,10 +7,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from meta_importer.portfolio_page import (
-    render_case_study_page,
+from meta_importer.product_page import (
     render_not_found_page,
-    render_portfolio_page,
+    render_product_page,
     render_robots_txt,
     render_sitemap,
     render_social_card_page,
@@ -18,13 +17,13 @@ from meta_importer.portfolio_page import (
 
 
 def main() -> int:
-    (ROOT / "docs/index.html").write_text(render_portfolio_page())
-    (ROOT / "docs/case-study.html").write_text(render_case_study_page())
+    (ROOT / "docs/index.html").write_text(render_product_page())
+    (ROOT / "docs/case-study.html").unlink(missing_ok=True)
     (ROOT / "docs/social-card.html").write_text(render_social_card_page())
     (ROOT / "docs/robots.txt").write_text(render_robots_txt())
     (ROOT / "docs/sitemap.xml").write_text(render_sitemap())
     (ROOT / "docs/404.html").write_text(render_not_found_page())
-    print("Rebuilt GitHub Pages portfolio entry, social card, sitemap, robots, and 404")
+    print("Rebuilt the canonical product entry, social card, sitemap, robots, and 404")
     return 0
 
 
