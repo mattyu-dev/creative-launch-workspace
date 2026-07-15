@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v19",
-  "tested_at": "2026-07-15T15:29:05.092Z",
+  "contract_version": "workspace_runtime_qa.v20",
+  "tested_at": "2026-07-15T16:47:06.316Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-15T15:28:01.916Z",
+      "occurredAt": "2026-07-15T16:45:55.371Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784129281916_8",
+        "event_id": "evt_local_1784133955371_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-15T15:28:01.916Z"
+        "occurred_at": "2026-07-15T16:45:55.371Z"
       }
     },
     "request_violations": [],
@@ -250,12 +250,12 @@
   "product_page": {
     "title": "Catch creative launch mistakes before Ads Manager.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v3.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v4.png",
     "hasWorkspaceCta": true,
     "hasCaseStudyLink": false,
     "mainSectionCount": 5,
-    "visibleWordCount": 430,
-    "scrollHeight": 4435,
+    "visibleWordCount": 506,
+    "scrollHeight": 4483,
     "copyFreeze": {
       "boundary": true,
       "reviewScope": true,
@@ -297,13 +297,15 @@
     "productPanelCount": 3,
     "queueRowCount": 4,
     "nativeProduct": true,
+    "astryxMotion": true,
+    "oldRasterAbsent": true,
     "legacyScreenshotReferences": [],
     "exactFixture": true,
     "exactReceipt": true,
     "singlePrimaryReviewAction": true,
     "primaryCtaVisible": true,
     "heroProductVisible": true,
-    "heroProductTop": 615,
+    "heroProductTop": 216,
     "sectionNavTargetsResolve": true,
     "noDocumentOverflow": true
   },
@@ -314,6 +316,85 @@
     "hover": "#F05A3C",
     "foreground": "#171719",
     "noTransitionAll": true
+  },
+  "product_motion": {
+    "start": {
+      "ready": true,
+      "version": "4.0.0",
+      "astryx": "0.1.6",
+      "three": "0.128.0",
+      "sequence": [
+        "Detect",
+        "Route",
+        "Prove"
+      ],
+      "mesh": {
+        "geometry": "IcosahedronGeometry",
+        "radius": 3,
+        "detail": 0,
+        "color": "#E34A32",
+        "roughness": 0.3,
+        "metalness": 0.6,
+        "flatShading": true,
+        "desktopAnchorX": 4.5,
+        "mobileAnchorX": 0,
+        "dpr": 1,
+        "frameCount": 3,
+        "rafActive": true,
+        "reducedMotion": false,
+        "anchorX": 4.5,
+        "positionX": 4.5,
+        "positionY": -1.8221570853398725
+      },
+      "state": "ready",
+      "astryxMounted": true,
+      "canvasMounted": true,
+      "oldRasterAbsent": true
+    },
+    "end": {
+      "geometry": "IcosahedronGeometry",
+      "radius": 3,
+      "detail": 0,
+      "color": "#E34A32",
+      "roughness": 0.3,
+      "metalness": 0.6,
+      "flatShading": true,
+      "desktopAnchorX": 4.5,
+      "mobileAnchorX": 0,
+      "dpr": 1,
+      "frameCount": 42,
+      "rafActive": true,
+      "reducedMotion": false,
+      "anchorX": 4.5,
+      "positionX": 4.5,
+      "positionY": -1.7118846026130445
+    },
+    "yChanged": true,
+    "externalRequests": [],
+    "complete": {
+      "state": "complete",
+      "phase": "prove",
+      "frameCount": 783,
+      "rafActive": false
+    }
+  },
+  "product_compositor": {
+    "routeBlackPixelRatio": 0.09767894033296877,
+    "proveBlackPixelRatio": 0.09670069267225666
+  },
+  "product_reduced_motion": {
+    "start": {
+      "phase": "prove",
+      "frameCount": 2,
+      "rafActive": false,
+      "reducedMotion": true
+    },
+    "end": {
+      "frameCount": 2,
+      "rafActive": false
+    },
+    "noRenderLoop": true,
+    "blackPixelRatio": 0.09670069267225666
   },
   "product_interaction": {
     "initial": {
@@ -356,13 +437,15 @@
     "headingVisible": true,
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
-    "productTop": 545,
+    "productTop": 561,
     "nativeProductVisible": true,
     "legacyScreenshotReferences": [],
     "activePanel": "panel-queue",
     "touchTargetFailures": [],
-    "scrollHeight": 6049,
-    "bodyFontPx": 16
+    "scrollHeight": 6475,
+    "bodyFontPx": 16,
+    "meshAnchorX": 0,
+    "meshPositionX": 0
   },
   "product_small_phone": {
     "noDocumentOverflow": true,
@@ -373,7 +456,7 @@
     "ctaTop": 502,
     "ctaBottom": 546,
     "headingHeight": 150,
-    "productTop": 550,
+    "productTop": 566,
     "nativeProductVisible": true,
     "activePanel": "panel-queue",
     "brandAccessibleName": "Launch Control",
@@ -410,7 +493,7 @@
     "fileAbsent": true,
     "excludedFromSitemap": true,
     "httpStatus": 404,
-    "destination": "http://127.0.0.1:55103/docs/case-study.html",
+    "destination": "http://127.0.0.1:60754/docs/case-study.html",
     "consoleMessages": [
       "Failed to load resource: the server responded with a status of 404 (Not Found)"
     ]
@@ -444,15 +527,16 @@
       "referenceSrc": "assets/guided-receipt-mobile.png",
       "candidateSrc": "assets/guided-receipt-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 47.42
+      "psnr": 47.25
     }
   ],
   "social_card": {
     "title": "Catch creative launch mistakes before Ads Manager.",
-    "productImage": "assets/launch-control-core-v3.webp",
-    "productLoaded": true,
+    "decisionTrace": true,
+    "decisionTraceSteps": 3,
     "nativeProduct": true,
     "productTabCount": 3,
+    "oldRasterAbsent": true,
     "legacyScreenshotAbsent": true,
     "noDocumentOverflow": true
   },
@@ -495,18 +579,18 @@
   "serious_accessibility_failures": [],
   "lighthouse_product_quality": {
     "product_desktop": {
-      "performanceScore": 0.89,
+      "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1954,
+      "lcpMs": 483,
       "cls": 0,
-      "tbtMs": 0
+      "tbtMs": 3
     },
     "product_mobile": {
-      "performanceScore": 0.99,
+      "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 2036,
+      "lcpMs": 1651,
       "cls": 0,
       "tbtMs": 0
     }

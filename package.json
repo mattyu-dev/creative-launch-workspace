@@ -1,19 +1,33 @@
 {
   "name": "creative-launch-workspace",
   "private": true,
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Governed AI-assisted creative launch workspace and reproducible browser QA",
+  "astryx": {
+    "theme": "./frontend/launch-control-theme.mjs"
+  },
   "scripts": {
-    "qa:frontend": "node scripts/workspace_runtime_qa.mjs"
+    "astryx": "node node_modules/@astryxdesign/cli/bin/astryx.mjs",
+    "astryx:doctor": "node node_modules/@astryxdesign/cli/bin/astryx.mjs doctor",
+    "build:landing-ui": "node scripts/build_landing_ui.mjs",
+    "qa:frontend": "npm run build:landing-ui && node scripts/workspace_runtime_qa.mjs"
   },
   "devDependencies": {
+    "@astryxdesign/cli": "0.1.6",
+    "@astryxdesign/core": "0.1.6",
+    "@astryxdesign/theme-neutral": "0.1.6",
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/geist-mono": "^5.2.8",
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource-variable/mona-sans": "^5.2.8",
     "@fontsource/instrument-serif": "^5.2.8",
+    "@stylexjs/stylex": "0.19.0",
+    "esbuild": "0.28.1",
     "lighthouse": "12.6.1",
     "lucide-static": "^1.24.0",
-    "puppeteer-core": "25.3.0"
+    "puppeteer-core": "25.3.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "three": "0.128.0"
   }
 }

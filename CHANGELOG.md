@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.0 — 2026-07-15
+
+- Removed the unrelated industrial raster, its preload and every generated format from the landing and social preview.
+- Added a real Astryx 0.1.6 React island with pinned dependencies, a compiled Launch Control theme and accessible Card, Badge, ProgressBar, StatusDot and Button primitives.
+- Implemented the requested Three.js r128 faceted mesh as a semantic decision token moving through Detect, Route and Prove before stopping on the receipt.
+- Added reduced-motion, save-data and WebGL fallbacks, viewport and tab pausing, deterministic replay controls and strict gzip budgets.
+- Rebuilt the social card around the product decision trace and expanded browser contracts for the new motion surface.
+
 ## 3.0.0 — 2026-07-15
 
 - Rebuilt the canonical product landing from a blank visual system with a neutral depth shell, Inter, restrained Instrument Serif accents, charcoal controls and one industrial-orange brand color.
