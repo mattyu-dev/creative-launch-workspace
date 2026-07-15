@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urljoin
 
@@ -16,6 +17,29 @@ from meta_importer.product_page import (
     render_sitemap,
     render_social_card_page,
 )
+
+
+class _VisibleTextParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.hidden_depth = 0
+        self.parts: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.casefold() in {"script", "style"}:
+            self.hidden_depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.casefold() in {"script", "style"} and self.hidden_depth:
+            self.hidden_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if not self.hidden_depth:
+            self.parts.append(data)
+
+    @property
+    def text(self) -> str:
+        return " ".join(self.parts)
 
 
 class ProductSurfaceTests(unittest.TestCase):
@@ -106,15 +130,11 @@ class ProductSurfaceTests(unittest.TestCase):
         self.assertNotIn("case study", re.sub(r"<[^>]+>", " ", hero.group(0)).lower())  # type: ignore[union-attr]
         body = re.search(r"<body>(.*?)</body>", html, re.DOTALL)
         self.assertIsNotNone(body)
-        visible_body = re.sub(
-            r"<script\b[^>]*>.*?</script\s*>",
-            " ",
-            body.group(1),  # type: ignore[union-attr]
-            flags=re.DOTALL | re.IGNORECASE,
-        )
-        visible_words = re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", visible_body))
+        visible_parser = _VisibleTextParser()
+        visible_parser.feed(body.group(1))  # type: ignore[union-attr]
+        visible_text = visible_parser.text
+        visible_words = re.findall(r"\b[\w'-]+\b", visible_text)
         self.assertLessEqual(len(visible_words), 850)
-        visible_text = re.sub(r"<[^>]+>", " ", visible_body)
         for banned in (
             "case study",
             "personal project",
