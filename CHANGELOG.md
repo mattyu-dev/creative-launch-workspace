@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.0 — 2026-07-15
+
+- Rebuilt the public entry as one product landing: pre-launch outcome first, a real interactive workspace in the first viewport, concrete checks, a focused review loop and one closing builder block.
+- Consolidated the duplicate technical narrative into the canonical homepage and turned the legacy `case-study.html` route into a redirect to the architecture section.
+- Replaced the mismatched black, mint, indigo and multicolor actions with one warm operational system across landing and workspace: ivory canvas, ink typography and ember actions.
+- Kept green, amber and red strictly semantic for pass, review and blocked states, with explicit focus, press, reduced-motion and small-screen behavior.
+- Separated exact sample evidence (100 rows, 30 passes, 60 fixes, 10 human decisions) from the operational metrics that a real pilot would need to measure.
+
 ## 1.9.0 — 2026-07-14
 
 - Replaced the duplicated editorial CSS with a shared Operator Nocturne design system: near-black canvas, one mint accent, semantic tokens, hairline elevation, compact component variants and a single sans-serif voice.

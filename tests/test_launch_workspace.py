@@ -106,7 +106,8 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertIn('class="brand" href="index.html"', html)
         self.assertNotIn('class="brand" href="index.html" aria-label=', html)
         self.assertIn('id="guided-return" href="index.html"', html)
-        self.assertIn("Return to the case study", html)
+        self.assertIn("Back to the product", html)
+        self.assertIn("See how Mathieu built the product", html)
         self.assertIn('id="guided-case-study" href="index.html#about"', html)
         self.assertIn(
             'id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/"',
@@ -135,12 +136,12 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertEqual(audit["issues"], [])
         self.assertEqual(audit["browser_runtime"], "not_available_in_static_audit")
 
-    def test_html_workspace_uses_editorial_operations_design_contract(self) -> None:
+    def test_html_workspace_uses_creative_launch_product_design_contract(self) -> None:
         rows = read_manifest(V2_FIXTURE)
         plan = build_launch_plan(rows, source_manifest=str(V2_FIXTURE))
         html = render_html_workspace(plan)
 
-        self.assertIn('content="Editorial Operations v2"', html)
+        self.assertIn('content="Creative Launch Product UI v3"', html)
         self.assertIn('class="focus-panel"', html)
         self.assertIn("creatives need a human decision", html)
         self.assertIn('let activeFilter = "needs_review"', html)

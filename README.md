@@ -2,14 +2,14 @@
 
 [![CI](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml)
-[![Live demo](https://img.shields.io/badge/live_demo-open_portfolio-164a3b)](https://mattyu-dev.github.io/creative-launch-workspace/)
+[![Live demo](https://img.shields.io/badge/live_demo-open_product-b83b1f)](https://mattyu-dev.github.io/creative-launch-workspace/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-f4ead4)](LICENSE)
 
 Catch approval, mapping, destination and placement errors before a large Meta creative launch reaches Ads Manager.
 
 Deterministic rules check each AI proposal before a person decides an ambiguous case.
 
-**[Open the portfolio](https://mattyu-dev.github.io/creative-launch-workspace/)** · [Read the technical case study](https://mattyu-dev.github.io/creative-launch-workspace/case-study.html) · [Try the guided human review](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1) · [Explore the full queue](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html) · [Fix and revalidate a blocked row](https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html)
+**[Open the product landing](https://mattyu-dev.github.io/creative-launch-workspace/)** · [Review a sample batch](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1) · [Explore the full queue](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html) · [Fix and revalidate a blocked row](https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html)
 
 **100 synthetic creatives · 70 seeded issues routed · 10 ambiguous cases held for human review · 0 live platform mutations**
 
@@ -17,7 +17,7 @@ Deterministic rules check each AI proposal before a person decides an ambiguous 
 
 [![Creative Launch Workspace desktop](docs/assets/workspace-desktop.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html)
 
-The public portfolio uses a shared dark product system with one accent, semantic surfaces and uncropped product views. The separate case study keeps a short six-chapter narrative, then moves proposal receipts, architecture references and the production plan behind accessible disclosures.
+The public landing and interactive workspace share one warm operational system: an ivory `#f4f1ea` canvas, ink typography and a single ember `#b83b1f` action color. Success, warning and blocked colors remain reserved for status, while the product and its proof now live on one canonical page.
 
 [![Guided human review with local audit evidence](docs/assets/guided-review-step-3.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1)
 
@@ -169,9 +169,9 @@ The included 100-row fixture spans three campaigns and ten ad sets:
 
 The repo-native benchmark contains 36 labelled contract cases for the deterministic baseline plus 12 natural-prose and adversarial cases for repeated live-provider evaluation. The deterministic baseline passes every contract gate. That is harness proof, not model-quality proof; no live model score is committed without an authenticated run.
 
-Browser QA exercises seven viewport widths plus dedicated 320×568 guided-decision, portfolio and case-study contracts. The small-phone gates require a visible personal identity, a named home link, logical keyboard order, 44-pixel standalone targets and an above-the-fold primary CTA. QA also doubles rendered text at 320 and 768 pixels on both public pages to reject clipped or horizontally overflowing content. The committed workspace, portfolio and case-study Lighthouse accessibility reports score 100/100 on desktop and mobile, while a separate gate fails any serious or critical WCAG audit even if the category score rounds to 100.
+Browser QA exercises seven viewport widths plus dedicated 320×568 guided-decision and product-landing contracts. The small-phone gates require a named home link, logical keyboard order, 44-pixel standalone targets and an above-the-fold primary CTA. QA also doubles rendered landing text at 320 and 768 pixels to reject clipped or horizontally overflowing content. The committed workspace and landing Lighthouse accessibility reports score 100/100 on desktop and mobile, while a separate gate fails any serious or critical WCAG audit even if the category score rounds to 100.
 
-The same QA run completes the guided 1→2→3 decision path, verifies that it creates only browser-local state and audit evidence, confirms the next pending ambiguous case survives reload, and enforces portfolio and case-study Lighthouse budgets of at least 90 performance, 95 best practices and 95 SEO, with LCP ≤ 2.5 s, CLS ≤ 0.1 and total blocking time ≤ 200 ms. These are reproducible local Lighthouse measurements, not production RUM.
+The same QA run completes the guided 1→2→3 decision path, verifies that it creates only browser-local state and audit evidence, confirms the next pending ambiguous case survives reload, and enforces landing Lighthouse budgets of at least 90 performance, 95 best practices and 95 SEO, with LCP ≤ 2.5 s, CLS ≤ 0.1 and total blocking time ≤ 200 ms. These are reproducible local Lighthouse measurements, not production RUM.
 
 - [Brief baseline eval](docs/evidence/brief-mapping-baseline-eval.json)
 - [Reviewed manifest validation](docs/evidence/reviewed-manifest-validation.json)
