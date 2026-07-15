@@ -1,37 +1,14 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#f4f1ea">
-  <meta name="description" content="Pre-launch QA for Meta creative teams: check every row, route detected exceptions and record human decisions before campaign build.">
-  <meta name="author" content="Mathieu Petroni">
-  <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
-  <link rel="me" href="https://github.com/mattyu-dev">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Creative Launch Workspace">
-  <meta property="og:title" content="Catch launch blockers before Ads Manager">
-  <meta property="og:description" content="Check every creative row, route detected exceptions and keep ambiguous decisions human.">
-  <meta property="og:url" content="https://mattyu-dev.github.io/creative-launch-workspace/">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-0.png">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Creative Launch Workspace pre-launch review queue">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Catch launch blockers before Ads Manager">
-  <meta name="twitter:description" content="Pre-launch QA for high-volume Meta creative teams.">
-  <meta name="twitter:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-0.png">
-  <meta name="twitter:image:alt" content="Creative Launch Workspace pre-launch review queue">
-  <title>Creative Launch Workspace | Pre-launch QA for Meta creative teams</title>
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://mattyu-dev.github.io/creative-launch-workspace/#mathieu","name":"Mathieu Petroni","jobTitle":"AI Automation Builder","url":"https://www.linkedin.com/in/mathieu-petroni/","sameAs":["https://www.linkedin.com/in/mathieu-petroni/","https://github.com/mattyu-dev"]},{"@type":"SoftwareApplication","@id":"https://mattyu-dev.github.io/creative-launch-workspace/#software","name":"Creative Launch Workspace","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"Pre-launch review workflow for high-volume Meta creative operations.","softwareVersion":"2.0.0","author":{"@id":"https://mattyu-dev.github.io/creative-launch-workspace/#mathieu"}},{"@type":"WebSite","@id":"https://mattyu-dev.github.io/creative-launch-workspace/#website","name":"Creative Launch Workspace","url":"https://mattyu-dev.github.io/creative-launch-workspace/","dateModified":"2026-07-15","about":{"@id":"https://mattyu-dev.github.io/creative-launch-workspace/#software"}}]}
-  </script>
-  <style>:root {
+from __future__ import annotations
+
+VERSION = "2.0.0"
+UPDATED_DATE = "2026-07-15"
+UPDATED_LABEL = "15 July 2026"
+SOCIAL_CARD = "social-card-v2-0.png"
+
+
+def _shared_styles() -> str:
+    return """
+    :root {
       color-scheme: light;
       --canvas:#f4f1ea;
       --surface:#fbf9f5;
@@ -170,6 +147,55 @@
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button,.text-link{transition-property:background-color,color,border-color}.button:active,.text-link:active{transform:none}}
     @media(prefers-reduced-transparency:reduce){.site-header{background:var(--canvas);backdrop-filter:none}}
     @media(prefers-contrast:more){.site-header{background:var(--canvas)}.button,.product-panel,.benefit,.system-flow,.scope-card,.pilot-card,.builder-card,.final-cta{border-width:2px}.lead,.section-lead{color:var(--ink)}}
+    """
+
+
+def _finish(template: str) -> str:
+    return (
+        template.replace("__STYLES__", _shared_styles().strip())
+        .replace("__VERSION__", VERSION)
+        .replace("__UPDATED_DATE__", UPDATED_DATE)
+        .replace("__UPDATED_LABEL__", UPDATED_LABEL)
+        .replace("__SOCIAL_CARD__", SOCIAL_CARD)
+    )
+
+
+def render_portfolio_page_v20() -> str:
+    return _finish(
+        """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f4f1ea">
+  <meta name="description" content="Pre-launch QA for Meta creative teams: check every row, route detected exceptions and record human decisions before campaign build.">
+  <meta name="author" content="Mathieu Petroni">
+  <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
+  <link rel="me" href="https://github.com/mattyu-dev">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Creative Launch Workspace">
+  <meta property="og:title" content="Catch launch blockers before Ads Manager">
+  <meta property="og:description" content="Check every creative row, route detected exceptions and keep ambiguous decisions human.">
+  <meta property="og:url" content="https://mattyu-dev.github.io/creative-launch-workspace/">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/__SOCIAL_CARD__">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Creative Launch Workspace pre-launch review queue">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Catch launch blockers before Ads Manager">
+  <meta name="twitter:description" content="Pre-launch QA for high-volume Meta creative teams.">
+  <meta name="twitter:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/__SOCIAL_CARD__">
+  <meta name="twitter:image:alt" content="Creative Launch Workspace pre-launch review queue">
+  <title>Creative Launch Workspace | Pre-launch QA for Meta creative teams</title>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://mattyu-dev.github.io/creative-launch-workspace/#mathieu","name":"Mathieu Petroni","jobTitle":"AI Automation Builder","url":"https://www.linkedin.com/in/mathieu-petroni/","sameAs":["https://www.linkedin.com/in/mathieu-petroni/","https://github.com/mattyu-dev"]},{"@type":"SoftwareApplication","@id":"https://mattyu-dev.github.io/creative-launch-workspace/#software","name":"Creative Launch Workspace","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"Pre-launch review workflow for high-volume Meta creative operations.","softwareVersion":"__VERSION__","author":{"@id":"https://mattyu-dev.github.io/creative-launch-workspace/#mathieu"}},{"@type":"WebSite","@id":"https://mattyu-dev.github.io/creative-launch-workspace/#website","name":"Creative Launch Workspace","url":"https://mattyu-dev.github.io/creative-launch-workspace/","dateModified":"__UPDATED_DATE__","about":{"@id":"https://mattyu-dev.github.io/creative-launch-workspace/#software"}}]}
+  </script>
+  <style>__STYLES__
     .home-hero{padding:62px 0 0}.hero-grid{display:grid;grid-template-columns:minmax(390px,5fr) minmax(0,7fr);gap:54px;align-items:center}.hero-copy{min-width:0}.hero-product{min-width:0}.home-hero .sample-metrics{margin-bottom:0}
     @media(max-width:1179px){.hero-grid{grid-template-columns:1fr;gap:40px}.hero-copy{max-width:820px}.hero-product{max-width:980px}.display{font-size:clamp(48px,7vw,70px)}}
     @media(max-width:640px){.home-hero{padding-top:26px}.hero-grid{gap:0}.display{font-size:clamp(38px,11.8vw,48px)}.hero-product{margin-top:24px}}
@@ -196,6 +222,35 @@
 
     <section class="section" id="proof" aria-labelledby="proof-title"><div class="container"><div class="section-header"><div><div class="kicker">Proof without theatre</div><h2 class="section-title" id="proof-title">Inspect what works. Measure what matters next.</h2></div><p class="section-lead">The sample proves the review loop, trust boundaries and browser behavior. It does not manufacture customer impact.</p></div><div class="proof-layout"><article class="scope-card"><h3>What is proven today</h3><p>A 100-row synthetic sample, 64 automated tests, seven responsive browser widths, a deterministic public flow and 100/100 Lighthouse accessibility on desktop and mobile.</p><p><strong>Scope:</strong> browser-local review state, no customer data, no Meta credentials and no publishing path.</p></article><article class="pilot-card"><h3>What a real pilot should measure</h3><p>Operational value belongs in production telemetry, not in invented ROI claims.</p><ul class="pilot-grid"><li>Review cycle time, median and p90</li><li>Late exception rate</li><li>First-pass readiness</li><li>Decision and assignment latency</li><li>False-positive and reversal rate</li><li>Reviewer effort per 100 creatives</li></ul></article></div><div class="builder-card" id="about"><div><div class="kicker">Built end to end</div><h2>Product judgment and implementation, in one system.</h2><p>Mathieu Petroni combined growth and performance marketing experience since 2017 with product strategy, AI safeguards, Python contracts, browser interactions, accessibility and CI to build the complete review workflow.</p><div class="actions"><a class="button" data-variant="primary" href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Contact Mathieu on LinkedIn</a></div></div><ul class="reference-list" aria-label="Project references"><li><a href="https://github.com/mattyu-dev/creative-launch-workspace">Source repository</a></li><li><a href="https://github.com/mattyu-dev/creative-launch-workspace/actions">Tests and CI</a></li><li><a href="https://github.com/mattyu-dev/creative-launch-workspace/tree/main/docs">Engineering documentation</a></li><li><a href="https://github.com/mattyu-dev" rel="me external">GitHub profile</a></li></ul></div><div class="final-cta"><div><div class="kicker">Open the product</div><h2>Review the sample batch in two minutes.</h2></div><div class="actions"><a class="button" data-variant="primary" href="workspace.html?guided=1">Review a sample batch</a><a class="text-link" href="workspace.html">Explore the full workspace →</a></div></div></div></section>
   </main>
-  <footer><div class="container footer-row"><span>Creative Launch Workspace · v2.0.0 · Built by <a href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Mathieu Petroni</a></span><span>MIT licensed · Sample workspace · Updated <time datetime="2026-07-15">15 July 2026</time></span></div></footer>
+  <footer><div class="container footer-row"><span>Creative Launch Workspace · v__VERSION__ · Built by <a href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Mathieu Petroni</a></span><span>MIT licensed · Sample workspace · Updated <time datetime="__UPDATED_DATE__">__UPDATED_LABEL__</time></span></div></footer>
 </body>
 </html>
+"""
+    )
+
+
+def render_case_study_page_v20() -> str:
+    return """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <meta name="theme-color" content="#f4f1ea">
+  <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">
+  <meta http-equiv="refresh" content="0; url=./#architecture">
+  <title>Creative Launch Workspace</title>
+  <script>window.location.replace("./#architecture");</script>
+  <style>*{box-sizing:border-box}body{min-height:100vh;display:grid;place-items:center;margin:0;padding:24px;color:#1d1f1c;background:#f4f1ea;font:400 16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:620px;padding:32px;border:1px solid #d7d8d2;border-radius:14px;background:#fffdf8}a{color:#b83b1f;font-weight:700;text-underline-offset:4px}</style>
+</head>
+<body><main><h1>This page has moved.</h1><p>The product story, interactive proof and architecture now live on one page.</p><a href="./#architecture">Continue to Creative Launch Workspace</a></main></body>
+</html>
+"""
+
+
+def render_social_card_page_v20() -> str:
+    return """<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1200, initial-scale=1"><meta name="author" content="Mathieu Petroni"><style>
+*{box-sizing:border-box}html,body{margin:0;width:1200px;height:630px;overflow:hidden}body{color:#1d1f1c;background:#f4f1ea;font-family:"Avenir Next","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{width:1200px;height:630px;display:grid;grid-template-columns:500px 700px}.copy{padding:54px 36px 42px 56px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:12px}.mark{width:31px;height:31px;position:relative;border:1px solid #1d1f1c;border-radius:9px;background:#fffdf8}.mark:before,.mark:after{content:"";position:absolute;width:7px;height:7px;background:#b83b1f}.mark:before{left:7px;top:7px;border-radius:2px}.mark:after{right:7px;bottom:7px;border-radius:50%}.brand strong{font-size:16px;font-weight:700}.eyebrow{margin-top:66px;color:#b83b1f;font:700 12px/1.4 ui-monospace,"SF Mono",monospace;letter-spacing:.07em;text-transform:uppercase}.hero h1{margin:15px 0 0;font-size:53px;line-height:1.01;letter-spacing:-2.7px;font-weight:700}.hero p{max-width:400px;margin:20px 0 0;color:#545850;font-size:17px;line-height:1.45}.copy footer{display:flex;justify-content:space-between;margin-top:auto;color:#666b64;font-size:11px}.visual{padding:48px 48px 48px 0;display:flex;align-items:center}.frame{width:100%;padding:12px;border:1px solid #b8bbb4;border-radius:18px;background:#fffdf8;box-shadow:0 24px 70px rgba(45,39,29,.14)}.frame img{width:100%;height:auto;display:block;border:1px solid #d7d8d2;border-radius:12px}.frame p{display:flex;justify-content:space-between;margin:10px 2px 0;color:#666b64;font-size:10px}.frame strong{color:#1d1f1c;font-weight:650}
+</style></head><body><main><section class="copy"><div class="brand"><span class="mark"></span><strong>Creative Launch Workspace</strong></div><div class="hero"><div class="eyebrow">Pre-launch QA for Meta creative teams</div><h1>Catch launch blockers before Ads Manager.</h1><p>Check every row, route detected exceptions and keep ambiguous decisions human.</p></div><footer><strong>Interactive sample</strong><span>Built by Mathieu Petroni</span></footer></section><div class="visual"><div class="frame"><img src="assets/workspace-desktop.png" alt=""><p><strong>100-row sample workspace</strong><span>No publishing permissions</span></p></div></div></main></body></html>
+"""

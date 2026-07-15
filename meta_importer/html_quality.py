@@ -65,7 +65,7 @@ def audit_workspace_html(html: str) -> dict[str, object]:
             for token in ("ArrowDown", "ArrowUp", 'tr.tabIndex = row.source_row === activeRow ? 0 : -1')
         ),
         "has_responsive_css": "@media (max-width:" in html,
-        "has_design_system_contract": 'content="Editorial Operations v2"' in html,
+        "has_design_system_contract": 'content="Creative Launch Product UI v3"' in html,
         "has_ai_assist_trace": all(
             token in html
             for token in (
@@ -261,7 +261,7 @@ def _check_messages(checks: dict[str, bool]) -> list[tuple[str, bool, str]]:
         (
             "has_design_system_contract",
             checks["has_design_system_contract"],
-            "Editorial Operations design-system metadata is missing.",
+            "Creative Launch product design-system metadata is missing.",
         ),
         (
             "has_ai_assist_trace",
@@ -306,7 +306,7 @@ def _check_messages(checks: dict[str, bool]) -> list[tuple[str, bool, str]]:
         (
             "has_guided_personal_exits",
             checks["has_guided_personal_exits"],
-            "Guided completion lacks explicit routes to Mathieu's case study and LinkedIn profile.",
+            "Guided completion lacks explicit routes to Mathieu's product page and LinkedIn profile.",
         ),
         (
             "brand_accessible_name_matches_visible_text",

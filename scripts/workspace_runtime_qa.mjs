@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFile, execFileSync } from "node:child_process";
-import { createReadStream, existsSync, realpathSync } from "node:fs";
+import { createReadStream, existsSync, realpathSync, statSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { homedir } from "node:os";
@@ -83,11 +83,12 @@ const server = createServer((request, response) => {
     response.writeHead(204).end();
     return;
   }
-  const requested = normalize(join(root, rawPath));
+  let requested = normalize(join(root, rawPath));
   if (relative(root, requested).startsWith("..") || !existsSync(requested)) {
     response.writeHead(404).end("Not found");
     return;
   }
+  if (statSync(requested).isDirectory()) requested = join(requested, "index.html");
   response.writeHead(200, { "Content-Type": mimeTypes[extname(requested)] || "application/octet-stream" });
   createReadStream(requested).pipe(response);
 });
@@ -249,6 +250,43 @@ const guidedSmallPhoneStepThree = await page.evaluate(() => {
   };
 });
 await page.screenshot({ path: join(assetsDir, "guided-review-mobile-step-3.png") });
+await page.addStyleTag({ content: `
+  #guided-step-three-actions { display: none !important; }
+  .skip-link { display: none !important; }
+  .guided-proof { margin-top: 10px !important; }
+  .guided-body { overflow: hidden !important; }
+  *, *::before, *::after {
+    animation: none !important;
+    caret-color: transparent !important;
+    transition: none !important;
+  }
+` });
+await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+const guidedReceiptClip = { x: 0, y: 0, width: 320, height: 568, scale: 3 };
+await page.screenshot({ path: join(assetsDir, "guided-receipt-mobile.png"), clip: guidedReceiptClip });
+const receiptEncoderPage = await browser.newPage();
+await receiptEncoderPage.setViewport({ width: 960, height: 1704, deviceScaleFactor: 1 });
+await receiptEncoderPage.setContent(
+  `<style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 960px; height: 1704px; overflow: hidden; }
+    img { display: block; width: 960px; height: 1704px; }
+  </style>
+  <img src="${baseUrl}/docs/assets/guided-receipt-mobile.png" alt="">`,
+  { waitUntil: "load" }
+);
+await receiptEncoderPage.screenshot({
+  path: join(assetsDir, "guided-receipt-mobile.webp"),
+  type: "webp",
+  quality: 90,
+  clip: { x: 0, y: 0, width: 960, height: 1704 }
+});
+await receiptEncoderPage.close();
+const guidedReceiptMobile = await page.evaluate(() => ({
+  hasReceipt: document.querySelector("#guided-result-state")?.textContent === "Confirmed for dry-run export",
+  hasPersonalCta: document.querySelector("#guided-step-three-actions")?.getBoundingClientRect().height > 0,
+  dimensions: { width: innerWidth, height: innerHeight }
+}));
 recordGuidedRequests = false;
 await page.evaluate(() => localStorage.clear());
 
@@ -273,7 +311,7 @@ if (
   || !guidedStepThree.summary?.includes("No external system was changed. Technical receipt: mutation_allowed:false.")
   || guidedStepThree.brandHref !== "index.html"
   || guidedStepThree.returnHref !== "index.html"
-  || guidedStepThree.returnLabel !== "Return to the case study"
+  || guidedStepThree.returnLabel !== "Back to the product"
   || !guidedStepThree.primaryBeforeReturn
   || guidedStepThree.persistedStatus !== "confirmed_ready"
   || guidedStepThree.latestAudit?.source_row !== 8
@@ -298,11 +336,13 @@ if (
   || !guidedSmallPhoneStepThree.footerVisible
   || guidedSmallPhoneStepThree.personalCaseStudyHref !== "index.html#about"
   || guidedSmallPhoneStepThree.linkedinHref !== "https://www.linkedin.com/in/mathieu-petroni/"
+  || !guidedReceiptMobile.hasReceipt
+  || guidedReceiptMobile.hasPersonalCta
 ) {
-  throw new Error(`Guided review contract failed: ${JSON.stringify({ guidedStepOne, guidedStepTwo, guidedStepThree, guidedRequestViolations, guidedExit, guidedPersistence, guidedMobile, guidedSmallPhoneStepTwo, guidedSmallPhoneStepThree })}`);
+  throw new Error(`Guided review contract failed: ${JSON.stringify({ guidedStepOne, guidedStepTwo, guidedStepThree, guidedRequestViolations, guidedExit, guidedPersistence, guidedMobile, guidedSmallPhoneStepTwo, guidedSmallPhoneStepThree, guidedReceiptMobile })}`);
 }
 
-await page.setViewport({ width: 390, height: 844 });
+await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
 await page.goto(url, { waitUntil: "load" });
 await page.click('tr[data-source-row="8"]');
 await page.waitForFunction(() => {
@@ -352,6 +392,7 @@ if (
 const mobileHeroClip = { x: 0, y: 0, width: 390, height: 360 };
 await page.screenshot({ path: join(assetsDir, "workspace-mobile-hero.png"), clip: mobileHeroClip });
 await page.screenshot({ path: join(assetsDir, "workspace-mobile-hero.webp"), type: "webp", quality: 88, clip: mobileHeroClip });
+await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
 await page.click("#close-detail");
 await page.waitForFunction(() => {
   const shell = document.querySelector(".detail-shell");
@@ -470,7 +511,9 @@ await page.evaluate(() => {
 await page.click('button[data-filter="needs_review"]');
 await page.evaluate(() => window.scrollTo(0, 0));
 await page.waitForFunction(() => window.scrollY === 0);
-await page.screenshot({ path: join(assetsDir, "workspace-mobile.png") });
+const workspaceMobileClip = { x: 0, y: 0, width: 390, height: 844, scale: 2 };
+await page.screenshot({ path: join(assetsDir, "workspace-mobile.png"), clip: workspaceMobileClip });
+await page.screenshot({ path: join(assetsDir, "workspace-mobile.webp"), type: "webp", quality: 90, clip: workspaceMobileClip });
 
 await page.setViewport({ width: 1440, height: 1000 });
 await page.goto(url, { waitUntil: "load" });
@@ -479,6 +522,16 @@ await page.screenshot({ path: join(assetsDir, "workspace-desktop.png") });
 const portfolioUrl = `${baseUrl}/docs/index.html`;
 await page.setViewport({ width: 1366, height: 768 });
 await page.goto(portfolioUrl, { waitUntil: "load" });
+const portfolioHoverState = await page.evaluate(() => {
+  const styles = [...document.querySelectorAll("style")].map((item) => item.textContent).join("\n");
+  return {
+    exactHoverRule: styles.includes('.button[data-variant="primary"]:hover{background:var(--brand-hover)}'),
+    exactPressedRule: styles.includes('.button:active{transform:scale(.98)}'),
+    brand: getComputedStyle(document.documentElement).getPropertyValue("--brand").trim(),
+    hover: getComputedStyle(document.documentElement).getPropertyValue("--brand-hover").trim(),
+    foreground: getComputedStyle(document.documentElement).getPropertyValue("--brand-foreground").trim()
+  };
+});
 const portfolioPage = await page.evaluate(() => ({
   title: document.querySelector("h1")?.textContent,
   canonical: document.querySelector('link[rel="canonical"]')?.href,
@@ -489,39 +542,37 @@ const portfolioPage = await page.evaluate(() => ({
   visibleWordCount: document.body.innerText.trim().split(/\s+/).length,
   scrollHeight: document.body.scrollHeight,
   copyFreeze: {
-    mutationBoundary: document.body.textContent.toLowerCase().includes("0 write paths")
-      && document.body.textContent.toLowerCase().includes("cannot publish or change spend"),
-    reviewState: document.body.textContent.includes("one decision queue"),
-    boundedAuthority: document.body.textContent.includes("cannot validate, approve or publish"),
+    mutationBoundary: document.body.textContent.includes("no Meta credentials and no publishing path"),
+    reviewState: document.body.textContent.includes("routes every detected exception to an owner"),
+    boundedAuthority: document.body.textContent.includes("The model cannot validate, approve or publish"),
     heroSecondaryCta: document.querySelector(".hero-copy .text-link")?.textContent.trim(),
     experienceSince: document.body.textContent.includes("since 2017"),
     structuredJobTitle: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "Person")?.jobTitle
   },
   humanizedCopy: {
     noLongDash: !/[—–]/.test(`${document.title}\n${document.body.innerText}`),
-    concreteHero: document.body.textContent.includes("catches creative launch errors before Ads Manager"),
-    concreteProblem: document.body.textContent.includes("briefs, spreadsheets and asset folders"),
-    plainAiBoundary: document.body.textContent.includes("It cannot validate, approve or publish"),
-    concreteProductionBoundary: document.body.textContent.includes("no Meta connection"),
-    personalContribution: document.body.textContent.includes("Built end to end"),
-    oldSlogansRemoved: ![
-      "Rows are easy. Governed decisions are harder.",
-      "Inspect the evidence, not the promise.",
-      "A reference implementation with a serious next-proof plan.",
-      "AI proposes. Rules verify. A human decides.",
-      "Launch risk accumulates in the handoff.",
-      "Exercise human authority."
-    ].some((copy) => document.body.textContent.includes(copy))
+    concreteHero: document.body.textContent.includes("Catch launch blockers before Ads Manager"),
+    concreteProblem: document.body.textContent.includes("Briefs, trackers, folders"),
+    plainAiBoundary: document.body.textContent.includes("The model cannot validate, approve or publish"),
+    concreteProductionBoundary: document.body.textContent.includes("no Meta credentials and no publishing path"),
+    personalContribution: document.body.textContent.includes("Product judgment and implementation, in one system")
   },
-  denseTechnicalContentRemoved: !document.body.textContent.includes("What this does not prove")
-    && !document.body.textContent.includes("Proposed production pilot metrics")
-    && !document.querySelector(".architecture"),
+  exactTokens: Object.fromEntries([
+    "--canvas", "--surface", "--raised", "--ink", "--muted", "--border",
+    "--border-strong", "--brand", "--brand-hover", "--brand-soft"
+  ].map((token) => [token, getComputedStyle(document.documentElement).getPropertyValue(token).trim()])),
+  noAtmosphericEffects: !document.querySelector("style")?.textContent.includes("linear-gradient")
+    && !document.querySelector("style")?.textContent.includes("body:before"),
+  productFirst: !document.querySelector("main")?.innerHTML.split('id="about"')[0].includes("Mathieu")
+    && !document.querySelector("main")?.innerHTML.split('id="about"')[0].includes("I built")
+    && !document.querySelector("main")?.innerHTML.split('id="about"')[0].includes("Personal project")
+    && !document.querySelector("main")?.innerHTML.split('id="about"')[0].toLowerCase().includes("case study"),
   hasContact: Boolean(document.querySelector('a[href="https://www.linkedin.com/in/mathieu-petroni/"]')),
   structuredTypes: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.map((item) => item["@type"]) || [],
-  governanceStepCount: document.querySelectorAll(".governance-copy .plain-list li").length,
-  contributionCount: document.querySelectorAll(".role-card .step-list li").length,
-  evidenceCount: document.querySelectorAll(".metric").length,
-  ownership: document.body.textContent.includes("I built the operating model and the product"),
+  workflowStepCount: document.querySelectorAll(".workflow-layout .step-list li").length,
+  controlCount: document.querySelectorAll(".system-flow li").length,
+  evidenceCount: document.querySelectorAll(".sample-metrics li").length,
+  ownership: document.body.textContent.includes("Mathieu Petroni combined growth and performance marketing"),
   primaryCtaVisible: document.querySelector(".hero-copy .button")?.getBoundingClientRect().top < innerHeight,
   heroProductVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
   heroProductTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
@@ -531,35 +582,53 @@ const portfolioPage = await page.evaluate(() => ({
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
 }));
 if (
-  !portfolioPage.title?.includes("I built an AI workflow")
+  !portfolioPage.title?.includes("Catch launch blockers before Ads Manager")
   || !portfolioPage.canonical?.endsWith("/creative-launch-workspace/")
-  || !portfolioPage.ogImage?.endsWith("/assets/social-card-v1-9.png")
+  || !portfolioPage.ogImage?.endsWith("/assets/social-card-v2-0.png")
   || !portfolioPage.hasWorkspaceCta
-  || !portfolioPage.hasCaseStudyLink
+  || portfolioPage.hasCaseStudyLink
   || portfolioPage.mainSectionCount !== 5
-  || portfolioPage.visibleWordCount > 400
-  || portfolioPage.scrollHeight > 4500
+  || portfolioPage.visibleWordCount > 650
+  || portfolioPage.scrollHeight > 6200
   || !portfolioPage.copyFreeze.mutationBoundary
   || !portfolioPage.copyFreeze.reviewState
   || !portfolioPage.copyFreeze.boundedAuthority
-  || portfolioPage.copyFreeze.heroSecondaryCta !== "Read the case study →"
+  || portfolioPage.copyFreeze.heroSecondaryCta !== "Explore the full workspace →"
   || !portfolioPage.copyFreeze.experienceSince
   || portfolioPage.copyFreeze.structuredJobTitle !== "AI Automation Builder"
   || !Object.values(portfolioPage.humanizedCopy).every(Boolean)
-  || !portfolioPage.denseTechnicalContentRemoved
+  || JSON.stringify(portfolioPage.exactTokens) !== JSON.stringify({
+    "--canvas": "#f4f1ea",
+    "--surface": "#fbf9f5",
+    "--raised": "#fffdf8",
+    "--ink": "#1d1f1c",
+    "--muted": "#666b64",
+    "--border": "#d7d8d2",
+    "--border-strong": "#b8bbb4",
+    "--brand": "#b83b1f",
+    "--brand-hover": "#972d18",
+    "--brand-soft": "#f4dcd4"
+  })
+  || !portfolioPage.noAtmosphericEffects
+  || !portfolioPage.productFirst
   || !portfolioPage.hasContact
-  || !["Person", "SoftwareSourceCode", "CreativeWork"].every((item) => portfolioPage.structuredTypes.includes(item))
-  || portfolioPage.governanceStepCount !== 3
-  || portfolioPage.contributionCount !== 3
-  || portfolioPage.evidenceCount !== 3
+  || !["Person", "SoftwareApplication", "WebSite"].every((item) => portfolioPage.structuredTypes.includes(item))
+  || portfolioPage.workflowStepCount !== 3
+  || portfolioPage.controlCount !== 4
+  || portfolioPage.evidenceCount !== 4
   || !portfolioPage.ownership
   || !portfolioPage.primaryCtaVisible
   || !portfolioPage.heroProductVisible
   || !portfolioPage.heroImageLoaded
   || !portfolioPage.sectionNavTargetsResolve
   || !portfolioPage.noDocumentOverflow
+  || !portfolioHoverState.exactHoverRule
+  || !portfolioHoverState.exactPressedRule
+  || portfolioHoverState.brand !== "#b83b1f"
+  || portfolioHoverState.hover !== "#972d18"
+  || portfolioHoverState.foreground !== "#ffffff"
 ) {
-  throw new Error(`Portfolio entry contract failed: ${JSON.stringify(portfolioPage)}`);
+  throw new Error(`Portfolio entry contract failed: ${JSON.stringify({ portfolioPage, portfolioHoverState })}`);
 }
 await page.evaluate(async () => {
   for (const image of document.images) {
@@ -581,6 +650,20 @@ const portfolioMobile = await page.evaluate(async () => {
   const heroProduct = document.querySelector(".hero-product");
   const result = {
     noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
+    documentWidth: document.documentElement.scrollWidth,
+    viewportWidth: innerWidth,
+    scrollY,
+    overflowers: [...document.querySelectorAll("body *")]
+      .filter((element) => {
+        const rect = element.getBoundingClientRect();
+        return getComputedStyle(element).display !== "none" && rect.width > 0
+          && (rect.left < -1 || rect.right > innerWidth + 1);
+      })
+      .slice(0, 8)
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { selector: `${element.tagName.toLowerCase()}.${[...element.classList].join(".")}`, left: Math.round(rect.left), right: Math.round(rect.right) };
+      }),
     headingVisible: document.querySelector("h1")?.getBoundingClientRect().top < innerHeight,
     primaryCtaVisible: heroCta?.getBoundingClientRect().top >= 0
       && heroCta?.getBoundingClientRect().bottom <= innerHeight,
@@ -591,7 +674,7 @@ const portfolioMobile = await page.evaluate(async () => {
     heroAssetHeight: heroAsset.height,
     scrollHeight: document.body.scrollHeight,
     bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize),
-    evidenceColumns: getComputedStyle(document.querySelector(".metric-grid")).gridTemplateColumns.split(" ").length
+    evidenceColumns: getComputedStyle(document.querySelector(".sample-metrics")).gridTemplateColumns.split(" ").length
   };
   heroAsset.close();
   return result;
@@ -602,9 +685,9 @@ if (
   || !portfolioMobile.primaryCtaVisible
   || !portfolioMobile.ctaBeforeProduct
   || !portfolioMobile.heroImageSource?.endsWith("/assets/workspace-mobile-hero.webp")
-  || portfolioMobile.heroAssetWidth !== 390
-  || portfolioMobile.heroAssetHeight !== 360
-  || portfolioMobile.scrollHeight > 6500
+  || portfolioMobile.heroAssetWidth !== 780
+  || portfolioMobile.heroAssetHeight !== 720
+  || portfolioMobile.scrollHeight > 8000
   || portfolioMobile.bodyFontPx < 16
   || portfolioMobile.evidenceColumns !== 2
 ) {
@@ -644,7 +727,8 @@ const portfolioSmallPhone = await page.evaluate(() => {
     touchTargetFailures: independentTargets.filter((target) => target.height < 44),
     ctaTop: Math.round(ctaRect?.top || 0),
     ctaBottom: Math.round(ctaRect?.bottom || 0),
-    headingHeight: Math.round(document.querySelector("h1")?.getBoundingClientRect().height || 0)
+    headingHeight: Math.round(document.querySelector("h1")?.getBoundingClientRect().height || 0),
+    productTop: Math.round(document.querySelector(".hero-product")?.getBoundingClientRect().top || 0)
   };
 });
 const portfolioBrandHandle = await page.$(".brand");
@@ -664,15 +748,16 @@ for (let index = 0; index < 3; index += 1) {
 portfolioSmallPhone.keyboardFocusOrder = portfolioSmallPhoneFocusOrder;
 const portfolioSmallPhoneKeyboardOrder = portfolioSmallPhoneFocusOrder[0]?.className.includes("skip-link")
   && portfolioSmallPhoneFocusOrder[1]?.className.includes("brand")
-  && portfolioSmallPhoneFocusOrder[2]?.label.includes("Try the demo");
+  && portfolioSmallPhoneFocusOrder[2]?.label.includes("Review a sample");
 if (
   !portfolioSmallPhone.noDocumentOverflow
   || !portfolioSmallPhone.primaryCtaVisible
   || !portfolioSmallPhone.ctaBeforeProduct
-  || !portfolioSmallPhone.brandAccessibleName?.includes("Mathieu Petroni")
+  || !portfolioSmallPhone.brandAccessibleName?.includes("Creative Launch Workspace")
   || !portfolioSmallPhone.brandNameVisible
   || portfolioSmallPhone.touchTargetFailures.length
   || !portfolioSmallPhoneKeyboardOrder
+  || portfolioSmallPhone.productTop >= 568
 ) {
   throw new Error(`Portfolio small-phone contract failed: ${JSON.stringify(portfolioSmallPhone)}`);
 }
@@ -719,193 +804,22 @@ if (portfolioTextResize.some((result) => result.documentWidth > result.viewportW
 }
 
 const caseStudyUrl = `${baseUrl}/docs/case-study.html`;
+const legacyRouteSource = await readFile(join(root, "docs/case-study.html"), "utf8");
+const legacyRouteRedirect = {
+  canonicalRoot: legacyRouteSource.includes('<link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">'),
+  noIndex: legacyRouteSource.includes('name="robots" content="noindex,follow"'),
+  refreshesToArchitecture: legacyRouteSource.includes('http-equiv="refresh" content="0; url=./#architecture"'),
+  replacesToArchitecture: legacyRouteSource.includes('window.location.replace("./#architecture")'),
+  excludedFromSitemap: !(await readFile(join(root, "docs/sitemap.xml"), "utf8")).includes("case-study.html")
+};
 await page.setViewport({ width: 1366, height: 768 });
 await page.goto(caseStudyUrl, { waitUntil: "load" });
-const caseStudyPage = await page.evaluate(() => ({
-  canonical: document.querySelector('link[rel="canonical"]')?.href,
-  brandHref: document.querySelector(".brand")?.getAttribute("href"),
-  ctaBeforeProduct: Boolean(document.querySelector(".hero-cta")?.compareDocumentPosition(document.querySelector(".hero-product")) & Node.DOCUMENT_POSITION_FOLLOWING),
-  hasArchitecture: Boolean(document.querySelector(".system-flow")),
-  hasAcceptedProposal: document.body.textContent.includes("Accepted by reviewer"),
-  hasAbstention: document.body.textContent.includes("Human input before materialization"),
-  hasProductionBoundaries: document.body.textContent.includes("What this does not prove")
-    && document.body.textContent.includes("What I would validate next"),
-  noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
-  mainSectionCount: document.querySelectorAll("main > section").length,
-  visibleWordCount: document.body.innerText.trim().split(/\s+/).length,
-  headingCount: document.querySelectorAll("h1,h2,h3").length,
-  linkCount: document.querySelectorAll("a").length,
-  borderedSurfaceCount: document.querySelectorAll(".product-panel,.system-flow,.disclosure,.contact-panel").length,
-  scrollHeight: document.body.scrollHeight,
-  productImagesUncropped: [...document.querySelectorAll(".product-window img")].every((image) => getComputedStyle(image).objectFit !== "cover"),
-  disclosureCount: document.querySelectorAll("details.disclosure").length
-}));
+legacyRouteRedirect.destination = page.url();
 if (
-  !caseStudyPage.canonical?.endsWith("/creative-launch-workspace/case-study.html")
-  || caseStudyPage.brandHref !== "index.html"
-  || !caseStudyPage.ctaBeforeProduct
-  || !caseStudyPage.hasArchitecture
-  || !caseStudyPage.hasAcceptedProposal
-  || !caseStudyPage.hasAbstention
-  || !caseStudyPage.hasProductionBoundaries
-  || !caseStudyPage.noDocumentOverflow
-  || caseStudyPage.mainSectionCount !== 6
-  || caseStudyPage.visibleWordCount > 700
-  || caseStudyPage.headingCount > 10
-  || caseStudyPage.linkCount > 18
-  || caseStudyPage.borderedSurfaceCount > 8
-  || caseStudyPage.scrollHeight > 5600
-  || !caseStudyPage.productImagesUncropped
-  || caseStudyPage.disclosureCount !== 3
+  !Object.values(legacyRouteRedirect).every(Boolean)
+  || !legacyRouteRedirect.destination.endsWith("/docs/#architecture")
 ) {
-  throw new Error(`Technical case-study contract failed: ${JSON.stringify(caseStudyPage)}`);
-}
-await page.evaluate(async () => {
-  for (const image of document.images) {
-    image.scrollIntoView({ block: "center" });
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-  }
-  await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)));
-  window.scrollTo(0, 0);
-  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-});
-await page.screenshot({ path: join(assetsDir, "case-study-desktop.png"), fullPage: true });
-
-await page.setViewport({ width: 390, height: 844 });
-await page.goto(caseStudyUrl, { waitUntil: "load" });
-const caseStudyMobile = await page.evaluate(() => {
-  const primaryCta = document.querySelector(".hero-cta .button");
-  const independentTargets = [...document.querySelectorAll(".site-nav a,.button,.evidence-links a,summary")]
-    .filter((element) => getComputedStyle(element).display !== "none")
-    .map((element) => ({
-      label: element.textContent.trim().slice(0, 48),
-      width: Math.round(element.getBoundingClientRect().width),
-      height: Math.round(element.getBoundingClientRect().height)
-    }));
-  return {
-    noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
-    scrollHeight: document.body.scrollHeight,
-    ctaVisible: primaryCta?.getBoundingClientRect().top >= 0 && primaryCta?.getBoundingClientRect().bottom <= innerHeight,
-    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".hero-product")) & Node.DOCUMENT_POSITION_FOLLOWING),
-    touchTargetFailures: independentTargets.filter((target) => target.height < 44),
-    bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize)
-  };
-});
-if (
-  !caseStudyMobile.noDocumentOverflow
-  || caseStudyMobile.scrollHeight > 7000
-  || !caseStudyMobile.ctaVisible
-  || !caseStudyMobile.ctaBeforeProduct
-  || caseStudyMobile.touchTargetFailures.length
-  || caseStudyMobile.bodyFontPx < 16
-) {
-  throw new Error(`Case study mobile contract failed: ${JSON.stringify(caseStudyMobile)}`);
-}
-await page.evaluate(async () => {
-  for (const image of document.images) {
-    image.scrollIntoView({ block: "center" });
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-  }
-  await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)));
-  window.scrollTo(0, 0);
-  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-});
-await page.screenshot({ path: join(assetsDir, "case-study-mobile.png"), fullPage: true });
-
-await page.setViewport({ width: 320, height: 568 });
-await page.goto(caseStudyUrl, { waitUntil: "load" });
-const caseStudySmallPhone = await page.evaluate(() => {
-  const primaryCta = document.querySelector(".hero-cta .button");
-  const brandName = document.querySelector(".brand-copy strong");
-  const brandNameRect = brandName?.getBoundingClientRect();
-  const independentTargets = [...document.querySelectorAll(".site-nav a,.hero-cta .button")]
-    .filter((element) => getComputedStyle(element).display !== "none")
-    .map((element) => ({
-      label: element.getAttribute("aria-label") || element.textContent.trim().slice(0, 48),
-      height: Math.round(element.getBoundingClientRect().height)
-    }));
-  return {
-    noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
-    primaryCtaVisible: primaryCta?.getBoundingClientRect().top >= 0 && primaryCta?.getBoundingClientRect().bottom <= innerHeight,
-    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".hero-product")) & Node.DOCUMENT_POSITION_FOLLOWING),
-    brandNameVisible: getComputedStyle(brandName).display !== "none"
-      && brandNameRect?.top >= 0
-      && brandNameRect?.bottom <= innerHeight,
-    touchTargetFailures: independentTargets.filter((target) => target.height < 44)
-  };
-});
-const caseStudyBrandHandle = await page.$(".brand");
-const caseStudyBrandAccessibility = caseStudyBrandHandle
-  ? await page.accessibility.snapshot({ root: caseStudyBrandHandle })
-  : null;
-caseStudySmallPhone.brandAccessibleName = caseStudyBrandAccessibility?.name || "";
-await caseStudyBrandHandle?.dispose();
-const caseStudySmallPhoneFocusOrder = [];
-for (let index = 0; index < 3; index += 1) {
-  await page.keyboard.press("Tab");
-  caseStudySmallPhoneFocusOrder.push(await page.evaluate(() => ({
-    className: document.activeElement?.className || "",
-    label: document.activeElement?.getAttribute("aria-label") || document.activeElement?.textContent.trim() || ""
-  })));
-}
-caseStudySmallPhone.keyboardFocusOrder = caseStudySmallPhoneFocusOrder;
-const caseStudySmallPhoneKeyboardOrder = caseStudySmallPhoneFocusOrder[0]?.className.includes("skip-link")
-  && caseStudySmallPhoneFocusOrder[1]?.className.includes("brand")
-  && caseStudySmallPhoneFocusOrder[2]?.label.includes("Try the demo");
-if (
-  !caseStudySmallPhone.noDocumentOverflow
-  || !caseStudySmallPhone.primaryCtaVisible
-  || !caseStudySmallPhone.ctaBeforeProduct
-  || !caseStudySmallPhone.brandAccessibleName?.includes("Mathieu Petroni")
-  || !caseStudySmallPhone.brandNameVisible
-  || caseStudySmallPhone.touchTargetFailures.length
-  || !caseStudySmallPhoneKeyboardOrder
-) {
-  throw new Error(`Case study small-phone contract failed: ${JSON.stringify(caseStudySmallPhone)}`);
-}
-
-const caseStudyTextResize = [];
-for (const width of [320, 768]) {
-  await page.setViewport({ width, height: width === 320 ? 568 : 900 });
-  await page.goto(caseStudyUrl, { waitUntil: "load" });
-  const result = await page.evaluate(async () => {
-    const textElements = [...document.querySelectorAll("body *")]
-      .filter((element) => [...element.childNodes].some((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim()))
-      .map((element) => ({
-        element,
-        fontSize: parseFloat(getComputedStyle(element).fontSize),
-        lineHeight: parseFloat(getComputedStyle(element).lineHeight)
-      }));
-    for (const { element, fontSize, lineHeight } of textElements) {
-      element.style.setProperty("font-size", `${fontSize * 2}px`, "important");
-      if (Number.isFinite(lineHeight)) element.style.setProperty("line-height", `${lineHeight * 2}px`, "important");
-    }
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    const overflowers = [...document.querySelectorAll("body *")]
-      .filter((element) => {
-        const style = getComputedStyle(element);
-        const rect = element.getBoundingClientRect();
-        return style.display !== "none"
-          && style.visibility !== "hidden"
-          && rect.width > 0
-          && rect.bottom > 0
-          && (rect.left < -1 || rect.right > innerWidth + 1);
-      })
-      .slice(0, 12)
-      .map((element) => {
-        const rect = element.getBoundingClientRect();
-        return {
-          selector: `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ""}${element.classList.length ? `.${[...element.classList].join(".")}` : ""}`,
-          left: Math.round(rect.left),
-          right: Math.round(rect.right)
-        };
-      });
-    return { documentWidth: document.documentElement.scrollWidth, viewportWidth: innerWidth, overflowers };
-  });
-  caseStudyTextResize.push({ width, ...result });
-}
-if (caseStudyTextResize.some((result) => result.documentWidth > result.viewportWidth || result.overflowers.length)) {
-  throw new Error(`Case study 200% text resize overflow: ${JSON.stringify(caseStudyTextResize)}`);
+  throw new Error(`Legacy route redirect failed: ${JSON.stringify(legacyRouteRedirect)}`);
 }
 
 const portfolioWorkspaceUrl = `${baseUrl}/docs/workspace.html`;
@@ -984,9 +898,9 @@ const responsiveAssetFidelity = await page.evaluate(async () => {
   const pairs = [
     ["assets/workspace-desktop.png", "assets/workspace-desktop.avif"],
     ["assets/workspace-desktop.png", "assets/workspace-desktop.webp"],
-    ["assets/workspace-mobile.png", "assets/workspace-mobile.avif"],
     ["assets/workspace-mobile.png", "assets/workspace-mobile.webp"],
-    ["assets/workspace-mobile-hero.png", "assets/workspace-mobile-hero.webp"]
+    ["assets/workspace-mobile-hero.png", "assets/workspace-mobile-hero.webp"],
+    ["assets/guided-receipt-mobile.png", "assets/guided-receipt-mobile.webp"]
   ];
   const results = [];
   for (const pair of pairs) results.push(await compare(...pair));
@@ -1008,7 +922,7 @@ if (socialCard.productImage !== "assets/workspace-desktop.png" || !socialCard.pr
   throw new Error(`Social card contract failed: ${JSON.stringify(socialCard)}`);
 }
 await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
-await page.screenshot({ path: join(assetsDir, "social-card-v1-9.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+await page.screenshot({ path: join(assetsDir, "social-card-v2-0.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
 
 const labUrl = `${baseUrl}/docs/fix-lab.html`;
 await page.setViewport({ width: 1280, height: 900 });
@@ -1076,9 +990,7 @@ const lighthouseTargets = [
   { surface: "workspace", formFactor: "desktop", targetUrl: url, outputPath: join(evidenceDir, "workspace-lighthouse-accessibility-desktop.json") },
   { surface: "workspace", formFactor: "mobile", targetUrl: url, outputPath: join(evidenceDir, "workspace-lighthouse-accessibility-mobile.json") },
   { surface: "portfolio", formFactor: "desktop", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-accessibility-desktop.json") },
-  { surface: "portfolio", formFactor: "mobile", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-accessibility-mobile.json") },
-  { surface: "caseStudy", formFactor: "desktop", targetUrl: caseStudyUrl, outputPath: join(evidenceDir, "case-study-lighthouse-accessibility-desktop.json") },
-  { surface: "caseStudy", formFactor: "mobile", targetUrl: caseStudyUrl, outputPath: join(evidenceDir, "case-study-lighthouse-accessibility-mobile.json") }
+  { surface: "portfolio", formFactor: "mobile", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-accessibility-mobile.json") }
 ];
 
 for (const { formFactor, targetUrl, outputPath } of lighthouseTargets) {
@@ -1100,7 +1012,7 @@ for (const { formFactor, targetUrl, outputPath } of lighthouseTargets) {
   });
 }
 
-const accessibility = { workspace: {}, portfolio: {}, caseStudy: {} };
+const accessibility = { workspace: {}, portfolio: {} };
 const seriousAccessibilityFailures = [];
 for (const { surface, formFactor, outputPath } of lighthouseTargets) {
   const lighthouseReport = JSON.parse(await readFile(outputPath, "utf8"));
@@ -1126,9 +1038,7 @@ if (seriousAccessibilityFailures.length) {
 
 const portfolioQualityTargets = [
   { surface: "portfolio", formFactor: "desktop", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-quality-desktop.json") },
-  { surface: "portfolio", formFactor: "mobile", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-quality-mobile.json") },
-  { surface: "caseStudy", formFactor: "desktop", targetUrl: caseStudyUrl, outputPath: join(evidenceDir, "case-study-lighthouse-quality-desktop.json") },
-  { surface: "caseStudy", formFactor: "mobile", targetUrl: caseStudyUrl, outputPath: join(evidenceDir, "case-study-lighthouse-quality-mobile.json") }
+  { surface: "portfolio", formFactor: "mobile", targetUrl: portfolioUrl, outputPath: join(evidenceDir, "portfolio-lighthouse-quality-mobile.json") }
 ];
 for (const { formFactor, targetUrl, outputPath } of portfolioQualityTargets) {
   const args = [
@@ -1177,7 +1087,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v15",
+  contract_version: "workspace_runtime_qa.v17",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,
@@ -1190,7 +1100,8 @@ const report = {
     persistence: guidedPersistence,
     mobile: guidedMobile,
     small_phone_step_two: guidedSmallPhoneStepTwo,
-    small_phone_step_three: guidedSmallPhoneStepThree
+    small_phone_step_three: guidedSmallPhoneStepThree,
+    receipt_mobile: guidedReceiptMobile
   },
   mobile_drawer: { opened: drawerOpened, closed: drawerClosed },
   mobile_hero_capture: mobileHeroCapture,
@@ -1201,13 +1112,11 @@ const report = {
   persistence,
   reset,
   portfolio_page: portfolioPage,
+  portfolio_hover_state: portfolioHoverState,
   portfolio_mobile: portfolioMobile,
   portfolio_small_phone: portfolioSmallPhone,
   portfolio_text_resize: portfolioTextResize,
-  case_study_page: caseStudyPage,
-  case_study_mobile: caseStudyMobile,
-  case_study_small_phone: caseStudySmallPhone,
-  case_study_text_resize: caseStudyTextResize,
+  legacy_route_redirect: legacyRouteRedirect,
   portfolio_navigation: portfolioNavigation,
   responsive_asset_fidelity: responsiveAssetFidelity,
   social_card: socialCard,

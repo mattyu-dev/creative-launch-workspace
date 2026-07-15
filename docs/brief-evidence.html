@@ -12,25 +12,25 @@
   <meta property="article:author" content="https://www.linkedin.com/in/mathieu-petroni/">
   <meta property="og:title" content="Governed intake evidence · Mathieu Petroni">
   <meta property="og:description" content="Source evidence, bounded proposals, policy checks and explicit human decisions.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-9.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-0.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <title>Brief mapping evidence · Mathieu Petroni</title>
   <style>
-    :root { --ink:#1c211e; --body:#48504b; --muted:#6e756f; --canvas:#f7f5ef; --paper:#fffefa; --line:#d8d3c8; --forest:#164a3b; --mint:#cfe2d7; --oxide:#a9472e; --peach:#f4ead4; }
+    :root { --ink:#1d1f1c; --body:#454943; --muted:#666b64; --canvas:#f4f1ea; --paper:#fffdf8; --line:#d7d8d2; --brand:#b83b1f; --brand-soft:#f4dcd4; --success:#176143; --success-soft:#e3eee8; }
     * { box-sizing:border-box; }
     body { margin:0; color:var(--ink); background:var(--canvas); font:400 15px/1.5 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
     header { padding:14px max(20px,calc((100vw - 1180px)/2)); border-bottom:1px solid var(--line); background:var(--paper); }
     header nav { min-height:32px; display:flex; align-items:center; justify-content:space-between; gap:18px; }
-    header a { color:var(--forest); text-decoration:none; font-weight:700; } header .linkedin { font-size:12px; text-decoration:underline; text-underline-offset:3px; }
+    header a { color:var(--brand); text-decoration:none; font-weight:700; } header .product-link { font-size:12px; text-decoration:underline; text-underline-offset:3px; }
     main { width:min(1180px,calc(100% - 32px)); margin:0 auto; padding:48px 0 64px; }
-    .eyebrow { color:var(--oxide); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+    .eyebrow { color:var(--brand); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
     h1 { max-width:850px; margin:10px 0 14px; font:500 clamp(34px,5vw,62px)/1.02 "Iowan Old Style",Charter,Georgia,serif; letter-spacing:-.035em; }
     .lead { max-width:760px; color:var(--body); font-size:18px; }
     .flow { display:grid; grid-template-columns:repeat(4,1fr); margin:28px 0; border-block:1px solid var(--line); }
     .flow div { min-width:0; padding:13px 14px 13px 0; border-right:1px solid var(--line); }
     .flow div + div { padding-left:14px; } .flow div:last-child { border-right:0; }
-    .flow b { display:block; color:var(--oxide); font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .flow b { display:block; color:var(--brand); font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
     .flow span { display:block; margin-top:3px; font-size:12px; font-weight:700; }
     .grid { display:grid; grid-template-columns:360px minmax(0,1fr); align-items:start; gap:20px; }
     section { border:1px solid var(--line); border-radius:12px; background:var(--paper); overflow:hidden; }
@@ -45,10 +45,10 @@
     table { width:100%; border-collapse:collapse; font-size:12px; }
     th,td { padding:12px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
     th { min-width:100px; font-weight:700; }
-    code { color:var(--forest); font-weight:700; }
+    code { color:var(--brand); font-weight:700; }
     small { display:block; margin-top:4px; color:var(--muted); }
-    .evidence-strength { display:inline-block; padding:3px 7px; border-radius:999px; color:var(--forest); background:#e9f0eb; font-size:10px; font-weight:800; text-transform:uppercase; }
-    .accepted { color:var(--forest); font-size:11px; font-weight:750; }
+    .evidence-strength { display:inline-block; padding:3px 7px; border-radius:999px; color:var(--brand); background:var(--brand-soft); font-size:10px; font-weight:800; text-transform:uppercase; }
+    .accepted { color:var(--success); font-size:11px; font-weight:750; }
     .guardrail-behavior { margin-top:18px; border:1px solid var(--line); background:var(--paper); }
     .guardrail-behavior h2 { margin:0; padding:14px 18px; border-bottom:1px solid var(--line); font-size:13px; }
     .guardrail-grid { display:grid; grid-template-columns:repeat(3,1fr); }
@@ -58,12 +58,12 @@
     .proof div { padding:18px; border-right:1px solid var(--line); } .proof div:last-child { border-right:0; }
     .proof strong { display:block; font-size:24px; }
     .proof span { color:var(--muted); font-size:12px; }
-    .boundary { margin:20px 0 0; padding:14px 16px; border-left:3px solid var(--oxide); background:var(--peach); color:var(--body); }
+    .boundary { margin:20px 0 0; padding:14px 16px; border-left:3px solid var(--brand); background:var(--brand-soft); color:var(--body); }
     .links { display:flex; flex-wrap:wrap; gap:14px; margin-top:20px; }
-    .links a { color:var(--forest); font-weight:700; }
-    .creator-cta { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:30px; padding:20px 22px; color:#fff; background:var(--forest); }
-    .creator-cta p { margin:0; color:rgba(255,255,255,.78); } .creator-cta strong { display:block; color:#fff; font:500 22px/1.2 "Iowan Old Style",Charter,Georgia,serif; }
-    .creator-cta a { flex:0 0 auto; padding:9px 12px; border:1px solid #fff; border-radius:4px; color:var(--forest); background:#fff; text-decoration:none; font-weight:750; }
+    .links a { color:var(--brand); font-weight:700; }
+    .creator-cta { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:30px; padding:20px 22px; color:#fff; background:var(--brand); }
+    .creator-cta p { margin:0; color:rgba(255,255,255,.88); } .creator-cta strong { display:block; color:#fff; font:700 22px/1.2 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    .creator-cta a { flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:9px 12px; border:1px solid #fff; border-radius:8px; color:var(--brand); background:#fff; text-decoration:none; font-weight:750; }
     @media(max-width:760px) {
       main { padding-top:30px; } .grid { grid-template-columns:1fr; } .source-rail { position:static; } h1 { font-size:38px; }
       .flow { grid-template-columns:1fr 1fr; } .flow div:nth-child(2) { border-right:0; } .flow div:nth-child(-n+2) { border-bottom:1px solid var(--line); }
@@ -78,7 +78,7 @@
   </style>
 </head>
 <body>
-  <header><nav aria-label="Case study navigation"><a href="index.html">&larr; Mathieu Petroni / Creative Launch Workspace</a><a class="linkedin" href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">LinkedIn</a></nav></header>
+  <header><nav aria-label="Product navigation"><a href="index.html">&larr; Creative Launch Workspace</a><a class="product-link" href="workspace.html?guided=1">Review a sample batch</a></nav></header>
   <main>
     <div class="eyebrow">Versioned synthetic evidence</div>
     <h1>A proposal you can inspect before you trust it.</h1>
@@ -105,7 +105,7 @@ UTM: camp_summer_us
     </div>
     <p class="boundary"><strong>No live inference occurs on this page.</strong> This is a committed baseline artifact. Confidence bands are explicitly uncalibrated, the browser has no API key, and every export remains non-executable.</p>
     <div class="links"><a href="evidence/brief-proposal-example.json">Raw proposal JSON</a><a href="evidence/brief-review-example.json">Review receipt JSON</a><a href="evidence/reviewed-manifest-validation.json">Validation JSON</a><a href="evidence/brief-mapping-baseline-eval.json">36-case baseline eval</a></div>
-    <aside class="creator-cta"><p><strong>Built by Mathieu Petroni</strong>Explore the full case study or start a hiring, product or client conversation.</p><a href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Connect on LinkedIn</a></aside>
+    <aside class="creator-cta"><p><strong>Continue in the product</strong>Return to the overview or review the full sample batch.</p><a href="index.html">Back to product</a></aside>
   </main>
 </body>
 </html>

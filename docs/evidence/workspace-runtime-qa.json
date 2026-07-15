@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v15",
-  "tested_at": "2026-07-14T18:47:25.779Z",
+  "contract_version": "workspace_runtime_qa.v17",
+  "tested_at": "2026-07-15T11:06:27.906Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,21 +103,21 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-14T18:45:48.022Z",
+      "occurredAt": "2026-07-15T11:05:28.425Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
-      "returnLabel": "Return to the case study",
+      "returnLabel": "Back to the product",
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784054748022_8",
+        "event_id": "evt_local_1784113528425_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-14T18:45:48.022Z"
+        "occurred_at": "2026-07-15T11:05:28.425Z"
       }
     },
     "request_violations": [],
@@ -161,6 +161,14 @@
       "footerVisible": true,
       "personalCaseStudyHref": "index.html#about",
       "linkedinHref": "https://www.linkedin.com/in/mathieu-petroni/"
+    },
+    "receipt_mobile": {
+      "hasReceipt": true,
+      "hasPersonalCta": false,
+      "dimensions": {
+        "width": 320,
+        "height": 568
+      }
     }
   },
   "mobile_drawer": {
@@ -240,19 +248,19 @@
     "status": "Browser review state reset."
   },
   "portfolio_page": {
-    "title": "I built an AI workflow that catches creative launch errors before Ads Manager.",
+    "title": "Catch launch blockers before Ads Manager.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v1-9.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-0.png",
     "hasWorkspaceCta": true,
-    "hasCaseStudyLink": true,
+    "hasCaseStudyLink": false,
     "mainSectionCount": 5,
-    "visibleWordCount": 400,
-    "scrollHeight": 4442,
+    "visibleWordCount": 590,
+    "scrollHeight": 4329,
     "copyFreeze": {
       "mutationBoundary": true,
       "reviewState": true,
       "boundedAuthority": true,
-      "heroSecondaryCta": "Read the case study →",
+      "heroSecondaryCta": "Explore the full workspace →",
       "experienceSince": true,
       "structuredJobTitle": "AI Automation Builder"
     },
@@ -262,38 +270,61 @@
       "concreteProblem": true,
       "plainAiBoundary": true,
       "concreteProductionBoundary": true,
-      "personalContribution": true,
-      "oldSlogansRemoved": true
+      "personalContribution": true
     },
-    "denseTechnicalContentRemoved": true,
+    "exactTokens": {
+      "--canvas": "#f4f1ea",
+      "--surface": "#fbf9f5",
+      "--raised": "#fffdf8",
+      "--ink": "#1d1f1c",
+      "--muted": "#666b64",
+      "--border": "#d7d8d2",
+      "--border-strong": "#b8bbb4",
+      "--brand": "#b83b1f",
+      "--brand-hover": "#972d18",
+      "--brand-soft": "#f4dcd4"
+    },
+    "noAtmosphericEffects": true,
+    "productFirst": true,
     "hasContact": true,
     "structuredTypes": [
       "Person",
-      "SoftwareSourceCode",
-      "CreativeWork"
+      "SoftwareApplication",
+      "WebSite"
     ],
-    "governanceStepCount": 3,
-    "contributionCount": 3,
-    "evidenceCount": 3,
+    "workflowStepCount": 3,
+    "controlCount": 4,
+    "evidenceCount": 4,
     "ownership": true,
     "primaryCtaVisible": true,
     "heroProductVisible": true,
-    "heroProductTop": 751,
+    "heroProductTop": 182,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:52708/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:54134/docs/assets/workspace-desktop.avif",
     "sectionNavTargetsResolve": true,
     "noDocumentOverflow": true
   },
+  "portfolio_hover_state": {
+    "exactHoverRule": true,
+    "exactPressedRule": true,
+    "brand": "#b83b1f",
+    "hover": "#972d18",
+    "foreground": "#ffffff"
+  },
   "portfolio_mobile": {
     "noDocumentOverflow": true,
+    "documentWidth": 390,
+    "viewportWidth": 390,
+    "scrollY": 0,
+    "overflowers": [],
     "headingVisible": true,
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
-    "productTop": 1012,
-    "heroImageSource": "http://127.0.0.1:52708/docs/assets/workspace-mobile-hero.webp",
-    "heroAssetWidth": 390,
-    "heroAssetHeight": 360,
-    "scrollHeight": 5451,
+    "productTop": 603,
+    "heroImageSource": "http://127.0.0.1:54134/docs/assets/workspace-mobile-hero.webp",
+    "heroAssetWidth": 780,
+    "heroAssetHeight": 720,
+    "scrollHeight": 7345,
     "bodyFontPx": 16,
     "evidenceColumns": 2
   },
@@ -303,22 +334,23 @@
     "ctaBeforeProduct": true,
     "brandNameVisible": true,
     "touchTargetFailures": [],
-    "ctaTop": 514,
-    "ctaBottom": 558,
-    "headingHeight": 218,
-    "brandAccessibleName": "Mathieu Petroni",
+    "ctaTop": 452,
+    "ctaBottom": 496,
+    "headingHeight": 116,
+    "productTop": 561,
+    "brandAccessibleName": "Creative Launch Workspace",
     "keyboardFocusOrder": [
       {
         "className": "skip-link",
-        "label": "Skip to the project"
+        "label": "Skip to the product"
       },
       {
         "className": "brand",
-        "label": "MPMathieu PetroniCreative Launch Workspace"
+        "label": "Creative Launch WorkspacePre-launch creative QA"
       },
       {
         "className": "button",
-        "label": "Try the demo"
+        "label": "Review a sample"
       }
     ]
   },
@@ -336,68 +368,14 @@
       "overflowers": []
     }
   ],
-  "case_study_page": {
-    "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/case-study.html",
-    "brandHref": "index.html",
-    "ctaBeforeProduct": true,
-    "hasArchitecture": true,
-    "hasAcceptedProposal": true,
-    "hasAbstention": true,
-    "hasProductionBoundaries": true,
-    "noDocumentOverflow": true,
-    "mainSectionCount": 6,
-    "visibleWordCount": 572,
-    "headingCount": 7,
-    "linkCount": 18,
-    "borderedSurfaceCount": 7,
-    "scrollHeight": 5332,
-    "productImagesUncropped": true,
-    "disclosureCount": 3
+  "legacy_route_redirect": {
+    "canonicalRoot": true,
+    "noIndex": true,
+    "refreshesToArchitecture": true,
+    "replacesToArchitecture": true,
+    "excludedFromSitemap": true,
+    "destination": "http://127.0.0.1:54134/docs/#architecture"
   },
-  "case_study_mobile": {
-    "noDocumentOverflow": true,
-    "scrollHeight": 6946,
-    "ctaVisible": true,
-    "ctaBeforeProduct": true,
-    "touchTargetFailures": [],
-    "bodyFontPx": 16
-  },
-  "case_study_small_phone": {
-    "noDocumentOverflow": true,
-    "primaryCtaVisible": true,
-    "ctaBeforeProduct": true,
-    "brandNameVisible": true,
-    "touchTargetFailures": [],
-    "brandAccessibleName": "Mathieu Petroni",
-    "keyboardFocusOrder": [
-      {
-        "className": "skip-link",
-        "label": "Skip to case study"
-      },
-      {
-        "className": "brand",
-        "label": "MPMathieu PetroniCreative Launch Workspace"
-      },
-      {
-        "className": "button",
-        "label": "Try the demo"
-      }
-    ]
-  },
-  "case_study_text_resize": [
-    {
-      "width": 320,
-      "documentWidth": 320,
-      "viewportWidth": 320,
-      "overflowers": []
-    },
-    {
-      "width": 768,
-      "documentWidth": 768,
-      "viewportWidth": 768,
-      "overflowers": []
-    }
-  ],
   "portfolio_navigation": {
     "brandHref": "index.html",
     "returnHref": "index.html",
@@ -409,31 +387,31 @@
       "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.avif",
       "dimensionsMatch": true,
-      "psnr": 45.61
+      "psnr": 45.59
     },
     {
       "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.webp",
       "dimensionsMatch": true,
-      "psnr": 40.6
-    },
-    {
-      "referenceSrc": "assets/workspace-mobile.png",
-      "candidateSrc": "assets/workspace-mobile.avif",
-      "dimensionsMatch": true,
-      "psnr": 43.21
+      "psnr": 37.95
     },
     {
       "referenceSrc": "assets/workspace-mobile.png",
       "candidateSrc": "assets/workspace-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 38.93
+      "psnr": 40.88
     },
     {
       "referenceSrc": "assets/workspace-mobile-hero.png",
       "candidateSrc": "assets/workspace-mobile-hero.webp",
       "dimensionsMatch": true,
-      "psnr": 41.34
+      "psnr": 41.43
+    },
+    {
+      "referenceSrc": "assets/guided-receipt-mobile.png",
+      "candidateSrc": "assets/guided-receipt-mobile.webp",
+      "dimensionsMatch": true,
+      "psnr": 40.85
     }
   ],
   "social_card": {
@@ -475,10 +453,6 @@
     "portfolio": {
       "desktopScore": 1,
       "mobileScore": 1
-    },
-    "caseStudy": {
-      "desktopScore": 1,
-      "mobileScore": 1
     }
   },
   "serious_accessibility_failures": [],
@@ -487,7 +461,7 @@
       "performanceScore": 0.97,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1126,
+      "lcpMs": 1200,
       "cls": 0,
       "tbtMs": 0
     },
@@ -495,23 +469,7 @@
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 900,
-      "cls": 0,
-      "tbtMs": 0
-    },
-    "caseStudy_desktop": {
-      "performanceScore": 0.97,
-      "bestPracticesScore": 1,
-      "seoScore": 1,
-      "lcpMs": 1126,
-      "cls": 0,
-      "tbtMs": 0
-    },
-    "caseStudy_mobile": {
-      "performanceScore": 1,
-      "bestPracticesScore": 1,
-      "seoScore": 1,
-      "lcpMs": 900,
+      "lcpMs": 1125,
       "cls": 0,
       "tbtMs": 0
     }
