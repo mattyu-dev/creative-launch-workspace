@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v18",
-  "tested_at": "2026-07-15T12:45:48.860Z",
+  "tested_at": "2026-07-15T14:12:23.473Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-15T12:44:48.710Z",
+      "occurredAt": "2026-07-15T14:11:19.748Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784119488711_8",
+        "event_id": "evt_local_1784124679748_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-15T12:44:48.710Z"
+        "occurred_at": "2026-07-15T14:11:19.748Z"
       }
     },
     "request_violations": [],
@@ -159,7 +159,7 @@
       "progress": "3 of 3 · Verify",
       "bodyScrollable": true,
       "footerVisible": true,
-      "productBuilderHref": "index.html#about",
+      "productBuilderHref": "https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md",
       "linkedinHref": "https://www.linkedin.com/in/mathieu-petroni/"
     },
     "receipt_mobile": {
@@ -248,43 +248,40 @@
     "status": "Browser review state reset."
   },
   "product_page": {
-    "title": "Catch launch blockers before Ads Manager.",
+    "title": "The launch control layer before Ads Manager.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-1.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-2.png",
     "hasWorkspaceCta": true,
     "hasCaseStudyLink": false,
     "mainSectionCount": 6,
-    "visibleWordCount": 515,
-    "scrollHeight": 6097,
+    "visibleWordCount": 391,
+    "scrollHeight": 4897,
     "copyFreeze": {
-      "mutationBoundary": true,
+      "boundary": true,
       "reviewScope": true,
       "reviewState": true,
       "boundedAuthority": true,
-      "heroSecondaryCta": "See how it works",
-      "experienceSince": true,
+      "heroSecondaryCta": "See the workflow ↓",
       "structuredJobTitle": "AI Automation Builder"
     },
     "humanizedCopy": {
       "noLongDash": true,
       "concreteHero": true,
       "concreteProblem": true,
-      "plainAiBoundary": true,
-      "concreteProductionBoundary": true,
-      "productBuilder": true
+      "concreteWorkflow": true,
+      "directEvidence": true
     },
     "exactTokens": {
-      "--background": "#f6f7f5",
-      "--card": "#ffffff",
-      "--foreground": "#151817",
-      "--body": "#3e4541",
-      "--muted-foreground": "#636b66",
-      "--border": "#d8ddd9",
-      "--border-strong": "#b8c0ba",
-      "--primary": "#c83b24",
-      "--primary-hover": "#ae311d",
-      "--primary-pressed": "#8d2414",
-      "--primary-soft": "#fbe8e2"
+      "--canvas": "oklch(97.5% .006 315)",
+      "--surface": "oklch(100% 0 0)",
+      "--ink": "oklch(19% .032 315)",
+      "--plum": "oklch(21% .055 315)",
+      "--lemon": "oklch(91% .17 100)",
+      "--lemon-hover": "oklch(86% .17 100)",
+      "--lemon-pressed": "oklch(80% .16 100)",
+      "--fuchsia": "oklch(57% .216 4)",
+      "--lavender": "oklch(82% .08 292)",
+      "--border": "oklch(87% .016 315)"
     },
     "noAtmosphericEffects": true,
     "productFirst": true,
@@ -294,44 +291,49 @@
       "SoftwareApplication",
       "WebSite"
     ],
-    "workflowStepCount": 3,
-    "controlCount": 4,
-    "evidenceCount": 4,
-    "proofCellCount": 3,
-    "eyebrowCount": 2,
+    "workflowStepCount": 4,
+    "controlCount": 3,
+    "productTabCount": 3,
+    "fixtureMetricStripAbsent": true,
+    "singleBoundary": true,
+    "eyebrowCount": 1,
     "aiAbsentFromHero": true,
-    "ownership": true,
     "primaryCtaVisible": true,
     "heroProductVisible": true,
-    "heroProductTop": 530,
+    "heroProductTop": 179,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:59515/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:49901/docs/assets/workspace-mobile-hero.webp",
     "sectionNavTargetsResolve": true,
     "noDocumentOverflow": true
   },
   "product_hover_state": {
     "exactHoverRule": true,
     "exactPressedRule": true,
-    "primary": "#c83b24",
-    "hover": "#ae311d",
-    "foreground": "#ffffff"
+    "primary": "oklch(91% .17 100)",
+    "hover": "oklch(86% .17 100)",
+    "foreground": "oklch(19% .032 315)"
   },
   "product_mobile": {
     "noDocumentOverflow": true,
     "documentWidth": 390,
     "viewportWidth": 390,
     "scrollY": 0,
-    "overflowers": [],
+    "overflowers": [
+      {
+        "selector": "img.",
+        "left": -80,
+        "right": 511
+      }
+    ],
     "headingVisible": true,
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
-    "productTop": 499,
-    "heroImageSource": "http://127.0.0.1:59515/docs/assets/workspace-mobile-hero.webp",
+    "productTop": 628,
+    "heroImageSource": "http://127.0.0.1:49901/docs/assets/workspace-mobile-hero.webp",
     "heroAssetWidth": 780,
     "heroAssetHeight": 720,
-    "scrollHeight": 7314,
-    "bodyFontPx": 16,
-    "evidenceColumns": 2
+    "scrollHeight": 6140,
+    "bodyFontPx": 16
   },
   "product_small_phone": {
     "noDocumentOverflow": true,
@@ -339,23 +341,23 @@
     "ctaBeforeProduct": true,
     "brandNameVisible": true,
     "touchTargetFailures": [],
-    "ctaTop": 441,
-    "ctaBottom": 485,
-    "headingHeight": 119,
-    "productTop": 507,
+    "ctaTop": 466,
+    "ctaBottom": 510,
+    "headingHeight": 161,
+    "productTop": 546,
     "brandAccessibleName": "Creative Launch Workspace",
     "keyboardFocusOrder": [
       {
         "className": "skip-link",
-        "label": "Skip to the product"
+        "label": "Skip to product"
       },
       {
         "className": "brand",
-        "label": "Creative Launch WorkspacePre-launch creative QA"
+        "label": "Creative Launch WorkspacePre-launch control"
       },
       {
         "className": "button",
-        "label": "Review sample"
+        "label": "Open the workspace →"
       }
     ]
   },
@@ -377,7 +379,7 @@
     "fileAbsent": true,
     "excludedFromSitemap": true,
     "httpStatus": 404,
-    "destination": "http://127.0.0.1:59515/docs/case-study.html",
+    "destination": "http://127.0.0.1:49901/docs/case-study.html",
     "consoleMessages": [
       "Failed to load resource: the server responded with a status of 404 (Not Found)"
     ]
@@ -393,35 +395,35 @@
       "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.avif",
       "dimensionsMatch": true,
-      "psnr": 50.84
+      "psnr": 45.61
     },
     {
       "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.webp",
       "dimensionsMatch": true,
-      "psnr": 38.44
+      "psnr": 40.41
     },
     {
       "referenceSrc": "assets/workspace-mobile.png",
       "candidateSrc": "assets/workspace-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 40.52
+      "psnr": 42.48
     },
     {
       "referenceSrc": "assets/workspace-mobile-hero.png",
       "candidateSrc": "assets/workspace-mobile-hero.webp",
       "dimensionsMatch": true,
-      "psnr": 41.1
+      "psnr": 39.99
     },
     {
       "referenceSrc": "assets/guided-receipt-mobile.png",
       "candidateSrc": "assets/guided-receipt-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 39.98
+      "psnr": 42.98
     }
   ],
   "social_card": {
-    "productImage": "assets/workspace-desktop.png",
+    "productImage": "assets/workspace-mobile-hero.png",
     "productLoaded": true,
     "noDocumentOverflow": true
   },
@@ -464,10 +466,10 @@
   "serious_accessibility_failures": [],
   "lighthouse_product_quality": {
     "product_desktop": {
-      "performanceScore": 0.9,
+      "performanceScore": 0.92,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1876,
+      "lcpMs": 1651,
       "cls": 0,
       "tbtMs": 0
     },
@@ -475,7 +477,7 @@
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1576,
+      "lcpMs": 1651,
       "cls": 0,
       "tbtMs": 0
     }

@@ -9,9 +9,9 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Interactive review workspace · Creative Launch Workspace">
   <meta property="og:description" content="A task-first review queue for approval, destination, placement, mapping and duplicate issues.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-1.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-2.png">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23b83b1f%22%2F%3E%3C%2Fsvg%3E" type="image/svg+xml">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%2324142b%22%2F%3E%3C%2Fsvg%3E" type="image/svg+xml">
   <title>Creative Launch Workspace for Meta Ads</title>
   <style>
     :root {
@@ -24,14 +24,15 @@
       --muted: #636b66;
       --line: #d8ddd9;
       --line-strong: #b8c0ba;
-      --action: #c83b24;
-      --action-pressed: #ae311d;
-      --focus: #c83b24;
-      --oxide: #c83b24;
-      --brand: #c83b24;
-      --brand-soft: #fbe8e2;
-      --paper: #eeeae2;
-      --peach: #efb39f;
+      --action: #ffe44d;
+      --action-hover: #efd33b;
+      --action-pressed: #d8bd26;
+      --focus: #d91f72;
+      --oxide: #d91f72;
+      --brand: #24142b;
+      --brand-soft: #eee9ff;
+      --paper: #f1eef3;
+      --peach: #c7b6ff;
       --ready: #166347;
       --ready-soft: #e6f1eb;
       --review: #805800;
@@ -39,7 +40,7 @@
       --blocked: #a1362d;
       --blocked-soft: #f7e7e4;
       --info: #285f8f;
-      --selection: #f8e8e2;
+      --selection: #f1ecff;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -58,7 +59,7 @@
       top: -80px;
       z-index: 20;
       padding: 10px 14px;
-      color: #fff;
+      color: var(--ink);
       background: var(--action);
       border-radius: 6px;
     }
@@ -175,7 +176,7 @@
       align-items: center;
       gap: 20px 28px;
       padding: 24px 26px;
-      border: 1px solid #cb755f;
+      border: 1px solid #5b4263;
       border-radius: 12px;
       color: #fff;
       background: var(--brand);
@@ -194,8 +195,8 @@
     .focus-copy p { margin: 10px 0 0; color: rgba(255, 255, 255, .88); font-size: 13px; }
     .focus-actions { display: flex; align-items: center; gap: 8px; }
     .focus-actions button { min-height: 44px; padding-inline: 15px; }
-    .focus-actions .button-primary { color: var(--brand); border-color: #fff; background: #fff; }
-    .focus-actions .button-primary:hover { color: #fff; border-color: rgba(255, 255, 255, .7); background: transparent; }
+    .focus-actions .button-primary { color: var(--ink); border-color: var(--action); background: var(--action); }
+    .focus-actions .button-primary:hover { color: var(--ink); border-color: var(--action-hover); background: var(--action-hover); }
     .focus-actions .button-secondary { color: #fff; border-color: rgba(255, 255, 255, .38); background: transparent; }
     .focus-actions .button-secondary:hover { border-color: #fff; }
     .status-legend {
@@ -393,8 +394,9 @@
       outline: 2px solid var(--focus);
       outline-offset: 2px;
     }
-    .button-primary { color: #fff; border-color: var(--action); background: var(--action); }
-    .button-primary:hover { border-color: var(--action-pressed); background: var(--action-pressed); }
+    .button-primary { color: var(--ink); border-color: var(--action); background: var(--action); }
+    .button-primary:hover { border-color: var(--action-hover); background: var(--action-hover); }
+    .button-primary:active { border-color: var(--action-pressed); background: var(--action-pressed); }
     .bulkbar {
       min-height: 48px;
       display: flex;
@@ -1010,7 +1012,7 @@
         <div id="guided-step-three" hidden>
           <div class="guided-actions" id="guided-step-three-actions">
             <button class="button-primary" id="guided-explore" type="button">Explore the full queue</button>
-            <a class="guided-return" id="guided-product-builder" href="index.html#about">Meet the product builder</a>
+            <a class="guided-return" id="guided-product-builder" href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md">View the architecture</a>
             <a class="guided-return" id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/">Connect with Mathieu on LinkedIn</a>
             <a class="guided-return" id="guided-return" href="index.html">Back to the product</a>
             <button id="guided-replay" type="button">Review another case</button>

@@ -99,7 +99,11 @@ const address = server.address();
 const baseUrl = `http://127.0.0.1:${address.port}`;
 const url = `${baseUrl}/runs/fake_agency_creatives_v2/workspace.html`;
 
-const browser = await puppeteer.launch({ executablePath: chromePath, headless: true });
+const browser = await puppeteer.launch({
+  executablePath: chromePath,
+  headless: true,
+  protocolTimeout: 300000
+});
 const page = await browser.newPage();
 const consoleErrors = [];
 const guidedRequests = [];
@@ -335,7 +339,7 @@ if (
   || !guidedSmallPhoneStepTwo.titleUsesCustomFocus
   || guidedSmallPhoneStepThree.progress !== "3 of 3 · Verify"
   || !guidedSmallPhoneStepThree.footerVisible
-  || guidedSmallPhoneStepThree.productBuilderHref !== "index.html#about"
+  || guidedSmallPhoneStepThree.productBuilderHref !== "https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md"
   || guidedSmallPhoneStepThree.linkedinHref !== "https://www.linkedin.com/in/mathieu-petroni/"
   || !guidedReceiptMobile.hasReceipt
   || guidedReceiptMobile.hasPersonalCta
@@ -526,11 +530,11 @@ await page.goto(productUrl, { waitUntil: "load" });
 const productHoverState = await page.evaluate(() => {
   const styles = [...document.querySelectorAll("style")].map((item) => item.textContent).join("\n");
   return {
-    exactHoverRule: styles.includes('.button[data-variant="primary"]:hover{background:var(--primary-hover)}'),
+    exactHoverRule: styles.includes('.button[data-variant="primary"]:hover{background:var(--lemon-hover)}'),
     exactPressedRule: styles.includes('.button:active{transform:scale(.97)'),
-    primary: getComputedStyle(document.documentElement).getPropertyValue("--primary").trim(),
-    hover: getComputedStyle(document.documentElement).getPropertyValue("--primary-hover").trim(),
-    foreground: getComputedStyle(document.documentElement).getPropertyValue("--primary-foreground").trim()
+    primary: getComputedStyle(document.documentElement).getPropertyValue("--lemon").trim(),
+    hover: getComputedStyle(document.documentElement).getPropertyValue("--lemon-hover").trim(),
+    foreground: getComputedStyle(document.documentElement).getPropertyValue("--ink").trim()
   };
 });
 const productPage = await page.evaluate(() => ({
@@ -543,43 +547,41 @@ const productPage = await page.evaluate(() => ({
   visibleWordCount: document.body.innerText.trim().split(/\s+/).length,
   scrollHeight: document.body.scrollHeight,
   copyFreeze: {
-    mutationBoundary: document.body.textContent.includes("no Meta credentials and no publishing path"),
-    reviewScope: document.body.textContent.includes("approval, destination, placement, UTM, format and naming issues"),
-    reviewState: document.body.textContent.includes("Route each detected exception"),
-    boundedAuthority: document.body.textContent.includes("AI proposes. Rules verify. People decide."),
+    boundary: document.body.textContent.includes("Interactive synthetic fixture")
+      && document.body.textContent.includes("No Meta publishing"),
+    reviewScope: document.body.textContent.includes("approval, placement, destination, naming and UTM issues"),
+    reviewState: document.body.textContent.includes("Route each exception to the right owner"),
+    boundedAuthority: document.body.textContent.includes("AI proposes")
+      && document.body.textContent.includes("Rules verify")
+      && document.body.textContent.includes("People decide"),
     heroSecondaryCta: document.querySelector(".hero-copy .text-link")?.textContent.trim(),
-    experienceSince: document.body.textContent.includes("since 2017"),
     structuredJobTitle: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "Person")?.jobTitle
   },
   humanizedCopy: {
     noLongDash: !/[—–]/.test(`${document.title}\n${document.body.innerText}`),
-    concreteHero: document.body.textContent.includes("Catch launch blockers before Ads Manager"),
-    concreteProblem: document.body.textContent.includes("Every blocker needs evidence, an owner and a decision"),
-    plainAiBoundary: document.body.textContent.includes("AI proposes. Rules verify. People decide."),
-    concreteProductionBoundary: document.body.textContent.includes("no Meta credentials and no publishing path"),
-    productBuilder: document.body.textContent.includes("Designed by a performance marketer. Implemented end to end.")
+    concreteHero: document.body.textContent.includes("The launch control layer before Ads Manager"),
+    concreteProblem: document.body.textContent.includes("A clean creative is not a clean launch"),
+    concreteWorkflow: document.body.textContent.includes("Turn the handoff into a controlled route"),
+    directEvidence: document.body.textContent.includes("Every decision leaves inspectable evidence")
   },
   exactTokens: Object.fromEntries([
-    "--background", "--card", "--foreground", "--body", "--muted-foreground", "--border",
-    "--border-strong", "--primary", "--primary-hover", "--primary-pressed", "--primary-soft"
+    "--canvas", "--surface", "--ink", "--plum", "--lemon", "--lemon-hover",
+    "--lemon-pressed", "--fuchsia", "--lavender", "--border"
   ].map((token) => [token, getComputedStyle(document.documentElement).getPropertyValue(token).trim()])),
-  noAtmosphericEffects: !document.querySelector("style")?.textContent.includes("linear-gradient")
-    && !document.querySelector("style")?.textContent.includes("body:before"),
-  productFirst: !document.querySelector("main")?.innerHTML.split('id="about"')[0].includes("Mathieu")
-    && !document.querySelector("main")?.innerHTML.split('id="about"')[0].includes("I built")
-    && !document.querySelector("main")?.innerHTML.split('id="about"')[0].includes("Personal project")
-    && !document.querySelector("main")?.innerHTML.split('id="about"')[0].toLowerCase().includes("case study")
+  noAtmosphericEffects: !document.querySelector("style")?.textContent.includes("linear-gradient"),
+  productFirst: !document.querySelector("main")?.innerHTML.toLowerCase().includes("case study")
+    && !document.querySelector("main")?.innerHTML.toLowerCase().includes("personal project")
     && !document.querySelector("main")?.innerHTML.toLowerCase().includes("portfolio")
     && !document.querySelector("main")?.innerHTML.toLowerCase().includes("hiring"),
   hasContact: Boolean(document.querySelector('a[href="https://www.linkedin.com/in/mathieu-petroni/"]')),
   structuredTypes: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.map((item) => item["@type"]) || [],
-  workflowStepCount: document.querySelectorAll(".workflow-layout .step-list li").length,
-  controlCount: document.querySelectorAll(".system-flow li").length,
-  evidenceCount: document.querySelectorAll(".sample-metrics li").length,
-  proofCellCount: document.querySelectorAll(".proof-grid > .proof-cell").length,
+  workflowStepCount: document.querySelectorAll(".workflow-steps li").length,
+  controlCount: document.querySelectorAll(".control-row").length,
+  productTabCount: document.querySelectorAll('[role="tab"]').length,
+  fixtureMetricStripAbsent: !document.querySelector(".fixture-rail"),
+  singleBoundary: document.body.innerText.match(/synthetic fixture/gi)?.length === 1,
   eyebrowCount: document.querySelectorAll(".eyebrow").length,
   aiAbsentFromHero: !document.querySelector(".hero")?.innerText.includes("AI"),
-  ownership: document.body.textContent.includes("Mathieu Petroni brought growth and performance marketing experience"),
   primaryCtaVisible: document.querySelector(".hero-copy .button")?.getBoundingClientRect().top < innerHeight,
   heroProductVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
   heroProductTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
@@ -589,45 +591,44 @@ const productPage = await page.evaluate(() => ({
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
 }));
 if (
-  !productPage.title?.includes("Catch launch blockers before Ads Manager")
+  !productPage.title?.includes("The launch control layer before Ads Manager")
   || !productPage.canonical?.endsWith("/creative-launch-workspace/")
-  || !productPage.ogImage?.endsWith("/assets/social-card-v2-1.png")
+  || !productPage.ogImage?.endsWith("/assets/social-card-v2-2.png")
   || !productPage.hasWorkspaceCta
   || productPage.hasCaseStudyLink
   || productPage.mainSectionCount !== 6
   || productPage.visibleWordCount > 850
   || productPage.scrollHeight > 9000
-  || !productPage.copyFreeze.mutationBoundary
+  || !productPage.copyFreeze.boundary
+  || !productPage.copyFreeze.reviewScope
   || !productPage.copyFreeze.reviewState
   || !productPage.copyFreeze.boundedAuthority
-  || productPage.copyFreeze.heroSecondaryCta !== "See how it works"
-  || !productPage.copyFreeze.experienceSince
+  || productPage.copyFreeze.heroSecondaryCta !== "See the workflow ↓"
   || productPage.copyFreeze.structuredJobTitle !== "AI Automation Builder"
   || !Object.values(productPage.humanizedCopy).every(Boolean)
   || JSON.stringify(productPage.exactTokens) !== JSON.stringify({
-    "--background": "#f6f7f5",
-    "--card": "#ffffff",
-    "--foreground": "#151817",
-    "--body": "#3e4541",
-    "--muted-foreground": "#636b66",
-    "--border": "#d8ddd9",
-    "--border-strong": "#b8c0ba",
-    "--primary": "#c83b24",
-    "--primary-hover": "#ae311d",
-    "--primary-pressed": "#8d2414",
-    "--primary-soft": "#fbe8e2"
+    "--canvas": "oklch(97.5% .006 315)",
+    "--surface": "oklch(100% 0 0)",
+    "--ink": "oklch(19% .032 315)",
+    "--plum": "oklch(21% .055 315)",
+    "--lemon": "oklch(91% .17 100)",
+    "--lemon-hover": "oklch(86% .17 100)",
+    "--lemon-pressed": "oklch(80% .16 100)",
+    "--fuchsia": "oklch(57% .216 4)",
+    "--lavender": "oklch(82% .08 292)",
+    "--border": "oklch(87% .016 315)"
   })
   || !productPage.noAtmosphericEffects
   || !productPage.productFirst
   || !productPage.hasContact
   || !["Person", "SoftwareApplication", "WebSite"].every((item) => productPage.structuredTypes.includes(item))
-  || productPage.workflowStepCount !== 3
-  || productPage.controlCount !== 4
-  || productPage.evidenceCount !== 4
-  || productPage.proofCellCount !== 3
-  || productPage.eyebrowCount !== 2
+  || productPage.workflowStepCount !== 4
+  || productPage.controlCount !== 3
+  || productPage.productTabCount !== 3
+  || !productPage.fixtureMetricStripAbsent
+  || !productPage.singleBoundary
+  || productPage.eyebrowCount !== 1
   || !productPage.aiAbsentFromHero
-  || !productPage.ownership
   || !productPage.primaryCtaVisible
   || !productPage.heroProductVisible
   || !productPage.heroImageLoaded
@@ -635,18 +636,19 @@ if (
   || !productPage.noDocumentOverflow
   || !productHoverState.exactHoverRule
   || !productHoverState.exactPressedRule
-  || productHoverState.primary !== "#c83b24"
-  || productHoverState.hover !== "#ae311d"
-  || productHoverState.foreground !== "#ffffff"
+  || productHoverState.primary !== "oklch(91% .17 100)"
+  || productHoverState.hover !== "oklch(86% .17 100)"
+  || productHoverState.foreground !== "oklch(19% .032 315)"
 ) {
   throw new Error(`Product entry contract failed: ${JSON.stringify({ productPage, productHoverState })}`);
 }
 await page.evaluate(async () => {
-  for (const image of document.images) {
+  const visibleImages = [...document.images].filter((image) => !image.closest("[hidden]"));
+  for (const image of visibleImages) {
     image.scrollIntoView({ block: "center" });
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   }
-  await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)));
+  await Promise.all(visibleImages.map((image) => image.decode().catch(() => undefined)));
   if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   window.scrollTo(0, 0);
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -660,7 +662,7 @@ const productMobile = await page.evaluate(async () => {
   const heroImage = document.querySelector(".product-window img");
   const heroAsset = await createImageBitmap(await (await fetch(heroImage.currentSrc)).blob());
   const heroCta = document.querySelector(".hero-copy .button");
-  const heroProduct = document.querySelector(".hero-product");
+  const heroProduct = document.querySelector(".hero-stage");
   const result = {
     noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
     documentWidth: document.documentElement.scrollWidth,
@@ -686,8 +688,7 @@ const productMobile = await page.evaluate(async () => {
     heroAssetWidth: heroAsset.width,
     heroAssetHeight: heroAsset.height,
     scrollHeight: document.body.scrollHeight,
-    bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize),
-    evidenceColumns: getComputedStyle(document.querySelector(".sample-metrics")).gridTemplateColumns.split(" ").length
+    bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize)
   };
   heroAsset.close();
   return result;
@@ -702,16 +703,16 @@ if (
   || productMobile.heroAssetHeight !== 720
   || productMobile.scrollHeight > 8000
   || productMobile.bodyFontPx < 16
-  || productMobile.evidenceColumns !== 2
 ) {
   throw new Error(`Product mobile contract failed: ${JSON.stringify(productMobile)}`);
 }
 await page.evaluate(async () => {
-  for (const image of document.images) {
+  const visibleImages = [...document.images].filter((image) => !image.closest("[hidden]"));
+  for (const image of visibleImages) {
     image.scrollIntoView({ block: "center" });
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   }
-  await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)));
+  await Promise.all(visibleImages.map((image) => image.decode().catch(() => undefined)));
   if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   window.scrollTo(0, 0);
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -735,7 +736,7 @@ const productSmallPhone = await page.evaluate(() => {
   return {
     noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
     primaryCtaVisible: ctaRect?.top >= 0 && ctaRect?.bottom <= innerHeight,
-    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".hero-product")) & Node.DOCUMENT_POSITION_FOLLOWING),
+    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".hero-stage")) & Node.DOCUMENT_POSITION_FOLLOWING),
     brandNameVisible: getComputedStyle(brandName).display !== "none"
       && brandNameRect?.top >= 0
       && brandNameRect?.bottom <= innerHeight,
@@ -743,7 +744,7 @@ const productSmallPhone = await page.evaluate(() => {
     ctaTop: Math.round(ctaRect?.top || 0),
     ctaBottom: Math.round(ctaRect?.bottom || 0),
     headingHeight: Math.round(document.querySelector("h1")?.getBoundingClientRect().height || 0),
-    productTop: Math.round(document.querySelector(".hero-product")?.getBoundingClientRect().top || 0)
+    productTop: Math.round(document.querySelector(".hero-stage")?.getBoundingClientRect().top || 0)
   };
 });
 const productBrandHandle = await page.$(".brand");
@@ -763,7 +764,7 @@ for (let index = 0; index < 3; index += 1) {
 productSmallPhone.keyboardFocusOrder = productSmallPhoneFocusOrder;
 const productSmallPhoneKeyboardOrder = productSmallPhoneFocusOrder[0]?.className.includes("skip-link")
   && productSmallPhoneFocusOrder[1]?.className.includes("brand")
-  && productSmallPhoneFocusOrder[2]?.label.includes("Review sample");
+  && productSmallPhoneFocusOrder[2]?.label.includes("Open the workspace");
 if (
   !productSmallPhone.noDocumentOverflow
   || !productSmallPhone.primaryCtaVisible
@@ -791,6 +792,8 @@ for (const width of [320, 768]) {
       .filter((element) => {
         const style = getComputedStyle(element);
         const rect = element.getBoundingClientRect();
+        const clipper = element.closest(".product-window,.demo-frame,.evidence-frame");
+        if (clipper && ["hidden", "clip"].includes(getComputedStyle(clipper).overflow)) return false;
         return style.display !== "none"
           && style.visibility !== "hidden"
           && rect.width > 0
@@ -935,11 +938,11 @@ const socialCard = await page.evaluate(() => ({
   productLoaded: document.querySelector(".visual img")?.naturalWidth > 0,
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth && document.documentElement.scrollHeight <= innerHeight
 }));
-if (socialCard.productImage !== "assets/workspace-desktop.png" || !socialCard.productLoaded || !socialCard.noDocumentOverflow) {
+if (socialCard.productImage !== "assets/workspace-mobile-hero.png" || !socialCard.productLoaded || !socialCard.noDocumentOverflow) {
   throw new Error(`Social card contract failed: ${JSON.stringify(socialCard)}`);
 }
 await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
-await page.screenshot({ path: join(assetsDir, "social-card-v2-1.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+await page.screenshot({ path: join(assetsDir, "social-card-v2-2.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
 
 const labUrl = `${baseUrl}/docs/fix-lab.html`;
 await page.setViewport({ width: 1280, height: 900 });

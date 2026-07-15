@@ -1,34 +1,13 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#24142b">
-  <meta name="description" content="Check every creative row, route each exception and keep uncertain launch decisions human before Ads Manager.">
-  <meta name="author" content="Mathieu Petroni">
-  <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="preload" href="assets/mona-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
-  <link rel="me" href="https://github.com/mattyu-dev">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Creative Launch Workspace">
-  <meta property="og:title" content="The launch control layer before Ads Manager">
-  <meta property="og:description" content="Validate every creative row, route each exception and keep uncertain calls human.">
-  <meta property="og:url" content="https://mattyu-dev.github.io/creative-launch-workspace/">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-2.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Creative Launch Workspace launch control interface">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="The launch control layer before Ads Manager">
-  <meta name="twitter:description" content="Check creative rows, route exceptions and keep uncertain calls human.">
-  <meta name="twitter:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-2.png">
-  <meta name="twitter:image:alt" content="Creative Launch Workspace launch control interface">
-  <title>Creative Launch Workspace | Pre-launch QA for Meta creative operations</title>
-  <style>@font-face{font-family:"Mona Sans";src:url("assets/mona-sans-latin-variable.woff2") format("woff2-variations");font-style:normal;font-weight:200 900;font-display:optional}
+from __future__ import annotations
+
+VERSION = "2.2.0"
+UPDATED_DATE = "2026-07-15"
+SOCIAL_CARD = "social-card-v2-2.png"
+
+
+def _shared_styles() -> str:
+    return """
+    @font-face{font-family:"Mona Sans";src:url("assets/mona-sans-latin-variable.woff2") format("woff2-variations");font-style:normal;font-weight:200 900;font-display:optional}
     @font-face{font-family:"Geist Mono";src:url("assets/geist-mono-latin-variable.woff2") format("woff2");font-style:normal;font-weight:100 900;font-display:swap}
     :root{
       color-scheme:light;
@@ -267,9 +246,54 @@
       .button,.hero-stage,.product-demo,.closing-panel,.evidence-frame{border-width:2px}
       .lead,.section-lead,.handoff-list p,.control-row p,.evidence-list p{color:var(--ink)}
       .workflow .section-lead,.workflow-steps span,.demo-caption{color:var(--surface)}
-    }</style>
+    }
+    """
+
+
+def _finish(template: str) -> str:
+    return (
+        template.replace("__STYLES__", _shared_styles().strip())
+        .replace("__VERSION__", VERSION)
+        .replace("__UPDATED_DATE__", UPDATED_DATE)
+        .replace("__SOCIAL_CARD__", SOCIAL_CARD)
+    )
+
+
+def render_product_landing_v22() -> str:
+    return _finish(
+        """<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#24142b">
+  <meta name="description" content="Check every creative row, route each exception and keep uncertain launch decisions human before Ads Manager.">
+  <meta name="author" content="Mathieu Petroni">
+  <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" href="assets/mona-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
+  <link rel="me" href="https://github.com/mattyu-dev">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Creative Launch Workspace">
+  <meta property="og:title" content="The launch control layer before Ads Manager">
+  <meta property="og:description" content="Validate every creative row, route each exception and keep uncertain calls human.">
+  <meta property="og:url" content="https://mattyu-dev.github.io/creative-launch-workspace/">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/__SOCIAL_CARD__">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Creative Launch Workspace launch control interface">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The launch control layer before Ads Manager">
+  <meta name="twitter:description" content="Check creative rows, route exceptions and keep uncertain calls human.">
+  <meta name="twitter:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/__SOCIAL_CARD__">
+  <meta name="twitter:image:alt" content="Creative Launch Workspace launch control interface">
+  <title>Creative Launch Workspace | Pre-launch QA for Meta creative operations</title>
+  <style>__STYLES__</style>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://mattyu-dev.github.io/#person","name":"Mathieu Petroni","jobTitle":"AI Automation Builder","url":"https://www.linkedin.com/in/mathieu-petroni/","sameAs":["https://github.com/mattyu-dev","https://www.linkedin.com/in/mathieu-petroni/"]},{"@type":"SoftwareApplication","name":"Creative Launch Workspace","applicationCategory":"BusinessApplication","operatingSystem":"Web","softwareVersion":"2.2.0","description":"Pre-launch QA and exception routing for Meta creative operations.","url":"https://mattyu-dev.github.io/creative-launch-workspace/","author":{"@id":"https://mattyu-dev.github.io/#person"}},{"@type":"WebSite","name":"Creative Launch Workspace","url":"https://mattyu-dev.github.io/creative-launch-workspace/","dateModified":"2026-07-15","author":{"@id":"https://mattyu-dev.github.io/#person"}}]}
+  {"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://mattyu-dev.github.io/#person","name":"Mathieu Petroni","jobTitle":"AI Automation Builder","url":"https://www.linkedin.com/in/mathieu-petroni/","sameAs":["https://github.com/mattyu-dev","https://www.linkedin.com/in/mathieu-petroni/"]},{"@type":"SoftwareApplication","name":"Creative Launch Workspace","applicationCategory":"BusinessApplication","operatingSystem":"Web","softwareVersion":"__VERSION__","description":"Pre-launch QA and exception routing for Meta creative operations.","url":"https://mattyu-dev.github.io/creative-launch-workspace/","author":{"@id":"https://mattyu-dev.github.io/#person"}},{"@type":"WebSite","name":"Creative Launch Workspace","url":"https://mattyu-dev.github.io/creative-launch-workspace/","dateModified":"__UPDATED_DATE__","author":{"@id":"https://mattyu-dev.github.io/#person"}}]}
   </script>
 </head>
 <body>
@@ -378,3 +402,13 @@
   </script>
 </body>
 </html>
+"""
+    )
+
+
+def render_social_card_page_v22() -> str:
+    return """<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1200, initial-scale=1"><meta name="author" content="Mathieu Petroni"><style>
+@font-face{font-family:"Mona Sans";src:url("assets/mona-sans-latin-variable.woff2") format("woff2-variations");font-weight:200 900;font-display:swap}@font-face{font-family:"Geist Mono";src:url("assets/geist-mono-latin-variable.woff2") format("woff2");font-weight:100 900;font-display:swap}*{box-sizing:border-box}html,body{margin:0;width:1200px;height:630px;overflow:hidden}body{color:#1c1422;background:#f7f6f8;font-family:"Mona Sans",system-ui,sans-serif}main{width:1200px;height:630px;display:grid;grid-template-columns:520px 680px}.copy{padding:48px 40px 42px 54px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:12px}.mark{width:34px;height:34px;position:relative;border:1px solid #a99eae;border-radius:8px;background:#fff}.mark:before{content:"";position:absolute;left:6px;top:9px;width:9px;height:1px;background:#24142b;box-shadow:0 7px 0 #24142b,0 14px 0 #24142b}.mark:after{content:"";position:absolute;left:19px;top:13px;width:8px;height:1px;background:#24142b;box-shadow:0 8px 0 #24142b}.checkpoint{position:absolute;left:14px;top:13px;width:7px;height:8px;border:1px solid #24142b;background:#ffe44d}.brand strong{font-size:16px;font-weight:760}.eyebrow{margin-top:74px;color:#a40c50;font:650 12px/1.4 "Geist Mono",monospace;letter-spacing:.06em;text-transform:uppercase}.hero h1{margin:16px 0 0;font-size:54px;line-height:.98;letter-spacing:-2px;font-weight:770}.hero p{max-width:415px;margin:20px 0 0;color:#6c6570;font-size:17px;line-height:1.45}.copy footer{display:flex;justify-content:space-between;margin-top:auto;color:#6c6570;font-size:11px}.visual{position:relative;padding:40px 40px 40px 0}.stage{height:550px;padding:32px 14px 14px;border-radius:20px;background:#24142b}.track{position:absolute;left:30px;right:64px;top:55px;height:1px;background:#67596d}.track:after{content:"";position:absolute;left:50%;top:-5px;width:10px;height:10px;border:1px solid #fff;background:#ffe44d;transform:rotate(45deg)}.frame{height:492px;overflow:hidden;border:1px solid #6d6072;border-radius:12px;background:#fff}.frame img{width:100%;height:auto;display:block}.label{position:absolute;right:58px;top:50px;color:#bdb2c1;font:550 10px/1.4 "Geist Mono",monospace}
+</style></head><body><main><section class="copy"><div class="brand"><span class="mark"><span class="checkpoint"></span></span><strong>Creative Launch Workspace</strong></div><div class="hero"><div class="eyebrow">Pre-launch QA for Meta creative operations</div><h1>The launch control layer before Ads Manager.</h1><p>Check every creative row, route each exception and keep uncertain calls human.</p></div><footer><strong>Interactive workspace</strong><span>Built by Mathieu Petroni</span></footer></section><div class="visual"><div class="stage"><div class="track"></div><span class="label">CHECK / ROUTE / DECIDE</span><div class="frame"><img src="assets/workspace-mobile-hero.png" alt=""></div></div></div></main></body></html>
+"""

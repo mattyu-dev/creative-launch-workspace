@@ -107,8 +107,11 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertNotIn('class="brand" href="index.html" aria-label=', html)
         self.assertIn('id="guided-return" href="index.html"', html)
         self.assertIn("Back to the product", html)
-        self.assertIn("Meet the product builder", html)
-        self.assertIn('id="guided-product-builder" href="index.html#about"', html)
+        self.assertIn("View the architecture", html)
+        self.assertIn(
+            'id="guided-product-builder" href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md"',
+            html,
+        )
         self.assertIn(
             'id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/"',
             html,

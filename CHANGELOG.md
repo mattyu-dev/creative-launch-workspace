@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.2.0 — 2026-07-15
+
+- Rebuilt the canonical homepage as a product-led SaaS launch surface around one category: the launch control layer before Ads Manager.
+- Put a readable issue, owner and decision surface in the first viewport, with one consistent **Open the workspace** action and no portfolio or case-study framing.
+- Introduced the Launch Control system: Mona Sans, cold canvas, deep-plum control surfaces, lemon actions, fuchsia annotations and semantic status colors.
+- Aligned the workspace, governed evidence, fix lab, social card, 404 and generated screenshots with the same public product identity.
+- Added Impeccable product and design foundations, responsive product tabs, keyboard behavior, reduced-motion support and stricter browser contracts for the new information architecture.
+- Verified 64 automated tests and seven browser viewports. Product Lighthouse reached 92 desktop performance and 100 mobile performance, with 100 accessibility, best-practices and SEO scores on both.
+
 ## 2.1.0 — 2026-07-15
 
 - Promoted the complete product narrative to the canonical homepage and removed the legacy secondary route instead of redirecting it.

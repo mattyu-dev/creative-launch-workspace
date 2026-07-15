@@ -1,7 +1,7 @@
 {
   "name": "creative-launch-workspace",
   "private": true,
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Governed AI-assisted creative launch workspace and reproducible browser QA",
   "scripts": {
     "qa:frontend": "node scripts/workspace_runtime_qa.mjs"
@@ -9,6 +9,7 @@
   "devDependencies": {
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/geist-mono": "^5.2.8",
+    "@fontsource-variable/mona-sans": "^5.2.8",
     "lighthouse": "12.6.1",
     "puppeteer-core": "25.3.0"
   }

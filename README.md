@@ -2,14 +2,14 @@
 
 [![CI](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml)
-[![Live demo](https://img.shields.io/badge/live_demo-open_product-c83b24)](https://mattyu-dev.github.io/creative-launch-workspace/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-f4ead4)](LICENSE)
+[![Live demo](https://img.shields.io/badge/live_demo-open_workspace-ffe44d)](https://mattyu-dev.github.io/creative-launch-workspace/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-24142b)](LICENSE)
 
-Catch approval, mapping, destination and placement errors before a large Meta creative launch reaches Ads Manager.
+The launch control layer before Ads Manager.
 
-Deterministic rules check each AI proposal before a person decides an ambiguous case.
+Check every creative row for approval, placement, destination, naming and UTM issues. Route each exception to the right owner. Keep uncertain calls human.
 
-**[Open the product landing](https://mattyu-dev.github.io/creative-launch-workspace/)** · [Review a sample batch](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1) · [Explore the full queue](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html) · [Fix and revalidate a blocked row](https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html)
+**[Open the product](https://mattyu-dev.github.io/creative-launch-workspace/)** · [Open the workspace](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1) · [Explore the full queue](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html) · [Fix and revalidate a blocked row](https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html)
 
 **100 synthetic creatives · 70 seeded issues routed · 10 ambiguous cases held for human review · 0 live platform mutations**
 
@@ -17,7 +17,7 @@ Deterministic rules check each AI proposal before a person decides an ambiguous 
 
 [![Creative Launch Workspace desktop](docs/assets/workspace-desktop.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html)
 
-The public landing and interactive workspace share one cold-neutral product system: a `#f6f7f5` canvas, Geist-first typography with a system fallback, and one accessible coral `#c83b24` action color. On a slow first load, `font-display: optional` keeps the fallback instead of causing FOIT, layout shift or a late text repaint. Success, warning and blocked colors remain reserved for status, while the product and its proof live on one canonical page.
+The public product system uses a cold `#f7f6f8` canvas, Mona Sans, deep-plum `#24142b` control surfaces, lemon `#ffe44d` actions and fuchsia `#d91f72` annotations. Green, amber and red remain reserved for real status. `font-display: optional`, responsive image formats and explicit dimensions keep the production landing stable during first paint.
 
 [![Guided human review with local audit evidence](docs/assets/guided-review-step-3.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1)
 
