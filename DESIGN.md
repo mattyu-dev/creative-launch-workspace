@@ -3,115 +3,105 @@ register: brand
 platform: web
 ---
 
-# Creative Launch Workspace design system
+# Launch Control visual system
 
-## 1. Strategy
+## Strategy
 
-Creative Launch Workspace is a B2B product for teams controlling the handoff between approved creative and campaign build. The public page must behave like a credible SaaS launch surface, not an explanation of a side project.
+Launch Control is a B2B pre-launch QA product for Meta Ads. It must read as a real SaaS product in five seconds: what it catches, how exceptions move, who decides and what evidence remains.
 
-The creative strategy is **Launch Control**. The signature visual is a routing track: inputs converge at a high-visibility checkpoint and leave with an explicit state. This motif can support the brand mark, product annotations, and workflow explanation, but it must remain semantic and sparse.
+The direction is Industrial AI Elegance, combining Apple-like hierarchy and material restraint with Linear-like product proof. The signature is the orange route from Detect to Route to Prove. The page never uses portfolio, personal-project or case-study framing.
 
-The first viewport is an asymmetric 44/56 split. The message, primary action, and at least half of a real product surface must be visible at 1440 by 900. No hidden hero content, decorative empty space, or metric template is allowed.
+The hero may use one abstract orange control sculpture as a secondary brand object on desktop. The native Queue, Review and Receipt interface is always the primary proof. The sculpture disappears on mobile so useful product state reaches the first viewport.
 
-The page tells one sequence: identify the fragile handoff, show the control layer, demonstrate how exceptions move, explain bounded automation, expose inspectable evidence, and invite the visitor into the workspace.
-
-## 2. Foundations
+## Foundations
 
 ### Color
 
-The committed palette is cold canvas, deep plum, action lemon, annotation fuchsia, and data lavender. Status green, amber, and red are reserved for real product states and never become brand decoration.
-
 ```css
 :root {
-  --canvas: oklch(97.5% 0.006 315);
-  --surface: oklch(100% 0 0);
-  --surface-tint: oklch(95.5% 0.014 315);
-  --ink: oklch(19% 0.032 315);
-  --plum: oklch(21% 0.055 315);
-  --plum-raised: oklch(26% 0.062 315);
-  --lemon: oklch(91% 0.17 100);
-  --lemon-hover: oklch(86% 0.17 100);
-  --lemon-pressed: oklch(80% 0.16 100);
-  --fuchsia: oklch(57% 0.216 4);
-  --fuchsia-text: oklch(44% 0.17 4);
-  --lavender: oklch(82% 0.08 292);
-  --muted: oklch(50% 0.02 315);
-  --border: oklch(87% 0.016 315);
+  --canvas: #ECEDEE;
+  --shell: #F4F5F5;
+  --surface: #FFFFFF;
+  --surface-soft: #F7F7F5;
+  --ink: #232427;
+  --charcoal: #171719;
+  --body: #55575C;
+  --muted: #7B7D82;
+  --orange: #E34A32;
+  --orange-hover: #F05A3C;
+  --orange-soft: #FFF0EC;
 }
 ```
 
-Lemon is the only primary-action color. Fuchsia occupies less than ten percent of the composition and marks annotations or routing only. Plum carries 35 to 45 percent of the first viewport. Lavender is reserved for data context.
+Orange is the single brand and action color. Green, amber and red are reserved for real product state. Plum, lemon, fuchsia, lavender, gradient text and multicolor CTA systems are forbidden.
 
 ### Typography
 
-Mona Sans Variable is the single UI and display family. Its broad weight range supports a compact operational voice without introducing a second sans family. Geist Mono is reserved for identifiers, counts, and receipts.
+- Inter Variable: body, display and product UI.
+- Instrument Serif Italic: no more than two editorial accents on the full page.
+- System monospace: identifiers and receipts only.
+- Display: 56 to 64px desktop, 44px mobile, weight 600, line height .96 and tracking -.052em.
+- Product UI: 12px minimum, with 14px body copy and 20 to 25px state titles.
 
-- Display: 48 to 72px, 0.96 to 1.02 line height, letter spacing no tighter than -0.04em.
-- Section title: 36 to 56px, 1.0 to 1.08 line height.
-- Lead: 18 to 20px, maximum 70 characters.
-- Body: 15 to 17px, 1.5 to 1.65 line height.
-- Data: 11 to 14px Geist Mono.
+The hero implements a 600 to 900 variable-weight proximity interaction. Word groups remain intact so the effect never creates broken wrapping.
 
-### Spacing, geometry, and elevation
+### Shape and depth
 
-Use a four-pixel base grid with 8, 12, 16, 24, 32, 48, 72, 96, and 128px steps. Controls use 8 to 10px radii. Panels use 12 to 16px. Only the main product stage may reach 20px. Pills are reserved for status.
+- Page wrapper: 1440px maximum, 40px desktop radius and 28px mobile radius.
+- Product stage: 28px radius with an inner white highlight and diffuse charcoal shadow.
+- Marketing cards: 24px radius.
+- Product panels: 16px radius.
+- Controls: 10 to 13px radius. Primary marketing actions may use pills.
 
-Elevation is minimal and directional. Product surfaces may use one soft shadow; content sections rely on borders, spacing, and color contrast. No glow or translucent glass.
+Depth comes from warm neutral layers, inset highlights and restrained shadows. Glass is limited to the floating navigation and does not stack across the page.
 
-### Motion
+## Product proof
 
-The page-load sequence uses one 240 to 360ms entrance with a small 30 to 50ms stagger. Interaction feedback remains under 200ms. Buttons press to 0.97 scale. Product tabs explain a state change; they do not animate for spectacle. Reduced-motion mode removes translation and nonessential transitions while keeping every element visible.
+The landing contains one native HTML/CSS product shell with three real states:
 
-## 3. Components
+1. Queue shows the current synthetic run, routed exceptions and named owners.
+2. Review shows the creative, exact launch facts, proposed fix and human actions.
+3. Receipt shows the saved local decision, event trail and exportable JSON state.
 
-### Header and brand mark
+Tabs use WAI-ARIA semantics, arrow-key navigation and a Transitions.dev sliding pill. The confirmation writes browser-local state, announces the result through `aria-live` and exports a real JSON file. No raster product screenshot is loaded by the landing.
 
-The header is one line and at most 72px high. The mark reduces the routing-track motif to three incoming lines, one lemon checkpoint, and two outgoing lines. Navigation labels are Product, Workflow, Controls, and Evidence. The persistent action is Open the workspace.
+## Motion
 
-### Buttons
+- Hero rise: 620ms with 60ms stagger.
+- Tab pill: 250ms cubic-bezier(.22,1,.36,1).
+- Inspector entrance: 280ms, 12px horizontal travel.
+- Receipt timeline: 260ms with 60ms stagger.
+- Button press: scale .98 for 100ms.
 
-The primary button is plum text on lemon with an arrow that moves two pixels on hover. Secondary actions are text or a restrained outline. Labels state an action and destination. Every interactive target is at least 44px.
+No `transition: all`, ease-in entrance, autoplay carousel, permanent drift or decorative parallax. Reduced-motion mode removes translation and variable-weight behavior while keeping all content visible.
 
-### Product stage
+## Content and conversion
 
-The hero product stage uses a real generated screenshot inside a deep-plum frame. The crop must keep the issue, owner, and next action legible. Tabs later in the page switch between Queue, Review, and Receipt views using real screenshots, WAI-ARIA tabs, and keyboard navigation.
+Eyebrow: **Pre-launch QA for Meta Ads**
 
-### Routing flow
+Headline: **Catch creative launch mistakes before Ads Manager.**
 
-Four actual workflow steps may be numbered: Map brief, Check rows, Route exceptions, Record decision. They form a connected sequence, not four interchangeable feature cards.
+Primary action everywhere: **Try the live workspace**
 
-### Evidence and boundaries
+Synthetic counts must always be labeled as a current synthetic run. Never add fabricated clients, testimonials, ROI, pricing, trials, enterprise claims or platform-write capability.
 
-Fixture counts are labeled as interactive workspace data, never customer outcomes. Product boundaries appear once as compact trust copy. Engineering evidence links directly to source, tests, contracts, and generated evidence.
+## Accessibility and performance
 
-## 4. Patterns
+- WCAG AA contrast for copy and controls.
+- 44px minimum interactive targets.
+- No horizontal overflow at 320px or 200% text zoom.
+- Keyboard tabs and visible focus.
+- Reduced motion, reduced transparency and increased contrast modes.
+- Responsive AVIF and WebP for the brand sculpture. PNG is fallback only.
+- Target Lighthouse: 90+ performance and 100 accessibility.
 
-### Hero
+## No-go rules
 
-Use the single eyebrow “Pre-launch QA for Meta creative operations.” The headline is “The launch control layer before Ads Manager.” The subhead names the checks, routing, and human authority. The product remains visible without JavaScript and above the fold on desktop and mobile.
-
-### Product narrative
-
-Move from the launch handoff to the working control surface. Use alternating full-width compositions, connected rows, and an interactive product stage. Do not create a grid of three equal feature cards.
-
-### Controls narrative
-
-State the operating model once: AI proposes, deterministic rules bound the result, people decide ambiguous calls. Place synthetic-data and no-publish boundaries as supporting trust information, not as the hero message.
-
-### Closing action
-
-Return to the same promise and the same label: Open the workspace. The footer may state “Built by Mathieu Petroni” and link to inspectable profiles or source. It must not become a founder case-study section.
-
-## 5. Content Guidance
-
-Write as a real product selling an operational outcome. Prefer launch, check, route, owner, exception, decision, evidence, and workspace. Avoid AI-first language, vague transformation claims, theatrical manifestos, internal implementation jargon, and portfolio language.
-
-Use sentence case. Headlines stay under eight words where practical. Paragraphs stay under 70 characters per line. Avoid long dashes in visible copy. Never use fabricated customers, ROI, guarantees, testimonials, pricing, trials, bookings, or enterprise-security claims.
-
-Primary action: **Open the workspace**. Secondary action: **See the workflow**.
-
-## 6. Do / Don't
-
-Do show the real product in the first viewport. Do make issue, owner, and next action readable. Do use lemon only for high-value actions. Do preserve semantic status colors inside the product. Do support keyboard, reduced motion, reduced transparency, increased contrast, 320px widths, and 200% text zoom.
-
-Do not reuse the previous coral brand. Do not clone a generic purple AI site. Do not use cream paper, gradients, grid patterns, glass, blobs, glow, gradient text, decorative dots, hero metric strips, or repeated card grids. Do not hide default content behind opacity. Do not add a case-study route or describe the product as a personal project.
+- No old workspace, guided-review or evidence screenshots on the landing.
+- No product UI text below 12px.
+- No duplicate use of the sculpture.
+- No fake browser chrome.
+- No H1 longer than two desktop lines.
+- No CTA below the first viewport.
+- No case-study or personal-project route.
+- No long dash in visible copy.

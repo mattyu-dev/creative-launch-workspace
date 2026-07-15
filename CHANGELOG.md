@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.0 — 2026-07-15
+
+- Rebuilt the canonical product landing from a blank visual system with a neutral depth shell, Inter, restrained Instrument Serif accents, charcoal controls and one industrial-orange brand color.
+- Removed every legacy workspace screenshot from the landing and replaced them with one native interactive Queue, Review and Receipt product shell.
+- Added a real browser-local decision flow, accessible keyboard tabs, a live receipt announcement and an actual `review_state.json` export.
+- Introduced a new responsive brand sculpture in AVIF and WebP while keeping it secondary to product proof and hidden from the mobile fold.
+- Applied the Launch Control palette to the workspace, evidence and fix-lab surfaces for visual continuity.
+- Added exact synthetic-run boundaries, reduced-motion support, 44-pixel controls, mobile-native layouts and a new V3 social card.
+
 ## 2.2.0 — 2026-07-15
 
 - Rebuilt the canonical homepage as a product-led SaaS launch surface around one category: the launch control layer before Ads Manager.

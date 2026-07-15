@@ -1,35 +1,13 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#ECEDEE">
-  <meta name="description" content="Catch creative launch mistakes before Ads Manager. Validate every row, route exceptions and keep ambiguous decisions human.">
-  <meta name="author" content="Mathieu Petroni">
-  <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <link rel="preload" href="assets/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/launch-control-core-v3.avif" as="image" type="image/avif" fetchpriority="high">
-  <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
-  <link rel="me" href="https://github.com/mattyu-dev">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Creative Launch Workspace">
-  <meta property="og:title" content="Catch creative launch mistakes before Ads Manager">
-  <meta property="og:description" content="Validate every creative row, route exceptions and keep ambiguous decisions human.">
-  <meta property="og:url" content="https://mattyu-dev.github.io/creative-launch-workspace/">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v3.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Launch Control pre-launch QA interface for Meta Ads">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Catch creative launch mistakes before Ads Manager">
-  <meta name="twitter:description" content="Validate every creative row, route exceptions and keep ambiguous decisions human.">
-  <meta name="twitter:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v3.png">
-  <meta name="twitter:image:alt" content="Launch Control pre-launch QA interface for Meta Ads">
-  <title>Launch Control | Pre-launch QA for Meta Ads</title>
-  <style>@font-face{font-family:"Inter";src:url("assets/inter-latin-variable.woff2") format("woff2-variations");font-style:normal;font-weight:100 900;font-display:optional}
+from __future__ import annotations
+
+VERSION = "3.0.0"
+UPDATED_DATE = "2026-07-15"
+SOCIAL_CARD = "social-card-v3.png"
+
+
+def _shared_styles() -> str:
+    return r"""
+    @font-face{font-family:"Inter";src:url("assets/inter-latin-variable.woff2") format("woff2-variations");font-style:normal;font-weight:100 900;font-display:optional}
     @font-face{font-family:"Instrument Serif";src:url("assets/instrument-serif-latin-italic.woff2") format("woff2");font-style:italic;font-weight:400;font-display:optional}
     :root{
       color-scheme:light;
@@ -426,27 +404,22 @@
     @media(prefers-contrast:more){
       :root{--body:#343538;--muted:#55575C;--line:rgba(23,23,25,.2);--line-strong:rgba(23,23,25,.36)}
       .app-stage,.feature-card,.evidence-link,.closing-panel{border-width:2px}
-    }</style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://mattyu-dev.github.io/#person","name":"Mathieu Petroni","jobTitle":"AI Automation Builder","url":"https://www.linkedin.com/in/mathieu-petroni/","sameAs":["https://github.com/mattyu-dev","https://www.linkedin.com/in/mathieu-petroni/"]},{"@type":"SoftwareApplication","name":"Launch Control","alternateName":"Creative Launch Workspace","applicationCategory":"BusinessApplication","operatingSystem":"Web","softwareVersion":"3.0.0","description":"Pre-launch QA and exception routing for Meta Ads creative operations.","url":"https://mattyu-dev.github.io/creative-launch-workspace/","author":{"@id":"https://mattyu-dev.github.io/#person"}},{"@type":"WebSite","name":"Creative Launch Workspace","url":"https://mattyu-dev.github.io/creative-launch-workspace/","dateModified":"2026-07-15","author":{"@id":"https://mattyu-dev.github.io/#person"}}]}</script>
-</head>
-<body>
-  <a class="skip-link" href="#main">Skip to product</a>
-  <div class="nav-sentinel" aria-hidden="true"></div>
-  <header class="site-header" data-scrolled="false">
-    <nav class="site-nav" aria-label="Product navigation">
-      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span><span class="brand-copy"><strong>Launch Control</strong><span>Pre-launch QA for Meta Ads</span></span></a>
-      <div class="nav-links"><a href="#product">Product</a><a href="#workflow">Workflow</a><a href="#safeguards">Safeguards</a><a href="#evidence">Evidence</a><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">↗</span></a></div>
-    </nav>
-  </header>
-  <div class="page">
-    <main id="main">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="container">
-          <div class="hero-main">
-            <div class="hero-copy"><div class="eyebrow" data-rise>Pre-launch QA for Meta Ads</div><h1 class="display" id="hero-title" data-rise data-wchar>Catch creative launch mistakes before Ads Manager.</h1><p class="lead" data-rise>Validate approvals, placements, destinations, naming and UTMs across every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.</p><div class="hero-actions" data-rise><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">↗</span></a><a class="button" data-variant="outline" href="#workflow">See how it works <span aria-hidden="true">↓</span></a><span class="cta-note">Interactive demo / no signup</span></div></div>
-            <figure class="sculpture" aria-label="Abstract orange control object"><picture><source type="image/avif" srcset="assets/launch-control-core-v3.avif"><source type="image/webp" srcset="assets/launch-control-core-v3.webp"><img src="assets/launch-control-core-v3.png" width="1586" height="992" alt="Abstract orange control object representing a routed checkpoint" decoding="async" fetchpriority="high"></picture></figure>
-          </div>
-          <div class="app-stage" id="product">
+    }
+    """
+
+
+def _finish(template: str) -> str:
+    return (
+        template.replace("__STYLES__", _shared_styles().strip())
+        .replace("__VERSION__", VERSION)
+        .replace("__UPDATED_DATE__", UPDATED_DATE)
+        .replace("__SOCIAL_CARD__", SOCIAL_CARD)
+    )
+
+
+def _product_shell() -> str:
+    return r"""
+    <div class="app-stage" id="product">
       <div class="app-shell">
         <div class="app-topbar">
           <div class="app-title"><span class="brand-mark" aria-hidden="true"></span><span>Launch Control</span></div>
@@ -513,6 +486,63 @@
         <p class="live-region" id="decision-live" aria-live="polite"></p>
       </div>
     </div>
+    """
+
+
+def render_product_landing_v30() -> str:
+    return _finish(
+        r"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ECEDEE">
+  <meta name="description" content="Catch creative launch mistakes before Ads Manager. Validate every row, route exceptions and keep ambiguous decisions human.">
+  <meta name="author" content="Mathieu Petroni">
+  <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" href="assets/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/launch-control-core-v3.avif" as="image" type="image/avif" fetchpriority="high">
+  <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
+  <link rel="me" href="https://github.com/mattyu-dev">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Creative Launch Workspace">
+  <meta property="og:title" content="Catch creative launch mistakes before Ads Manager">
+  <meta property="og:description" content="Validate every creative row, route exceptions and keep ambiguous decisions human.">
+  <meta property="og:url" content="https://mattyu-dev.github.io/creative-launch-workspace/">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/__SOCIAL_CARD__">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Launch Control pre-launch QA interface for Meta Ads">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Catch creative launch mistakes before Ads Manager">
+  <meta name="twitter:description" content="Validate every creative row, route exceptions and keep ambiguous decisions human.">
+  <meta name="twitter:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/__SOCIAL_CARD__">
+  <meta name="twitter:image:alt" content="Launch Control pre-launch QA interface for Meta Ads">
+  <title>Launch Control | Pre-launch QA for Meta Ads</title>
+  <style>__STYLES__</style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://mattyu-dev.github.io/#person","name":"Mathieu Petroni","jobTitle":"AI Automation Builder","url":"https://www.linkedin.com/in/mathieu-petroni/","sameAs":["https://github.com/mattyu-dev","https://www.linkedin.com/in/mathieu-petroni/"]},{"@type":"SoftwareApplication","name":"Launch Control","alternateName":"Creative Launch Workspace","applicationCategory":"BusinessApplication","operatingSystem":"Web","softwareVersion":"__VERSION__","description":"Pre-launch QA and exception routing for Meta Ads creative operations.","url":"https://mattyu-dev.github.io/creative-launch-workspace/","author":{"@id":"https://mattyu-dev.github.io/#person"}},{"@type":"WebSite","name":"Creative Launch Workspace","url":"https://mattyu-dev.github.io/creative-launch-workspace/","dateModified":"__UPDATED_DATE__","author":{"@id":"https://mattyu-dev.github.io/#person"}}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to product</a>
+  <div class="nav-sentinel" aria-hidden="true"></div>
+  <header class="site-header" data-scrolled="false">
+    <nav class="site-nav" aria-label="Product navigation">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span><span class="brand-copy"><strong>Launch Control</strong><span>Pre-launch QA for Meta Ads</span></span></a>
+      <div class="nav-links"><a href="#product">Product</a><a href="#workflow">Workflow</a><a href="#safeguards">Safeguards</a><a href="#evidence">Evidence</a><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">↗</span></a></div>
+    </nav>
+  </header>
+  <div class="page">
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="container">
+          <div class="hero-main">
+            <div class="hero-copy"><div class="eyebrow" data-rise>Pre-launch QA for Meta Ads</div><h1 class="display" id="hero-title" data-rise data-wchar>Catch creative launch mistakes before Ads Manager.</h1><p class="lead" data-rise>Validate approvals, placements, destinations, naming and UTMs across every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.</p><div class="hero-actions" data-rise><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">↗</span></a><a class="button" data-variant="outline" href="#workflow">See how it works <span aria-hidden="true">↓</span></a><span class="cta-note">Interactive demo / no signup</span></div></div>
+            <figure class="sculpture" aria-label="Abstract orange control object"><picture><source type="image/avif" srcset="assets/launch-control-core-v3.avif"><source type="image/webp" srcset="assets/launch-control-core-v3.webp"><img src="assets/launch-control-core-v3.png" width="1586" height="992" alt="Abstract orange control object representing a routed checkpoint" decoding="async" fetchpriority="high"></picture></figure>
+          </div>
+          __PRODUCT_SHELL__
           <div class="run-proof" aria-label="Current synthetic run summary" data-reveal><div class="proof-label"><span>Current synthetic run</span><strong>Fixture data, no external writes</strong></div><div class="proof-number"><strong>100</strong><span>creative rows</span></div><div class="proof-number"><strong>70</strong><span>issues routed</span></div><div class="proof-number"><strong>10</strong><span>human reviews</span></div><div class="proof-number"><strong>0</strong><span>external writes</span></div></div>
         </div>
       </section>
@@ -581,3 +611,12 @@
   </script>
 </body>
 </html>
+""".replace("__PRODUCT_SHELL__", _product_shell().strip())
+    )
+
+
+def render_social_card_page_v30() -> str:
+    return r"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1200, initial-scale=1"><meta name="author" content="Mathieu Petroni"><style>
+@font-face{font-family:"Inter";src:url("assets/inter-latin-variable.woff2") format("woff2-variations");font-weight:100 900;font-display:swap}@font-face{font-family:"Instrument Serif";src:url("assets/instrument-serif-latin-italic.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap}*{box-sizing:border-box}html,body{width:1200px;height:630px;margin:0;overflow:hidden}body{padding:18px;color:#232427;background:#ECEDEE;font-family:"Inter",sans-serif}main{width:1164px;height:594px;position:relative;overflow:hidden;display:grid;grid-template-columns:535px 629px;border:1px solid rgba(255,255,255,.75);border-radius:40px;background:#F4F5F5;box-shadow:0 1px 0 rgba(255,255,255,.9) inset}.copy{z-index:2;display:flex;flex-direction:column;padding:43px 18px 40px 48px}.brand{display:flex;align-items:center;gap:11px}.mark{width:31px;height:31px;position:relative}.mark:before,.mark:after{content:"";position:absolute;top:6px;width:19px;height:19px;border-radius:50%}.mark:before{left:0;background:#171719}.mark:after{left:12px;background:#E34A32}.brand-copy{display:grid;line-height:1}.brand-copy strong{font-size:15px}.brand-copy span{margin-top:6px;color:#7B7D82;font-size:10px}.hero{margin-top:65px}.eyebrow{color:#E34A32;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}.hero h1{max-width:500px;margin:15px 0 0;font-size:56px;font-weight:620;line-height:.94;letter-spacing:-.05em}.hero p{max-width:455px;margin:20px 0 0;color:#55575C;font-size:15px;line-height:1.5}.copy footer{display:flex;justify-content:space-between;margin-top:auto;color:#7B7D82;font-size:10px}.visual{position:relative}.sculpture{position:absolute;inset:-30px -60px 96px -40px}.sculpture img{width:100%;height:100%;object-fit:cover}.sculpture:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#F4F5F5,transparent 28%),linear-gradient(0deg,#F4F5F5,transparent 28%)}.app{position:absolute;left:-12px;right:30px;bottom:34px;height:245px;overflow:hidden;border:8px solid rgba(255,255,255,.68);border-radius:22px;background:#FCFCFB;box-shadow:0 26px 60px -36px rgba(35,36,39,.7)}.bar{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border-bottom:1px solid rgba(23,23,25,.09);font-size:8px;font-weight:650}.bar span:last-child{padding:3px 7px;border-radius:999px;color:#B93624;background:#FFF0EC}.tabs{display:flex;gap:5px;padding:7px 11px;border-bottom:1px solid rgba(23,23,25,.09)}.tabs b{padding:5px 12px;border-radius:7px;color:#777;font-size:8px}.tabs b:first-child{color:#232427;background:#F0F0EE}.window{display:grid;grid-template-columns:100px 1fr;height:176px}.side{padding:12px 10px;border-right:1px solid rgba(23,23,25,.09);background:#F8F8F6}.side span{display:block;height:8px;margin-bottom:8px;border-radius:5px;background:#E4E4E1}.side span:nth-child(2){background:#FFF0EC}.rows{padding:13px}.rows h2{margin:0 0 12px;font-size:15px}.row{height:32px;display:grid;grid-template-columns:55px 1fr 110px;align-items:center;border-top:1px solid rgba(23,23,25,.08);font-size:7px}.row:first-of-type{box-shadow:3px 0 0 #E34A32 inset;background:#FFF9F7}.row b{font-family:monospace}.route{position:absolute;right:28px;top:42px;padding:6px 9px;border:1px solid rgba(255,255,255,.7);border-radius:999px;color:white;background:rgba(23,23,25,.45);font-size:9px;font-weight:650;backdrop-filter:blur(12px)}
+</style></head><body><main><section class="copy"><div class="brand"><span class="mark"></span><span class="brand-copy"><strong>Launch Control</strong><span>Pre-launch QA for Meta Ads</span></span></div><div class="hero"><div class="eyebrow">Detect / Route / Prove</div><h1>Catch creative launch mistakes before Ads Manager.</h1><p>Validate every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.</p></div><footer><strong>Interactive product</strong><span>Mathieu Petroni</span></footer></section><section class="visual"><div class="sculpture"><picture><source srcset="assets/launch-control-core-v3.avif" type="image/avif"><img src="assets/launch-control-core-v3.webp" alt=""></picture></div><span class="route">CURRENT SYNTHETIC RUN</span><div class="app"><div class="bar"><span>Launch Control</span><span>Demo data / local only</span></div><div class="tabs"><b>Queue</b><b>Review</b><b>Receipt</b></div><div class="window"><div class="side"><span></span><span></span><span></span><span></span></div><div class="rows"><h2>10 creatives need a decision</h2><div class="row"><b>cr_007</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_017</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_027</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div></div></div></div></section></main></body></html>"""

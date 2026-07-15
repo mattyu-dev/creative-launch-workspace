@@ -9,30 +9,31 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="Interactive review workspace · Creative Launch Workspace">
   <meta property="og:description" content="A task-first review queue for approval, destination, placement, mapping and duplicate issues.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-2.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v3.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%2324142b%22%2F%3E%3C%2Fsvg%3E" type="image/svg+xml">
   <title>Creative Launch Workspace for Meta Ads</title>
   <style>
     :root {
       color-scheme: light;
-      --canvas: #f6f7f5;
+      --canvas: #ECEDEE;
       --surface: #ffffff;
-      --surface-soft: #eef0ed;
-      --ink: #151817;
-      --body: #3e4541;
-      --muted: #636b66;
-      --line: #d8ddd9;
-      --line-strong: #b8c0ba;
-      --action: #ffe44d;
-      --action-hover: #efd33b;
-      --action-pressed: #d8bd26;
-      --focus: #d91f72;
-      --oxide: #d91f72;
-      --brand: #24142b;
-      --brand-soft: #eee9ff;
-      --paper: #f1eef3;
-      --peach: #c7b6ff;
+      --surface-soft: #F7F7F5;
+      --ink: #232427;
+      --body: #55575C;
+      --muted: #6B6D72;
+      --line: #DCDDDC;
+      --line-strong: #BFC1C0;
+      --orange: #E34A32;
+      --action: #171719;
+      --action-hover: #2C2C30;
+      --action-pressed: #09090A;
+      --focus: #E34A32;
+      --oxide: #E34A32;
+      --brand: #171719;
+      --brand-soft: #FFF0EC;
+      --paper: #F7F7F5;
+      --peach: #F58B78;
       --ready: #166347;
       --ready-soft: #e6f1eb;
       --review: #805800;
@@ -40,7 +41,7 @@
       --blocked: #a1362d;
       --blocked-soft: #f7e7e4;
       --info: #285f8f;
-      --selection: #f1ecff;
+      --selection: #FFF0EC;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -59,7 +60,7 @@
       top: -80px;
       z-index: 20;
       padding: 10px 14px;
-      color: var(--ink);
+      color: #fff;
       background: var(--action);
       border-radius: 6px;
     }
@@ -94,20 +95,14 @@
     .brand-mark::before, .brand-mark::after {
       content: "";
       position: absolute;
-      width: 12px;
-      height: 12px;
-      border-color: var(--brand);
+      top: 6px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
     }
-    .brand-mark::before { left: 2px; top: 2px; border-left: 2px solid; border-top: 2px solid; }
-    .brand-mark::after { right: 2px; bottom: 2px; border-right: 2px solid; border-bottom: 2px solid; }
-    .brand-mark span {
-      position: absolute;
-      left: 12px;
-      top: 12px;
-      width: 6px;
-      height: 6px;
-      background: var(--brand);
-    }
+    .brand-mark::before { left: 0; background: var(--brand); }
+    .brand-mark::after { left: 11px; background: var(--orange); }
+    .brand-mark span { display:none; }
     h1 {
       margin: 0;
       font-size: 16px;
@@ -176,7 +171,7 @@
       align-items: center;
       gap: 20px 28px;
       padding: 24px 26px;
-      border: 1px solid #5b4263;
+      border: 1px solid #343437;
       border-radius: 12px;
       color: #fff;
       background: var(--brand);
@@ -195,8 +190,8 @@
     .focus-copy p { margin: 10px 0 0; color: rgba(255, 255, 255, .88); font-size: 13px; }
     .focus-actions { display: flex; align-items: center; gap: 8px; }
     .focus-actions button { min-height: 44px; padding-inline: 15px; }
-    .focus-actions .button-primary { color: var(--ink); border-color: var(--action); background: var(--action); }
-    .focus-actions .button-primary:hover { color: var(--ink); border-color: var(--action-hover); background: var(--action-hover); }
+    .focus-actions .button-primary { color: #fff; border-color: var(--action); background: var(--action); }
+    .focus-actions .button-primary:hover { color: #fff; border-color: var(--action-hover); background: var(--action-hover); }
     .focus-actions .button-secondary { color: #fff; border-color: rgba(255, 255, 255, .38); background: transparent; }
     .focus-actions .button-secondary:hover { border-color: #fff; }
     .status-legend {
@@ -394,7 +389,7 @@
       outline: 2px solid var(--focus);
       outline-offset: 2px;
     }
-    .button-primary { color: var(--ink); border-color: var(--action); background: var(--action); }
+    .button-primary { color: #fff; border-color: var(--action); background: var(--action); }
     .button-primary:hover { border-color: var(--action-hover); background: var(--action-hover); }
     .button-primary:active { border-color: var(--action-pressed); background: var(--action-pressed); }
     .bulkbar {

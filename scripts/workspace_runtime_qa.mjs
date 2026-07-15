@@ -8,6 +8,7 @@ import { homedir } from "node:os";
 import { basename, dirname, extname, join, normalize, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
+import { createGzip } from "node:zlib";
 
 import puppeteer from "puppeteer-core";
 
@@ -77,6 +78,7 @@ const mimeTypes = {
   ".webp": "image/webp",
   ".avif": "image/avif"
 };
+const compressedTypes = new Set([".html", ".js", ".json", ".svg"]);
 
 const server = createServer((request, response) => {
   const rawPath = decodeURIComponent(new URL(request.url || "/", "http://127.0.0.1").pathname);
@@ -90,7 +92,18 @@ const server = createServer((request, response) => {
     return;
   }
   if (statSync(requested).isDirectory()) requested = join(requested, "index.html");
-  response.writeHead(200, { "Content-Type": mimeTypes[extname(requested)] || "application/octet-stream" });
+  const extension = extname(requested);
+  const acceptsGzip = /(?:^|,)\s*gzip\s*(?:,|$)/i.test(request.headers["accept-encoding"] || "");
+  const headers = {
+    "Content-Type": mimeTypes[extension] || "application/octet-stream",
+    "Vary": "Accept-Encoding"
+  };
+  if (acceptsGzip && compressedTypes.has(extension)) {
+    response.writeHead(200, { ...headers, "Content-Encoding": "gzip" });
+    createReadStream(requested).pipe(createGzip()).pipe(response);
+    return;
+  }
+  response.writeHead(200, headers);
   createReadStream(requested).pipe(response);
 });
 
@@ -523,6 +536,7 @@ await page.screenshot({ path: join(assetsDir, "workspace-mobile.webp"), type: "w
 await page.setViewport({ width: 1440, height: 1000 });
 await page.goto(url, { waitUntil: "load" });
 await page.screenshot({ path: join(assetsDir, "workspace-desktop.png") });
+await page.screenshot({ path: join(assetsDir, "workspace-desktop.webp"), type: "webp", quality: 90 });
 
 const productUrl = `${baseUrl}/docs/index.html`;
 await page.setViewport({ width: 1366, height: 768 });
@@ -530,15 +544,16 @@ await page.goto(productUrl, { waitUntil: "load" });
 const productHoverState = await page.evaluate(() => {
   const styles = [...document.querySelectorAll("style")].map((item) => item.textContent).join("\n");
   return {
-    exactHoverRule: styles.includes('.button[data-variant="primary"]:hover{background:var(--lemon-hover)}'),
-    exactPressedRule: styles.includes('.button:active{transform:scale(.97)'),
-    primary: getComputedStyle(document.documentElement).getPropertyValue("--lemon").trim(),
-    hover: getComputedStyle(document.documentElement).getPropertyValue("--lemon-hover").trim(),
-    foreground: getComputedStyle(document.documentElement).getPropertyValue("--ink").trim()
+    exactOrangeHoverRule: styles.includes('.button[data-variant="orange"]:hover{background:var(--orange-hover)}'),
+    exactPressedRule: styles.includes('.button:active{transform:scale(.98)'),
+    primary: getComputedStyle(document.documentElement).getPropertyValue("--orange").trim(),
+    hover: getComputedStyle(document.documentElement).getPropertyValue("--orange-hover").trim(),
+    foreground: getComputedStyle(document.documentElement).getPropertyValue("--charcoal").trim(),
+    noTransitionAll: !/transition\s*:\s*all\b/i.test(styles)
   };
 });
 const productPage = await page.evaluate(() => ({
-  title: document.querySelector("h1")?.textContent,
+  title: document.querySelector("h1")?.getAttribute("aria-label") || document.querySelector("h1")?.textContent,
   canonical: document.querySelector('link[rel="canonical"]')?.href,
   ogImage: document.querySelector('meta[property="og:image"]')?.content,
   hasWorkspaceCta: Boolean(document.querySelector('a[href="workspace.html?guided=1"]')),
@@ -547,100 +562,179 @@ const productPage = await page.evaluate(() => ({
   visibleWordCount: document.body.innerText.trim().split(/\s+/).length,
   scrollHeight: document.body.scrollHeight,
   copyFreeze: {
-    boundary: document.body.textContent.includes("Interactive synthetic fixture")
-      && document.body.textContent.includes("No Meta publishing"),
-    reviewScope: document.body.textContent.includes("approval, placement, destination, naming and UTM issues"),
-    reviewState: document.body.textContent.includes("Route each exception to the right owner"),
-    boundedAuthority: document.body.textContent.includes("AI proposes")
+    boundary: document.body.textContent.includes("Demo data / local only")
+      && document.body.textContent.includes("No Meta API call")
+      && document.body.textContent.includes("External mutation")
+      && document.body.textContent.includes("false"),
+    reviewScope: document.body.textContent.includes("Validate approvals, placements, destinations, naming and UTMs across every creative row"),
+    reviewState: document.body.textContent.includes("Route exceptions to the right owner"),
+    boundedAuthority: document.body.textContent.includes("Automation proposes")
       && document.body.textContent.includes("Rules verify")
       && document.body.textContent.includes("People decide"),
-    heroSecondaryCta: document.querySelector(".hero-copy .text-link")?.textContent.trim(),
+    heroSecondaryCta: document.querySelector('.hero-copy .button[data-variant="outline"]')?.textContent.trim(),
     structuredJobTitle: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "Person")?.jobTitle
   },
   humanizedCopy: {
     noLongDash: !/[—–]/.test(`${document.title}\n${document.body.innerText}`),
-    concreteHero: document.body.textContent.includes("The launch control layer before Ads Manager"),
-    concreteProblem: document.body.textContent.includes("A clean creative is not a clean launch"),
-    concreteWorkflow: document.body.textContent.includes("Turn the handoff into a controlled route"),
-    directEvidence: document.body.textContent.includes("Every decision leaves inspectable evidence")
+    concreteHero: document.body.textContent.includes("Catch creative launch mistakes before Ads Manager"),
+    concreteProblem: document.body.textContent.includes("10 creatives need a decision"),
+    concreteWorkflow: document.body.textContent.includes("Detect the quiet failures")
+      && document.body.textContent.includes("Route the decision"),
+    directEvidence: document.body.textContent.includes("Proof you can inspect")
   },
   exactTokens: Object.fromEntries([
-    "--canvas", "--surface", "--ink", "--plum", "--lemon", "--lemon-hover",
-    "--lemon-pressed", "--fuchsia", "--lavender", "--border"
+    "--canvas", "--shell", "--surface", "--surface-soft", "--ink", "--charcoal",
+    "--body", "--orange", "--orange-hover", "--orange-soft"
   ].map((token) => [token, getComputedStyle(document.documentElement).getPropertyValue(token).trim()])),
-  noAtmosphericEffects: !document.querySelector("style")?.textContent.includes("linear-gradient"),
+  legacyPaletteAbsent: !["--plum", "--lemon", "--fuchsia", "--lavender"]
+    .some((token) => getComputedStyle(document.documentElement).getPropertyValue(token).trim()),
   productFirst: !document.querySelector("main")?.innerHTML.toLowerCase().includes("case study")
     && !document.querySelector("main")?.innerHTML.toLowerCase().includes("personal project")
     && !document.querySelector("main")?.innerHTML.toLowerCase().includes("portfolio")
     && !document.querySelector("main")?.innerHTML.toLowerCase().includes("hiring"),
   hasContact: Boolean(document.querySelector('a[href="https://www.linkedin.com/in/mathieu-petroni/"]')),
   structuredTypes: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.map((item) => item["@type"]) || [],
-  workflowStepCount: document.querySelectorAll(".workflow-steps li").length,
-  controlCount: document.querySelectorAll(".control-row").length,
+  workflowStepCount: document.querySelectorAll(".route-step").length,
+  controlCount: document.querySelectorAll(".guardrails > div").length,
   productTabCount: document.querySelectorAll('[role="tab"]').length,
-  fixtureMetricStripAbsent: !document.querySelector(".fixture-rail"),
-  singleBoundary: document.body.innerText.match(/synthetic fixture/gi)?.length === 1,
-  eyebrowCount: document.querySelectorAll(".eyebrow").length,
-  aiAbsentFromHero: !document.querySelector(".hero")?.innerText.includes("AI"),
+  productPanelCount: document.querySelectorAll('.app-shell [role="tabpanel"]').length,
+  queueRowCount: document.querySelectorAll(".queue-row").length,
+  nativeProduct: Boolean(document.querySelector(".app-stage .app-shell"))
+    && !document.querySelector(".app-stage picture"),
+  legacyScreenshotReferences: [...document.querySelectorAll("img,source")]
+    .map((item) => item.getAttribute("src") || item.getAttribute("srcset") || "")
+    .filter((src) => /(workspace-(?:mobile-hero|desktop)|guided-review|brief-evidence)/.test(src)),
+  exactFixture: document.body.textContent.includes("Batch 78f20843aea8a367")
+    && document.querySelector('.run-strip')?.getAttribute("aria-label") === "30 ready, 10 need a human decision, 60 blocked"
+    && document.body.textContent.includes("cr_007")
+    && document.body.textContent.includes("synthetic fixture"),
+  exactReceipt: Boolean(document.querySelector("#panel-receipt")?.textContent.includes("confirmed_ready")
+    && document.querySelector("#panel-receipt")?.textContent.includes("row_decision_updated")
+    && document.querySelector("#panel-receipt")?.textContent.includes("Creative Ops Manager")
+    && document.querySelector('#panel-receipt [title="4b09268ddcb1f49020f66777d0bcdd734e22add2e77657578d68201ad38ccabf"]')),
+  singlePrimaryReviewAction: document.querySelectorAll('#panel-review .button[data-variant="orange"]').length === 1,
   primaryCtaVisible: document.querySelector(".hero-copy .button")?.getBoundingClientRect().top < innerHeight,
-  heroProductVisible: document.querySelector(".product-window")?.getBoundingClientRect().top < innerHeight,
-  heroProductTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
-  heroImageLoaded: document.querySelector(".product-window img")?.naturalWidth > 0,
-  heroImageSource: document.querySelector(".product-window img")?.currentSrc,
+  heroProductVisible: document.querySelector(".app-stage")?.getBoundingClientRect().top < innerHeight,
+  heroProductTop: Math.round(document.querySelector(".app-stage")?.getBoundingClientRect().top || 0),
   sectionNavTargetsResolve: [...document.querySelectorAll('.nav-links a[href^="#"]')].every((link) => document.querySelector(link.getAttribute("href"))),
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth
 }));
 if (
-  !productPage.title?.includes("The launch control layer before Ads Manager")
+  productPage.title !== "Catch creative launch mistakes before Ads Manager."
   || !productPage.canonical?.endsWith("/creative-launch-workspace/")
-  || !productPage.ogImage?.endsWith("/assets/social-card-v2-2.png")
+  || !productPage.ogImage?.endsWith("/assets/social-card-v3.png")
   || !productPage.hasWorkspaceCta
   || productPage.hasCaseStudyLink
-  || productPage.mainSectionCount !== 6
+  || productPage.mainSectionCount !== 5
   || productPage.visibleWordCount > 850
-  || productPage.scrollHeight > 9000
+  || productPage.scrollHeight > 7000
   || !productPage.copyFreeze.boundary
   || !productPage.copyFreeze.reviewScope
   || !productPage.copyFreeze.reviewState
   || !productPage.copyFreeze.boundedAuthority
-  || productPage.copyFreeze.heroSecondaryCta !== "See the workflow ↓"
+  || productPage.copyFreeze.heroSecondaryCta !== "See how it works ↓"
   || productPage.copyFreeze.structuredJobTitle !== "AI Automation Builder"
   || !Object.values(productPage.humanizedCopy).every(Boolean)
   || JSON.stringify(productPage.exactTokens) !== JSON.stringify({
-    "--canvas": "oklch(97.5% .006 315)",
-    "--surface": "oklch(100% 0 0)",
-    "--ink": "oklch(19% .032 315)",
-    "--plum": "oklch(21% .055 315)",
-    "--lemon": "oklch(91% .17 100)",
-    "--lemon-hover": "oklch(86% .17 100)",
-    "--lemon-pressed": "oklch(80% .16 100)",
-    "--fuchsia": "oklch(57% .216 4)",
-    "--lavender": "oklch(82% .08 292)",
-    "--border": "oklch(87% .016 315)"
+    "--canvas": "#ECEDEE",
+    "--shell": "#F4F5F5",
+    "--surface": "#FFFFFF",
+    "--surface-soft": "#F7F7F5",
+    "--ink": "#232427",
+    "--charcoal": "#171719",
+    "--body": "#55575C",
+    "--orange": "#E34A32",
+    "--orange-hover": "#F05A3C",
+    "--orange-soft": "#FFF0EC"
   })
-  || !productPage.noAtmosphericEffects
+  || !productPage.legacyPaletteAbsent
   || !productPage.productFirst
   || !productPage.hasContact
   || !["Person", "SoftwareApplication", "WebSite"].every((item) => productPage.structuredTypes.includes(item))
-  || productPage.workflowStepCount !== 4
+  || productPage.workflowStepCount !== 3
   || productPage.controlCount !== 3
   || productPage.productTabCount !== 3
-  || !productPage.fixtureMetricStripAbsent
-  || !productPage.singleBoundary
-  || productPage.eyebrowCount !== 1
-  || !productPage.aiAbsentFromHero
+  || productPage.productPanelCount !== 3
+  || productPage.queueRowCount !== 4
+  || !productPage.nativeProduct
+  || productPage.legacyScreenshotReferences.length
+  || !productPage.exactFixture
+  || !productPage.exactReceipt
+  || !productPage.singlePrimaryReviewAction
   || !productPage.primaryCtaVisible
   || !productPage.heroProductVisible
-  || !productPage.heroImageLoaded
   || !productPage.sectionNavTargetsResolve
   || !productPage.noDocumentOverflow
-  || !productHoverState.exactHoverRule
+  || !productHoverState.exactOrangeHoverRule
   || !productHoverState.exactPressedRule
-  || productHoverState.primary !== "oklch(91% .17 100)"
-  || productHoverState.hover !== "oklch(86% .17 100)"
-  || productHoverState.foreground !== "oklch(19% .032 315)"
+  || !productHoverState.noTransitionAll
+  || productHoverState.primary !== "#E34A32"
+  || productHoverState.hover !== "#F05A3C"
+  || productHoverState.foreground !== "#171719"
 ) {
   throw new Error(`Product entry contract failed: ${JSON.stringify({ productPage, productHoverState })}`);
+}
+
+await page.evaluate(() => localStorage.clear());
+const productInitialInteraction = await page.evaluate(() => ({
+  selectedTab: document.querySelector('[role="tab"][aria-selected="true"]')?.textContent.trim(),
+  visiblePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id,
+  rovingTabStops: document.querySelectorAll('.product-tab[tabindex="0"]').length
+}));
+await page.focus("#tab-queue");
+await page.keyboard.press("ArrowRight");
+const productArrowNavigation = await page.evaluate(() => ({
+  selectedTab: document.querySelector('[role="tab"][aria-selected="true"]')?.textContent.trim(),
+  visiblePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id,
+  focused: document.activeElement?.id
+}));
+await page.keyboard.press("Home");
+await page.click('[data-open-review]');
+const productRowNavigation = await page.evaluate(() => ({
+  selectedTab: document.querySelector('[role="tab"][aria-selected="true"]')?.textContent.trim(),
+  visiblePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id,
+  focused: document.activeElement?.id,
+  decisionTitle: document.querySelector("#decision-title")?.textContent.trim()
+}));
+await page.click("#confirm-decision");
+const productDecision = await page.evaluate(() => ({
+  selectedTab: document.querySelector('[role="tab"][aria-selected="true"]')?.textContent.trim(),
+  visiblePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id,
+  focused: document.activeElement?.id,
+  localState: localStorage.getItem("launch-control-v3-demo"),
+  liveRegion: document.querySelector("#decision-live")?.textContent.trim(),
+  remaining: document.querySelector("#decision-count")?.textContent.trim(),
+  receiptLive: document.querySelector("#receipt-card")?.dataset.live
+}));
+await page.click("#back-to-queue");
+const productBackNavigation = await page.evaluate(() => ({
+  selectedTab: document.querySelector('[role="tab"][aria-selected="true"]')?.textContent.trim(),
+  visiblePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id,
+  focused: document.activeElement?.id
+}));
+if (
+  productInitialInteraction.selectedTab !== "Queue"
+  || productInitialInteraction.visiblePanel !== "panel-queue"
+  || productInitialInteraction.rovingTabStops !== 1
+  || productArrowNavigation.selectedTab !== "Review"
+  || productArrowNavigation.visiblePanel !== "panel-review"
+  || productArrowNavigation.focused !== "tab-review"
+  || productRowNavigation.selectedTab !== "Review"
+  || productRowNavigation.visiblePanel !== "panel-review"
+  || productRowNavigation.focused !== "tab-review"
+  || productRowNavigation.decisionTitle !== "Possible duplicate"
+  || productDecision.selectedTab !== "Receipt"
+  || productDecision.visiblePanel !== "panel-receipt"
+  || productDecision.focused !== "tab-receipt"
+  || productDecision.localState !== "confirmed"
+  || productDecision.liveRegion !== "Decision saved locally. 9 decisions remaining."
+  || productDecision.remaining !== "9 decisions remaining"
+  || productDecision.receiptLive !== "true"
+  || productBackNavigation.selectedTab !== "Queue"
+  || productBackNavigation.visiblePanel !== "panel-queue"
+  || productBackNavigation.focused !== "tab-queue"
+) {
+  throw new Error(`Native product interaction contract failed: ${JSON.stringify({ productInitialInteraction, productArrowNavigation, productRowNavigation, productDecision, productBackNavigation })}`);
 }
 await page.evaluate(async () => {
   const visibleImages = [...document.images].filter((image) => !image.closest("[hidden]"));
@@ -658,12 +752,20 @@ await page.screenshot({ path: join(assetsDir, "product-desktop.png"), fullPage: 
 
 await page.setViewport({ width: 390, height: 844 });
 await page.goto(productUrl, { waitUntil: "load" });
-const productMobile = await page.evaluate(async () => {
-  const heroImage = document.querySelector(".product-window img");
-  const heroAsset = await createImageBitmap(await (await fetch(heroImage.currentSrc)).blob());
+const productMobile = await page.evaluate(() => {
   const heroCta = document.querySelector(".hero-copy .button");
-  const heroProduct = document.querySelector(".hero-stage");
-  const result = {
+  const heroProduct = document.querySelector(".app-stage");
+  const touchTargets = [...document.querySelectorAll(".site-header a,.hero-actions a,.app-shell button")]
+    .filter((element) => {
+      const rect = element.getBoundingClientRect();
+      return getComputedStyle(element).display !== "none" && rect.width > 0 && rect.height > 0;
+    })
+    .map((element) => ({
+      label: element.getAttribute("aria-label") || element.textContent.trim().slice(0, 48),
+      width: Math.round(element.getBoundingClientRect().width),
+      height: Math.round(element.getBoundingClientRect().height)
+    }));
+  return {
     noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
     documentWidth: document.documentElement.scrollWidth,
     viewportWidth: innerWidth,
@@ -683,25 +785,28 @@ const productMobile = await page.evaluate(async () => {
     primaryCtaVisible: heroCta?.getBoundingClientRect().top >= 0
       && heroCta?.getBoundingClientRect().bottom <= innerHeight,
     ctaBeforeProduct: Boolean(heroCta?.compareDocumentPosition(heroProduct) & Node.DOCUMENT_POSITION_FOLLOWING),
-    productTop: Math.round(document.querySelector(".product-window")?.getBoundingClientRect().top || 0),
-    heroImageSource: heroImage.currentSrc,
-    heroAssetWidth: heroAsset.width,
-    heroAssetHeight: heroAsset.height,
+    productTop: Math.round(heroProduct?.getBoundingClientRect().top || 0),
+    nativeProductVisible: heroProduct?.getBoundingClientRect().top < innerHeight
+      && Boolean(heroProduct.querySelector(".app-shell")),
+    legacyScreenshotReferences: [...document.querySelectorAll("img,source")]
+      .map((item) => item.getAttribute("src") || item.getAttribute("srcset") || "")
+      .filter((src) => /(workspace-(?:mobile-hero|desktop)|guided-review|brief-evidence)/.test(src)),
+    activePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id,
+    touchTargetFailures: touchTargets.filter((target) => target.width < 44 || target.height < 44),
     scrollHeight: document.body.scrollHeight,
     bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize)
   };
-  heroAsset.close();
-  return result;
 });
 if (
   !productMobile.noDocumentOverflow
   || !productMobile.headingVisible
   || !productMobile.primaryCtaVisible
   || !productMobile.ctaBeforeProduct
-  || !productMobile.heroImageSource?.endsWith("/assets/workspace-mobile-hero.webp")
-  || productMobile.heroAssetWidth !== 780
-  || productMobile.heroAssetHeight !== 720
-  || productMobile.scrollHeight > 8000
+  || !productMobile.nativeProductVisible
+  || productMobile.legacyScreenshotReferences.length
+  || productMobile.activePanel !== "panel-queue"
+  || productMobile.touchTargetFailures.length
+  || productMobile.scrollHeight > 7000
   || productMobile.bodyFontPx < 16
 ) {
   throw new Error(`Product mobile contract failed: ${JSON.stringify(productMobile)}`);
@@ -727,24 +832,30 @@ const productSmallPhone = await page.evaluate(() => {
   const ctaRect = primaryCta?.getBoundingClientRect();
   const brandName = document.querySelector(".brand-copy strong");
   const brandNameRect = brandName?.getBoundingClientRect();
-  const independentTargets = [...document.querySelectorAll(".site-nav a,.hero-copy .button,.hero-copy .text-link")]
-    .filter((element) => getComputedStyle(element).display !== "none")
+  const independentTargets = [...document.querySelectorAll(".site-nav a,.hero-actions a,.app-shell button")]
+    .filter((element) => {
+      const rect = element.getBoundingClientRect();
+      return getComputedStyle(element).display !== "none" && rect.width > 0 && rect.height > 0;
+    })
     .map((element) => ({
       label: element.getAttribute("aria-label") || element.textContent.trim().slice(0, 48),
+      width: Math.round(element.getBoundingClientRect().width),
       height: Math.round(element.getBoundingClientRect().height)
     }));
   return {
     noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth,
     primaryCtaVisible: ctaRect?.top >= 0 && ctaRect?.bottom <= innerHeight,
-    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".hero-stage")) & Node.DOCUMENT_POSITION_FOLLOWING),
+    ctaBeforeProduct: Boolean(primaryCta?.compareDocumentPosition(document.querySelector(".app-stage")) & Node.DOCUMENT_POSITION_FOLLOWING),
     brandNameVisible: getComputedStyle(brandName).display !== "none"
       && brandNameRect?.top >= 0
       && brandNameRect?.bottom <= innerHeight,
-    touchTargetFailures: independentTargets.filter((target) => target.height < 44),
+    touchTargetFailures: independentTargets.filter((target) => target.width < 44 || target.height < 44),
     ctaTop: Math.round(ctaRect?.top || 0),
     ctaBottom: Math.round(ctaRect?.bottom || 0),
     headingHeight: Math.round(document.querySelector("h1")?.getBoundingClientRect().height || 0),
-    productTop: Math.round(document.querySelector(".hero-stage")?.getBoundingClientRect().top || 0)
+    productTop: Math.round(document.querySelector(".app-stage")?.getBoundingClientRect().top || 0),
+    nativeProductVisible: document.querySelector(".app-stage")?.getBoundingClientRect().top < innerHeight,
+    activePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id
   };
 });
 const productBrandHandle = await page.$(".brand");
@@ -764,16 +875,17 @@ for (let index = 0; index < 3; index += 1) {
 productSmallPhone.keyboardFocusOrder = productSmallPhoneFocusOrder;
 const productSmallPhoneKeyboardOrder = productSmallPhoneFocusOrder[0]?.className.includes("skip-link")
   && productSmallPhoneFocusOrder[1]?.className.includes("brand")
-  && productSmallPhoneFocusOrder[2]?.label.includes("Open the workspace");
+  && productSmallPhoneFocusOrder[2]?.label.includes("Try the live workspace");
 if (
   !productSmallPhone.noDocumentOverflow
   || !productSmallPhone.primaryCtaVisible
   || !productSmallPhone.ctaBeforeProduct
-  || !productSmallPhone.brandAccessibleName?.includes("Creative Launch Workspace")
+  || !productSmallPhone.brandAccessibleName?.includes("Launch Control")
   || !productSmallPhone.brandNameVisible
   || productSmallPhone.touchTargetFailures.length
   || !productSmallPhoneKeyboardOrder
-  || productSmallPhone.productTop >= 568
+  || !productSmallPhone.nativeProductVisible
+  || productSmallPhone.activePanel !== "panel-queue"
 ) {
   throw new Error(`Product small-phone contract failed: ${JSON.stringify(productSmallPhone)}`);
 }
@@ -792,7 +904,7 @@ for (const width of [320, 768]) {
       .filter((element) => {
         const style = getComputedStyle(element);
         const rect = element.getBoundingClientRect();
-        const clipper = element.closest(".product-window,.demo-frame,.evidence-frame");
+        const clipper = element.closest(".creative-preview,.sculpture");
         if (clipper && ["hidden", "clip"].includes(getComputedStyle(clipper).overflow)) return false;
         return style.display !== "none"
           && style.visibility !== "hidden"
@@ -916,7 +1028,6 @@ const responsiveAssetFidelity = await page.evaluate(async () => {
     };
   };
   const pairs = [
-    ["assets/workspace-desktop.png", "assets/workspace-desktop.avif"],
     ["assets/workspace-desktop.png", "assets/workspace-desktop.webp"],
     ["assets/workspace-mobile.png", "assets/workspace-mobile.webp"],
     ["assets/workspace-mobile-hero.png", "assets/workspace-mobile-hero.webp"],
@@ -934,15 +1045,28 @@ const socialCardUrl = `${baseUrl}/docs/social-card.html`;
 await page.setViewport({ width: 1200, height: 630 });
 await page.goto(socialCardUrl, { waitUntil: "load" });
 const socialCard = await page.evaluate(() => ({
+  title: document.querySelector("h1")?.textContent.trim(),
   productImage: document.querySelector(".visual img")?.getAttribute("src"),
   productLoaded: document.querySelector(".visual img")?.naturalWidth > 0,
+  nativeProduct: Boolean(document.querySelector(".visual .app")),
+  productTabCount: document.querySelectorAll(".visual .tabs b").length,
+  legacyScreenshotAbsent: !/(workspace-(?:mobile-hero|desktop)|guided-review|brief-evidence)/
+    .test(document.documentElement.innerHTML),
   noDocumentOverflow: document.documentElement.scrollWidth <= innerWidth && document.documentElement.scrollHeight <= innerHeight
 }));
-if (socialCard.productImage !== "assets/workspace-mobile-hero.png" || !socialCard.productLoaded || !socialCard.noDocumentOverflow) {
+if (
+  socialCard.title !== "Catch creative launch mistakes before Ads Manager."
+  || socialCard.productImage !== "assets/launch-control-core-v3.webp"
+  || !socialCard.productLoaded
+  || !socialCard.nativeProduct
+  || socialCard.productTabCount !== 3
+  || !socialCard.legacyScreenshotAbsent
+  || !socialCard.noDocumentOverflow
+) {
   throw new Error(`Social card contract failed: ${JSON.stringify(socialCard)}`);
 }
 await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
-await page.screenshot({ path: join(assetsDir, "social-card-v2-2.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+await page.screenshot({ path: join(assetsDir, "social-card-v3.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
 
 const labUrl = `${baseUrl}/docs/fix-lab.html`;
 await page.setViewport({ width: 1280, height: 900 });
@@ -1116,7 +1240,7 @@ if (consoleErrors.length) {
 }
 
 const report = {
-  contract_version: "workspace_runtime_qa.v18",
+  contract_version: "workspace_runtime_qa.v19",
   tested_at: new Date().toISOString(),
   source: "scripts/workspace_runtime_qa.mjs",
   viewports,
@@ -1142,6 +1266,13 @@ const report = {
   reset,
   product_page: productPage,
   product_hover_state: productHoverState,
+  product_interaction: {
+    initial: productInitialInteraction,
+    arrow_navigation: productArrowNavigation,
+    row_navigation: productRowNavigation,
+    decision: productDecision,
+    back_navigation: productBackNavigation
+  },
   product_mobile: productMobile,
   product_small_phone: productSmallPhone,
   product_text_resize: productTextResize,

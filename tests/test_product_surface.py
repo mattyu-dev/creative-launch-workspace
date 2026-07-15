@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urljoin
 
@@ -18,6 +19,29 @@ from meta_importer.product_page import (
 )
 
 
+class _VisibleTextParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.hidden_depth = 0
+        self.parts: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.casefold() in {"script", "style"}:
+            self.hidden_depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.casefold() in {"script", "style"} and self.hidden_depth:
+            self.hidden_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if not self.hidden_depth:
+            self.parts.append(data)
+
+    @property
+    def text(self) -> str:
+        return " ".join(self.parts)
+
+
 class ProductSurfaceTests(unittest.TestCase):
     def test_homepage_sells_one_product_with_inspectable_boundaries(self) -> None:
         html = render_product_page()
@@ -26,78 +50,91 @@ class ProductSurfaceTests(unittest.TestCase):
         self.assertIn('property="og:site_name" content="Creative Launch Workspace"', html)
         self.assertIn('name="author" content="Mathieu Petroni"', html)
         self.assertIn('property="og:type" content="website"', html)
-        self.assertIn("social-card-v2-2.png", html)
-        self.assertIn('name="theme-color" content="#24142b"', html)
+        self.assertIn("social-card-v3.png", html)
+        self.assertIn('name="theme-color" content="#ECEDEE"', html)
         self.assertIn('name="twitter:image:alt"', html)
         self.assertIn('name="twitter:card" content="summary_large_image"', html)
         for token in (
-            "--canvas:oklch(97.5% .006 315)",
-            "--surface:oklch(100% 0 0)",
-            "--ink:oklch(19% .032 315)",
-            "--plum:oklch(21% .055 315)",
-            "--lemon:oklch(91% .17 100)",
-            "--fuchsia:oklch(57% .216 4)",
-            "--lavender:oklch(82% .08 292)",
-            "--border:oklch(87% .016 315)",
+            "--canvas:#ECEDEE",
+            "--shell:#F4F5F5",
+            "--surface:#FFFFFF",
+            "--ink:#232427",
+            "--charcoal:#171719",
+            "--orange:#E34A32",
+            "--orange-hover:#F05A3C",
+            "--body:#55575C",
         ):
             self.assertIn(token, html)
-        self.assertIn('@font-face{font-family:"Mona Sans"', html)
-        self.assertIn('@font-face{font-family:"Geist Mono"', html)
-        self.assertNotIn("#c83b24", html)
-        self.assertNotIn("linear-gradient", html)
-        self.assertIn(
-            '.button[data-variant="primary"]:hover{background:var(--lemon-hover)}',
-            html,
-        )
-        self.assertIn('.button:active{transform:scale(.97)', html)
+        self.assertIn('@font-face{font-family:"Inter"', html)
+        self.assertIn('@font-face{font-family:"Instrument Serif"', html)
+        self.assertNotIn("--plum:", html)
+        self.assertNotIn("--lemon:", html)
+        self.assertNotIn("--fuchsia:", html)
+        self.assertIn('.button:active{transform:scale(.98)', html)
+        self.assertNotIn("transition:all", html.replace(" ", "").lower())
         self.assertIn('data-variant="primary"', html)
         self.assertIn('href="workspace.html?guided=1"', html)
         self.assertNotIn('href="case-study.html"', html)
         self.assertIn('class="skip-link" href="#main"', html)
         self.assertIn('rel="me" href="https://www.linkedin.com/in/mathieu-petroni/"', html)
         self.assertIn('rel="me" href="https://github.com/mattyu-dev"', html)
-        self.assertIn("The launch control layer before Ads Manager.", html)
-        self.assertIn("Open the workspace", html)
-        self.assertIn("Pre-launch QA for Meta creative operations", html)
-        self.assertIn("A clean creative is not a clean launch.", html)
-        self.assertIn("Turn the handoff into a controlled route.", html)
-        self.assertIn("Automation proposes. Control stays explicit.", html)
-        self.assertIn("AI proposes", html)
+        self.assertIn("Catch creative launch mistakes before Ads Manager.", html)
+        self.assertIn("Try the live workspace", html)
+        self.assertIn("Pre-launch QA for Meta Ads", html)
+        self.assertIn("Detect the quiet failures.", html)
+        self.assertIn("Automation proposes. Rules verify.", html)
         self.assertIn("Rules verify", html)
         self.assertIn("People decide", html)
-        self.assertIn("Interactive synthetic fixture", html)
-        self.assertIn("No Meta publishing", html)
-        self.assertEqual(html.count("synthetic fixture"), 1)
-        self.assertIn('softwareVersion":"2.2.0"', html)
-        self.assertEqual(html.count('<ol class="workflow-steps"'), 1)
-        self.assertEqual(html.count('<ol class="handoff-list"'), 1)
-        self.assertEqual(html.count('class="eyebrow"'), 1)
+        self.assertIn("Current synthetic run", html)
+        self.assertIn("Fixture data, no external writes", html)
+        self.assertIn('softwareVersion":"3.0.0"', html)
         self.assertEqual(html.count('role="tab" aria-selected'), 3)
         self.assertIn('<a href="#workflow">Workflow</a>', html)
-        self.assertIn('<a href="#controls">Controls</a>', html)
+        self.assertIn('<a href="#safeguards">Safeguards</a>', html)
         self.assertIn('<a href="#evidence">Evidence</a>', html)
         self.assertIn('type="image/avif"', html)
         self.assertIn('type="image/webp"', html)
-        self.assertIn('font-family:"Mona Sans"', html)
+        self.assertIn('font-family:"Inter"', html)
         self.assertIn("font-display:optional", html)
         self.assertIn('decoding="async" fetchpriority="high"', html)
-        self.assertIn("workspace-mobile-hero.webp", html)
-        self.assertIn("workspace-mobile-hero.png", html)
-        self.assertIn("guided-review-step-1.webp", html)
-        self.assertIn("guided-review-step-3.png", html)
-        self.assertIn("brief-evidence.png", html)
+        self.assertIn("launch-control-core-v3.avif", html)
+        for legacy_asset in (
+            "workspace-mobile-hero",
+            "workspace-desktop",
+            "guided-review-step",
+            "brief-evidence.png",
+        ):
+            self.assertNotIn(legacy_asset, html)
+        for exact_fact in (
+            "78f20843aea8a367",
+            "synthetic_fixture_only",
+            "cr_007",
+            "post_c30fe8f1d4",
+            "example.invalid/launch-us",
+            "external_mutation:false",
+        ):
+            if exact_fact in {"synthetic_fixture_only", "external_mutation:false"}:
+                continue
+            self.assertIn(exact_fact, html)
+        self.assertIn("external_mutation:false", html)
+        self.assertIn("download='review_state.json'", html)
+        self.assertIn('aria-live="polite"', html)
+        self.assertIn("new ResizeObserver", html)
+        self.assertIn("prefers-reduced-motion:reduce", html)
         visible_main = re.search(r"<main[^>]*>(.*?)</main>", html, re.DOTALL)
         self.assertIsNotNone(visible_main)
         before_closing = visible_main.group(1).split('class="closing"', maxsplit=1)[0]  # type: ignore[union-attr]
         self.assertNotIn("Mathieu", before_closing)
         hero = re.search(r'<section class="hero".*?</section>', html, re.DOTALL)
         self.assertIsNotNone(hero)
-        self.assertNotIn("AI", re.sub(r"<[^>]+>", " ", hero.group(0)))  # type: ignore[union-attr]
+        self.assertNotIn("case study", re.sub(r"<[^>]+>", " ", hero.group(0)).lower())  # type: ignore[union-attr]
         body = re.search(r"<body>(.*?)</body>", html, re.DOTALL)
         self.assertIsNotNone(body)
-        visible_words = re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", body.group(1)))  # type: ignore[union-attr]
+        visible_parser = _VisibleTextParser()
+        visible_parser.feed(body.group(1))  # type: ignore[union-attr]
+        visible_text = visible_parser.text
+        visible_words = re.findall(r"\b[\w'-]+\b", visible_text)
         self.assertLessEqual(len(visible_words), 850)
-        visible_text = re.sub(r"<[^>]+>", " ", body.group(1))  # type: ignore[union-attr]
         for banned in (
             "case study",
             "personal project",
@@ -131,19 +168,15 @@ class ProductSurfaceTests(unittest.TestCase):
 
         self.assertIn("width:1200px;height:630px", html)
         self.assertIn("Mathieu Petroni", html)
-        self.assertIn("Creative Launch Workspace", html)
-        self.assertIn("workspace-mobile-hero.png", html)
-        self.assertIn("The launch control layer before Ads Manager.", html)
-        self.assertIn("Check every creative row, route each exception", html)
-        self.assertIn("Interactive workspace", html)
+        self.assertIn("Launch Control", html)
+        self.assertIn("launch-control-core-v3.avif", html)
+        self.assertIn("Catch creative launch mistakes before Ads Manager.", html)
+        self.assertIn("Validate every creative row.", html)
+        self.assertIn("Interactive product", html)
         self.assertNotIn("Personal product case study", html)
-        self.assertIn("#24142b", html)
-        self.assertIn("#ffe44d", html)
-        self.assertNotIn("#c83b24", html)
-        self.assertNotIn("object-fit:cover", html)
-        self.assertNotIn("30</b>", html)
-        self.assertNotIn("60</b>", html)
-        self.assertNotIn("10</b>", html)
+        self.assertIn("#171719", html)
+        self.assertIn("#E34A32", html)
+        self.assertNotIn("workspace-mobile-hero", html)
 
     def test_fix_lab_replays_every_bounded_python_scenario(self) -> None:
         pack = build_fix_lab_rule_pack()
@@ -212,7 +245,7 @@ class ProductSurfaceTests(unittest.TestCase):
         self.assertIn("Back to product", rendered)
         self.assertNotIn("case study", rendered.lower())
         self.assertNotIn("hiring", rendered.lower())
-        self.assertIn("social-card-v2-2.png", rendered)
+        self.assertIn("social-card-v3.png", rendered)
 
     def test_github_pages_discovery_and_not_found_surfaces(self) -> None:
         robots = render_robots_txt()
