@@ -106,7 +106,12 @@ class ProductSurfaceTests(unittest.TestCase):
         self.assertNotIn("case study", re.sub(r"<[^>]+>", " ", hero.group(0)).lower())  # type: ignore[union-attr]
         body = re.search(r"<body>(.*?)</body>", html, re.DOTALL)
         self.assertIsNotNone(body)
-        visible_body = re.sub(r"<script.*?</script>", " ", body.group(1), flags=re.DOTALL)  # type: ignore[union-attr]
+        visible_body = re.sub(
+            r"<script\b[^>]*>.*?</script\s*>",
+            " ",
+            body.group(1),  # type: ignore[union-attr]
+            flags=re.DOTALL | re.IGNORECASE,
+        )
         visible_words = re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", visible_body))
         self.assertLessEqual(len(visible_words), 850)
         visible_text = re.sub(r"<[^>]+>", " ", visible_body)
