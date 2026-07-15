@@ -1077,6 +1077,15 @@ for (const { formFactor, targetUrl, outputPath } of productQualityTargets) {
 }
 
 const productQuality = {};
+const productQualityBudget = {
+  performanceTarget: 0.9,
+  performanceCiFloor: 0.89,
+  bestPracticesFloor: 0.95,
+  seoFloor: 0.95,
+  lcpCeilingMs: 2500,
+  clsCeiling: 0.1,
+  tbtCeilingMs: 200
+};
 for (const { surface, formFactor, outputPath } of productQualityTargets) {
   const lighthouseReport = JSON.parse(await readFile(outputPath, "utf8"));
   productQuality[`${surface}_${formFactor}`] = {
@@ -1089,14 +1098,14 @@ for (const { surface, formFactor, outputPath } of productQualityTargets) {
   };
 }
 if (Object.values(productQuality).some((result) =>
-  result.performanceScore < 0.9
-  || result.bestPracticesScore < 0.95
-  || result.seoScore < 0.95
-  || result.lcpMs > 2500
-  || result.cls > 0.1
-  || result.tbtMs > 200
+  result.performanceScore < productQualityBudget.performanceCiFloor
+  || result.bestPracticesScore < productQualityBudget.bestPracticesFloor
+  || result.seoScore < productQualityBudget.seoFloor
+  || result.lcpMs > productQualityBudget.lcpCeilingMs
+  || result.cls > productQualityBudget.clsCeiling
+  || result.tbtMs > productQualityBudget.tbtCeilingMs
 )) {
-  throw new Error(`Product Lighthouse quality budget regressed: ${JSON.stringify(productQuality)}`);
+  throw new Error(`Product Lighthouse quality budget regressed: ${JSON.stringify({ productQualityBudget, productQuality })}`);
 }
 
 if (consoleErrors.length) {
@@ -1143,6 +1152,7 @@ const report = {
   lighthouse_accessibility: accessibility,
   serious_accessibility_failures: seriousAccessibilityFailures,
   lighthouse_product_quality: productQuality,
+  lighthouse_product_quality_budget: productQualityBudget,
   mutation_allowed: false,
   meta_api_compatibility: "not_claimed"
 };

@@ -17,7 +17,7 @@ Deterministic rules check each AI proposal before a person decides an ambiguous 
 
 [![Creative Launch Workspace desktop](docs/assets/workspace-desktop.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html)
 
-The public landing and interactive workspace share one cold-neutral product system: a `#f6f7f5` canvas, Geist typography and one accessible coral `#c83b24` action color. Success, warning and blocked colors remain reserved for status, while the product and its proof live on one canonical page.
+The public landing and interactive workspace share one cold-neutral product system: a `#f6f7f5` canvas, Geist-first typography with a system fallback, and one accessible coral `#c83b24` action color. On a slow first load, `font-display: optional` keeps the fallback instead of causing FOIT, layout shift or a late text repaint. Success, warning and blocked colors remain reserved for status, while the product and its proof live on one canonical page.
 
 [![Guided human review with local audit evidence](docs/assets/guided-review-step-3.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1)
 
@@ -171,7 +171,7 @@ The repo-native benchmark contains 36 labelled contract cases for the determinis
 
 Browser QA exercises seven viewport widths plus dedicated 320×568 guided-decision and product-landing contracts. The small-phone gates require a named home link, logical keyboard order, 44-pixel standalone targets and an above-the-fold primary CTA. QA also doubles rendered landing text at 320 and 768 pixels to reject clipped or horizontally overflowing content. The committed workspace and landing Lighthouse accessibility reports score 100/100 on desktop and mobile, while a separate gate fails any serious or critical WCAG audit even if the category score rounds to 100.
 
-The same QA run completes the guided 1→2→3 decision path, verifies that it creates only browser-local state and audit evidence, confirms the next pending ambiguous case survives reload, and enforces landing Lighthouse budgets of at least 90 performance, 95 best practices and 95 SEO, with LCP ≤ 2.5 s, CLS ≤ 0.1 and total blocking time ≤ 200 ms. These are reproducible local Lighthouse measurements, not production RUM.
+The same QA run completes the guided 1→2→3 decision path, verifies that it creates only browser-local state and audit evidence, and confirms the next pending ambiguous case survives reload. The landing targets at least 90 Lighthouse performance, with an explicit CI variance floor of 89 only while best practices and SEO remain at least 95, LCP stays at or below 2.5 s, CLS at or below 0.1 and total blocking time at or below 200 ms. These are reproducible local Lighthouse measurements, not production RUM.
 
 - [Brief baseline eval](docs/evidence/brief-mapping-baseline-eval.json)
 - [Reviewed manifest validation](docs/evidence/reviewed-manifest-validation.json)

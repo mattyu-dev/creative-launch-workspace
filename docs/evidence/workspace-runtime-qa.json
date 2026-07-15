@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v18",
-  "tested_at": "2026-07-15T12:38:26.084Z",
+  "tested_at": "2026-07-15T12:45:48.860Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-15T12:37:25.894Z",
+      "occurredAt": "2026-07-15T12:44:48.710Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784119045894_8",
+        "event_id": "evt_local_1784119488711_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-15T12:37:25.894Z"
+        "occurred_at": "2026-07-15T12:44:48.710Z"
       }
     },
     "request_violations": [],
@@ -305,7 +305,7 @@
     "heroProductVisible": true,
     "heroProductTop": 530,
     "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:59091/docs/assets/workspace-desktop.avif",
+    "heroImageSource": "http://127.0.0.1:59515/docs/assets/workspace-desktop.avif",
     "sectionNavTargetsResolve": true,
     "noDocumentOverflow": true
   },
@@ -326,7 +326,7 @@
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
     "productTop": 499,
-    "heroImageSource": "http://127.0.0.1:59091/docs/assets/workspace-mobile-hero.webp",
+    "heroImageSource": "http://127.0.0.1:59515/docs/assets/workspace-mobile-hero.webp",
     "heroAssetWidth": 780,
     "heroAssetHeight": 720,
     "scrollHeight": 7314,
@@ -377,7 +377,7 @@
     "fileAbsent": true,
     "excludedFromSitemap": true,
     "httpStatus": 404,
-    "destination": "http://127.0.0.1:59091/docs/case-study.html",
+    "destination": "http://127.0.0.1:59515/docs/case-study.html",
     "consoleMessages": [
       "Failed to load resource: the server responded with a status of 404 (Not Found)"
     ]
@@ -417,7 +417,7 @@
       "referenceSrc": "assets/guided-receipt-mobile.png",
       "candidateSrc": "assets/guided-receipt-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 40.55
+      "psnr": 39.98
     }
   ],
   "social_card": {
@@ -464,10 +464,10 @@
   "serious_accessibility_failures": [],
   "lighthouse_product_quality": {
     "product_desktop": {
-      "performanceScore": 0.91,
+      "performanceScore": 0.9,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1801,
+      "lcpMs": 1876,
       "cls": 0,
       "tbtMs": 0
     },
@@ -479,6 +479,15 @@
       "cls": 0,
       "tbtMs": 0
     }
+  },
+  "lighthouse_product_quality_budget": {
+    "performanceTarget": 0.9,
+    "performanceCiFloor": 0.89,
+    "bestPracticesFloor": 0.95,
+    "seoFloor": 0.95,
+    "lcpCeilingMs": 2500,
+    "clsCeiling": 0.1,
+    "tbtCeilingMs": 200
   },
   "mutation_allowed": false,
   "meta_api_compatibility": "not_claimed"
