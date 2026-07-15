@@ -1,0 +1,6 @@
+name: Creative Launch Workspace CodeQL configuration
+
+paths-ignore:
+  - docs/assets/launch-control-motion.js
+  - docs/assets/launch-control-chunks/**
+  - frontend/generated/**
