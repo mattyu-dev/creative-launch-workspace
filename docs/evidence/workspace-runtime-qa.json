@@ -1,6 +1,6 @@
 {
-  "contract_version": "workspace_runtime_qa.v18",
-  "tested_at": "2026-07-15T14:12:23.473Z",
+  "contract_version": "workspace_runtime_qa.v19",
+  "tested_at": "2026-07-15T15:29:05.092Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-15T14:11:19.748Z",
+      "occurredAt": "2026-07-15T15:28:01.916Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784124679748_8",
+        "event_id": "evt_local_1784129281916_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-15T14:11:19.748Z"
+        "occurred_at": "2026-07-15T15:28:01.916Z"
       }
     },
     "request_violations": [],
@@ -248,20 +248,20 @@
     "status": "Browser review state reset."
   },
   "product_page": {
-    "title": "The launch control layer before Ads Manager.",
+    "title": "Catch creative launch mistakes before Ads Manager.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-2.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v3.png",
     "hasWorkspaceCta": true,
     "hasCaseStudyLink": false,
-    "mainSectionCount": 6,
-    "visibleWordCount": 391,
-    "scrollHeight": 4897,
+    "mainSectionCount": 5,
+    "visibleWordCount": 430,
+    "scrollHeight": 4435,
     "copyFreeze": {
       "boundary": true,
       "reviewScope": true,
       "reviewState": true,
       "boundedAuthority": true,
-      "heroSecondaryCta": "See the workflow ↓",
+      "heroSecondaryCta": "See how it works ↓",
       "structuredJobTitle": "AI Automation Builder"
     },
     "humanizedCopy": {
@@ -272,18 +272,18 @@
       "directEvidence": true
     },
     "exactTokens": {
-      "--canvas": "oklch(97.5% .006 315)",
-      "--surface": "oklch(100% 0 0)",
-      "--ink": "oklch(19% .032 315)",
-      "--plum": "oklch(21% .055 315)",
-      "--lemon": "oklch(91% .17 100)",
-      "--lemon-hover": "oklch(86% .17 100)",
-      "--lemon-pressed": "oklch(80% .16 100)",
-      "--fuchsia": "oklch(57% .216 4)",
-      "--lavender": "oklch(82% .08 292)",
-      "--border": "oklch(87% .016 315)"
+      "--canvas": "#ECEDEE",
+      "--shell": "#F4F5F5",
+      "--surface": "#FFFFFF",
+      "--surface-soft": "#F7F7F5",
+      "--ink": "#232427",
+      "--charcoal": "#171719",
+      "--body": "#55575C",
+      "--orange": "#E34A32",
+      "--orange-hover": "#F05A3C",
+      "--orange-soft": "#FFF0EC"
     },
-    "noAtmosphericEffects": true,
+    "legacyPaletteAbsent": true,
     "productFirst": true,
     "hasContact": true,
     "structuredTypes": [
@@ -291,48 +291,77 @@
       "SoftwareApplication",
       "WebSite"
     ],
-    "workflowStepCount": 4,
+    "workflowStepCount": 3,
     "controlCount": 3,
     "productTabCount": 3,
-    "fixtureMetricStripAbsent": true,
-    "singleBoundary": true,
-    "eyebrowCount": 1,
-    "aiAbsentFromHero": true,
+    "productPanelCount": 3,
+    "queueRowCount": 4,
+    "nativeProduct": true,
+    "legacyScreenshotReferences": [],
+    "exactFixture": true,
+    "exactReceipt": true,
+    "singlePrimaryReviewAction": true,
     "primaryCtaVisible": true,
     "heroProductVisible": true,
-    "heroProductTop": 179,
-    "heroImageLoaded": true,
-    "heroImageSource": "http://127.0.0.1:49901/docs/assets/workspace-mobile-hero.webp",
+    "heroProductTop": 615,
     "sectionNavTargetsResolve": true,
     "noDocumentOverflow": true
   },
   "product_hover_state": {
-    "exactHoverRule": true,
+    "exactOrangeHoverRule": true,
     "exactPressedRule": true,
-    "primary": "oklch(91% .17 100)",
-    "hover": "oklch(86% .17 100)",
-    "foreground": "oklch(19% .032 315)"
+    "primary": "#E34A32",
+    "hover": "#F05A3C",
+    "foreground": "#171719",
+    "noTransitionAll": true
+  },
+  "product_interaction": {
+    "initial": {
+      "selectedTab": "Queue",
+      "visiblePanel": "panel-queue",
+      "rovingTabStops": 1
+    },
+    "arrow_navigation": {
+      "selectedTab": "Review",
+      "visiblePanel": "panel-review",
+      "focused": "tab-review"
+    },
+    "row_navigation": {
+      "selectedTab": "Review",
+      "visiblePanel": "panel-review",
+      "focused": "tab-review",
+      "decisionTitle": "Possible duplicate"
+    },
+    "decision": {
+      "selectedTab": "Receipt",
+      "visiblePanel": "panel-receipt",
+      "focused": "tab-receipt",
+      "localState": "confirmed",
+      "liveRegion": "Decision saved locally. 9 decisions remaining.",
+      "remaining": "9 decisions remaining",
+      "receiptLive": "true"
+    },
+    "back_navigation": {
+      "selectedTab": "Queue",
+      "visiblePanel": "panel-queue",
+      "focused": "tab-queue"
+    }
   },
   "product_mobile": {
     "noDocumentOverflow": true,
     "documentWidth": 390,
     "viewportWidth": 390,
     "scrollY": 0,
-    "overflowers": [
-      {
-        "selector": "img.",
-        "left": -80,
-        "right": 511
-      }
-    ],
+    "overflowers": [],
     "headingVisible": true,
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
-    "productTop": 628,
-    "heroImageSource": "http://127.0.0.1:49901/docs/assets/workspace-mobile-hero.webp",
-    "heroAssetWidth": 780,
-    "heroAssetHeight": 720,
-    "scrollHeight": 6140,
+    "productTop": 545,
+    "nativeProductVisible": true,
+    "legacyScreenshotReferences": [],
+    "activePanel": "panel-queue",
+    "touchTargetFailures": [],
+    "scrollHeight": 6049,
     "bodyFontPx": 16
   },
   "product_small_phone": {
@@ -341,11 +370,13 @@
     "ctaBeforeProduct": true,
     "brandNameVisible": true,
     "touchTargetFailures": [],
-    "ctaTop": 466,
-    "ctaBottom": 510,
-    "headingHeight": 161,
-    "productTop": 546,
-    "brandAccessibleName": "Creative Launch Workspace",
+    "ctaTop": 502,
+    "ctaBottom": 546,
+    "headingHeight": 150,
+    "productTop": 550,
+    "nativeProductVisible": true,
+    "activePanel": "panel-queue",
+    "brandAccessibleName": "Launch Control",
     "keyboardFocusOrder": [
       {
         "className": "skip-link",
@@ -353,11 +384,11 @@
       },
       {
         "className": "brand",
-        "label": "Creative Launch WorkspacePre-launch control"
+        "label": "Launch ControlPre-launch QA for Meta Ads"
       },
       {
         "className": "button",
-        "label": "Open the workspace →"
+        "label": "Try the live workspace ↗"
       }
     ]
   },
@@ -379,7 +410,7 @@
     "fileAbsent": true,
     "excludedFromSitemap": true,
     "httpStatus": 404,
-    "destination": "http://127.0.0.1:49901/docs/case-study.html",
+    "destination": "http://127.0.0.1:55103/docs/case-study.html",
     "consoleMessages": [
       "Failed to load resource: the server responded with a status of 404 (Not Found)"
     ]
@@ -393,38 +424,36 @@
   "responsive_asset_fidelity": [
     {
       "referenceSrc": "assets/workspace-desktop.png",
-      "candidateSrc": "assets/workspace-desktop.avif",
-      "dimensionsMatch": true,
-      "psnr": 45.61
-    },
-    {
-      "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.webp",
       "dimensionsMatch": true,
-      "psnr": 40.41
+      "psnr": 43.09
     },
     {
       "referenceSrc": "assets/workspace-mobile.png",
       "candidateSrc": "assets/workspace-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 42.48
+      "psnr": 44.96
     },
     {
       "referenceSrc": "assets/workspace-mobile-hero.png",
       "candidateSrc": "assets/workspace-mobile-hero.webp",
       "dimensionsMatch": true,
-      "psnr": 39.99
+      "psnr": 43.16
     },
     {
       "referenceSrc": "assets/guided-receipt-mobile.png",
       "candidateSrc": "assets/guided-receipt-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 42.98
+      "psnr": 47.42
     }
   ],
   "social_card": {
-    "productImage": "assets/workspace-mobile-hero.png",
+    "title": "Catch creative launch mistakes before Ads Manager.",
+    "productImage": "assets/launch-control-core-v3.webp",
     "productLoaded": true,
+    "nativeProduct": true,
+    "productTabCount": 3,
+    "legacyScreenshotAbsent": true,
     "noDocumentOverflow": true
   },
   "fix_lab": {
@@ -466,18 +495,18 @@
   "serious_accessibility_failures": [],
   "lighthouse_product_quality": {
     "product_desktop": {
-      "performanceScore": 0.92,
+      "performanceScore": 0.89,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1651,
+      "lcpMs": 1954,
       "cls": 0,
       "tbtMs": 0
     },
     "product_mobile": {
-      "performanceScore": 1,
+      "performanceScore": 0.99,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1651,
+      "lcpMs": 2036,
       "cls": 0,
       "tbtMs": 0
     }

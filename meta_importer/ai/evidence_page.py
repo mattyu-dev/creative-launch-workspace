@@ -52,14 +52,14 @@ def render_evidence_page(
   <meta property="article:author" content="https://www.linkedin.com/in/mathieu-petroni/">
   <meta property="og:title" content="Governed intake evidence · Mathieu Petroni">
   <meta property="og:description" content="Source evidence, bounded proposals, policy checks and explicit human decisions.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-2.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v3.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/mona-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
   <title>Brief mapping evidence · Mathieu Petroni</title>
   <style>
     @font-face{{font-family:"Mona Sans";src:url("assets/mona-sans-latin-variable.woff2") format("woff2-variations");font-weight:200 900;font-display:optional}}
-    :root {{ --ink:#1c1422; --body:#4e4652; --muted:#6c6570; --canvas:#f7f6f8; --paper:#ffffff; --line:#d9d3dd; --brand:#24142b; --brand-hover:#36213f; --brand-soft:#eee9ff; --accent:#d91f72; --action:#ffe44d; --action-hover:#efd33b; --success:#176143; --success-soft:#e3eee8; }}
+    :root {{ --ink:#232427; --body:#55575C; --muted:#7B7D82; --canvas:#ECEDEE; --paper:#ffffff; --line:#DCDDDC; --brand:#171719; --brand-hover:#2C2C30; --brand-soft:#FFF0EC; --accent:#E34A32; --action:#E34A32; --action-hover:#F05A3C; --success:#176143; --success-soft:#e3eee8; }}
     * {{ box-sizing:border-box; }}
     body {{ margin:0; color:var(--ink); background:var(--canvas); font:400 15px/1.5 "Mona Sans",ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }}
     header {{ padding:14px max(20px,calc((100vw - 1180px)/2)); border-bottom:1px solid var(--line); background:var(--paper); }}
@@ -105,7 +105,7 @@ def render_evidence_page(
     .links a {{ color:var(--brand); font-weight:700; }}
     .creator-cta {{ display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:30px; padding:20px 22px; border-radius:14px; color:#fff; background:var(--brand); }}
     .creator-cta p {{ margin:0; color:rgba(255,255,255,.82); }} .creator-cta strong {{ display:block; color:#fff; font-size:22px; font-weight:760; line-height:1.2; }}
-    .creator-cta a {{ flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:9px 12px; border:1px solid var(--action); border-radius:8px; color:var(--ink); background:var(--action); text-decoration:none; font-weight:750; }}
+    .creator-cta a {{ flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:9px 12px; border:1px solid var(--action); border-radius:999px; color:#fff; background:var(--action); text-decoration:none; font-weight:750; }}
     .creator-cta a:hover {{ border-color:var(--action-hover); background:var(--action-hover); }}
     @media(max-width:760px) {{
       main {{ padding-top:30px; }} .grid {{ grid-template-columns:1fr; }} .source-rail {{ position:static; }} h1 {{ font-size:38px; }}

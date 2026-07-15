@@ -121,7 +121,7 @@ def render_fix_lab(rule_pack: dict[str, Any]) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#24142b">
+  <meta name="theme-color" content="#ECEDEE">
   <meta name="description" content="Fix a synthetic blocked creative row and replay Python-generated golden validation scenarios in the browser.">
   <meta name="author" content="Mathieu Petroni">
   <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html">
@@ -131,12 +131,12 @@ def render_fix_lab(rule_pack: dict[str, Any]) -> str:
   <meta property="article:author" content="https://www.linkedin.com/in/mathieu-petroni/">
   <meta property="og:title" content="Fix &amp; Revalidate Lab · Mathieu Petroni">
   <meta property="og:description" content="Replay Python-generated validation scenarios in a bounded interactive lab.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v2-2.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v3.png">
   <link rel="preload" href="assets/mona-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
   <title>Fix &amp; Revalidate Lab · Mathieu Petroni</title>
   <style>
     @font-face{{font-family:"Mona Sans";src:url("assets/mona-sans-latin-variable.woff2") format("woff2-variations");font-weight:200 900;font-display:optional}}
-    :root {{ --canvas:#f7f6f8;--surface:#ffffff;--soft:#f1eef3;--ink:#1c1422;--body:#4e4652;--muted:#6c6570;--line:#d9d3dd;--strong:#a99eae;--brand:#24142b;--brand-hover:#36213f;--brand-soft:#eee9ff;--accent:#d91f72;--action:#ffe44d;--action-hover:#efd33b;--success:#176143;--success-soft:#e3eee8;--red:#9e342b;--red-soft:#f3e1dd;--font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;}}
+    :root {{ --canvas:#ECEDEE;--surface:#ffffff;--soft:#F7F7F5;--ink:#232427;--body:#55575C;--muted:#7B7D82;--line:#DCDDDC;--strong:#BFC1C0;--brand:#171719;--brand-hover:#2C2C30;--brand-soft:#FFF0EC;--accent:#E34A32;--action:#E34A32;--action-hover:#F05A3C;--success:#176143;--success-soft:#e3eee8;--red:#9e342b;--red-soft:#f3e1dd;--font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;}}
     *{{box-sizing:border-box}} body{{margin:0;color:var(--ink);background:var(--canvas);font:400 14px/1.5 "Mona Sans",ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}} a{{color:var(--brand)}}
     header{{padding:14px max(18px,calc((100vw - 1120px)/2));border-bottom:1px solid var(--line);background:var(--surface)}} header nav{{min-height:32px;display:flex;align-items:center;justify-content:space-between;gap:18px}} header a{{font-weight:700;text-decoration:none}} header .product-link{{font-size:12px;text-decoration:underline;text-underline-offset:3px}}
     main{{width:min(1120px,calc(100% - 32px));margin:auto;padding:46px 0 70px}} .eyebrow{{color:var(--accent);font-size:11px;font-weight:750;letter-spacing:.1em;text-transform:uppercase}} h1{{max-width:860px;margin:10px 0 14px;font-size:clamp(40px,6vw,70px);font-weight:760;line-height:.98;letter-spacing:-.04em}} .lead{{max-width:760px;margin:0;color:var(--body);font-size:18px}}
@@ -144,7 +144,7 @@ def render_fix_lab(rule_pack: dict[str, Any]) -> str:
     .lab{{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);border:1px solid var(--line);background:var(--surface)}} .editor,.result{{padding:26px}} .result{{border-left:1px solid var(--line);background:#fbfaf6}}
     h2{{margin:0 0 6px;font-size:27px;font-weight:720;line-height:1.1}} .section-copy{{margin:0 0 22px;color:var(--muted);font-size:12px}}
     label{{display:grid;gap:6px;margin-top:14px;color:var(--body);font-weight:650}} label span{{color:var(--muted);font-size:11px;font-weight:500}} select{{width:100%;min-height:44px;padding:9px;border:1px solid var(--strong);border-radius:5px;color:var(--ink);background:var(--surface);font:inherit}}
-    .actions{{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}} button{{min-height:42px;padding:8px 12px;border:1px solid var(--strong);border-radius:7px;color:var(--ink);background:var(--surface);font:inherit;font-size:13px;font-weight:600;line-height:1.2;cursor:pointer}} button.primary{{color:var(--ink);border-color:var(--action);background:var(--action)}} button.primary:hover{{border-color:var(--action-hover);background:var(--action-hover)}} button:hover{{border-color:var(--ink)}} button:focus-visible,select:focus-visible,a:focus-visible{{outline:3px solid var(--accent);outline-offset:3px}}
+    .actions{{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}} button{{min-height:44px;padding:8px 12px;border:1px solid var(--strong);border-radius:10px;color:var(--ink);background:var(--surface);font:inherit;font-size:13px;font-weight:600;line-height:1.2;cursor:pointer}} button.primary{{color:#fff;border-color:var(--action);background:var(--action)}} button.primary:hover{{border-color:var(--action-hover);background:var(--action-hover)}} button:hover{{border-color:var(--ink)}} button:focus-visible,select:focus-visible,a:focus-visible{{outline:3px solid var(--accent);outline-offset:3px}}
     .state{{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}} .state.blocked{{color:var(--red);background:var(--red-soft)}} .state.launch_ready{{color:var(--success);background:var(--success-soft)}}
     .issue-list{{display:grid;gap:8px;margin:18px 0}} .issue{{padding:11px 12px;border-left:3px solid var(--red);background:var(--red-soft)}} .issue strong{{display:block;margin-bottom:3px;font-size:12px}} .issue small{{color:var(--muted)}} .clean{{padding:16px;border-left:3px solid var(--success);background:var(--success-soft);color:var(--success)}}
     details{{margin-top:16px;border-top:1px solid var(--line)}} summary{{padding:13px 0;cursor:pointer;font-weight:650}} pre{{max-height:230px;margin:0;overflow:auto;padding:13px;color:var(--body);background:var(--soft);font:500 11px/1.55 var(--font-mono);white-space:pre-wrap}}

@@ -1,66 +1,59 @@
 ---
-register: brand
+register: product
 platform: web
 ---
 
-# Creative Launch Workspace
+# Launch Control
 
-Creative Launch Workspace is the launch control layer before Ads Manager. It validates the handoff between approved creative and campaign build, routes each exception to the right owner, and keeps uncertain calls human.
+Launch Control is pre-launch QA for Meta Ads. It validates approvals, placements, destinations, naming and UTMs across every creative row, routes exceptions to the right owner and keeps ambiguous decisions human.
 
-## Users
+## Audience
 
-- Creative operations leads and media buyers who need a fast, inspectable pre-launch review.
-- Heads of Growth, CMOs, and agency leads who need launch risk to have an owner and an evidence trail.
-- Technical evaluators who need to inspect the deterministic contracts, bounded AI role, and browser QA behind the interface.
+- Creative operations leads and media buyers managing launch handoffs.
+- CMOs, Heads of Growth and agency leads who need exceptions to have owners.
+- CTOs and technical recruiters evaluating product judgment, trust boundaries and engineering quality.
 
-## Purpose and success
+## Product promise
 
-The public page must make the product category, workflow, and value legible within five seconds. Success means a qualified visitor understands what happens before Ads Manager, sees the actual product without scrolling, and chooses **Open the workspace**.
+**Catch creative launch mistakes before Ads Manager.**
 
-The product does not publish to Meta, use customer data, or claim customer outcomes. The public experience uses synthetic fixture data and local-only interactions.
+A visitor should understand the category, see the working product and reach the live workspace in one first-screen scan.
 
-## Positioning
+## Working demo
 
-**The launch control layer before Ads Manager.**
+The public interaction uses the committed synthetic batch `78f20843aea8a367`:
 
-The product checks approval, placement, destination, naming, format, and UTM issues for every creative row. Detected exceptions receive an issue, an owner, and a next action. People retain authority over ambiguous decisions.
+- 100 creative rows;
+- 30 ready;
+- 10 held for human decision;
+- 60 blocked;
+- zero external writes.
 
-## Conversion model
+Queue, Review and Receipt are interactive HTML states. Confirming `cr_007` records browser-local state, creates an inspectable receipt and enables a real JSON export. It does not call Meta.
 
-- Primary action: **Open the workspace**.
-- Secondary action: **See the workflow**.
-- Belief sequence: launch handoffs are fragile; the product checks each row; exceptions are routed; ambiguity stays human; the evidence can be inspected.
-- Proof: a working 100-row fixture, a guided review, fix and revalidation behavior, versioned contracts, automated tests, and reproducible browser QA.
-- Forbidden proof: customer logos, testimonials, ROI, pricing, trial claims, security claims, or production-readiness claims that are not supported by evidence.
+## Authority boundary
 
-## Brand personality
+Automation may propose structured source context. Deterministic rules verify allowlists, schema and launch constraints. Named people decide ambiguous intent. The browser demo cannot publish, upload assets, load credentials or change spend.
 
-Operational, kinetic, exact. The page should feel like a launch control surface under a real deadline: alert enough to focus attention, controlled enough to inspire confidence, and specific enough to be credible.
+## Conversion
 
-The visitor should feel clarity, control, and curiosity.
+- Primary action: **Try the live workspace**.
+- Desktop secondary action: **See how it works**.
+- Proof links: contracts, deterministic replay, CI and architecture.
+- Belief sequence: Detect, Route, Prove.
 
-## Anti-references
+## Brand behavior
 
-- Generic electric-purple AI branding.
-- A cold monochrome Linear clone.
-- Coral or red used as a brand color.
-- Portfolio, personal-project, or case-study framing.
-- Cream editorial paper, glassmorphism, glow, gradient text, floating blobs, decorative grids, and repeated equal cards.
-- Fake social proof, fake metrics, or a pretend enterprise funnel.
+The product feels industrial, calm and exact. Neutral layers create depth, charcoal carries authority and orange identifies the next action. Product evidence is always more prominent than decoration.
 
-## Product principles
+Forbidden: portfolio framing, case studies, fake clients, logos, testimonials, ROI, pricing, purple AI styling, multiple accent colors and repeated screenshots.
 
-1. Product before explanation.
-2. Signal instead of decoration.
-3. One clear action.
-4. Control by design.
-5. Proof without pretending.
+## Quality contract
 
-## Accessibility and performance
-
-- WCAG AA contrast for text and controls.
-- Keyboard-visible focus and 44px minimum targets.
-- No horizontal overflow at 320px or at 200% text zoom.
-- Reduced motion, reduced transparency, and increased contrast support.
-- LCP at or below 2.5s, CLS at or below 0.1, and TBT at or below 200ms in the production build.
-
+- One canonical public landing and no `case-study.html`.
+- Native product proof above the fold.
+- H1 no longer than two lines on desktop.
+- Useful Queue state inside the 390 by 844 mobile fold.
+- 12px minimum product text and 44px minimum controls.
+- Keyboard navigation, `aria-live`, reduced motion and no horizontal overflow.
+- Lighthouse performance at least 90 and accessibility 100.

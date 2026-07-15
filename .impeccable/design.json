@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-07-15T12:00:00Z",
+  "generatedAt": "2026-07-15T17:00:00Z",
   "source": "DESIGN.md",
   "register": "brand",
   "platform": "web",
   "direction": "Launch Control",
-  "personality": ["operational", "kinetic", "exact"],
-  "signature": "routing tracks and checkpoint",
-  "primaryAction": "Open the workspace"
+  "personality": ["industrial", "calm", "exact"],
+  "signature": "orange Detect Route Prove checkpoint",
+  "primaryAction": "Try the live workspace"
 }

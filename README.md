@@ -2,24 +2,22 @@
 
 [![CI](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml/badge.svg)](https://github.com/mattyu-dev/creative-launch-workspace/actions/workflows/codeql.yml)
-[![Live demo](https://img.shields.io/badge/live_demo-open_workspace-ffe44d)](https://mattyu-dev.github.io/creative-launch-workspace/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-24142b)](LICENSE)
+[![Live demo](https://img.shields.io/badge/live_demo-try_launch_control-E34A32)](https://mattyu-dev.github.io/creative-launch-workspace/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-171719)](LICENSE)
 
-The launch control layer before Ads Manager.
+Catch creative launch mistakes before Ads Manager.
 
-Check every creative row for approval, placement, destination, naming and UTM issues. Route each exception to the right owner. Keep uncertain calls human.
+Validate approvals, placements, destinations, naming and UTMs across every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.
 
-**[Open the product](https://mattyu-dev.github.io/creative-launch-workspace/)** · [Open the workspace](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1) · [Explore the full queue](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html) · [Fix and revalidate a blocked row](https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html)
+**[Try Launch Control](https://mattyu-dev.github.io/creative-launch-workspace/)** · [Open the live workspace](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1) · [Explore the full queue](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html) · [Fix and revalidate a blocked row](https://mattyu-dev.github.io/creative-launch-workspace/fix-lab.html)
 
-**100 synthetic creatives · 70 seeded issues routed · 10 ambiguous cases held for human review · 0 live platform mutations**
+**Current synthetic run: 100 creative rows · 70 issues routed · 10 human reviews · 0 external writes**
 
 **Mathieu Petroni** designed and built the review workflow, AI orchestration, evaluations, trust boundaries, deterministic validators and responsive interface.
 
-[![Creative Launch Workspace desktop](docs/assets/workspace-desktop.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html)
+[![Launch Control product](docs/assets/social-card-v3.png)](https://mattyu-dev.github.io/creative-launch-workspace/)
 
-The public product system uses a cold `#f7f6f8` canvas, Mona Sans, deep-plum `#24142b` control surfaces, lemon `#ffe44d` actions and fuchsia `#d91f72` annotations. Green, amber and red remain reserved for real status. `font-display: optional`, responsive image formats and explicit dimensions keep the production landing stable during first paint.
-
-[![Guided human review with local audit evidence](docs/assets/guided-review-step-3.png)](https://mattyu-dev.github.io/creative-launch-workspace/workspace.html?guided=1)
+The V3 public product is a from-scratch Apple and Linear inspired system built with Inter, Instrument Serif accents, a neutral depth shell, charcoal controls and one industrial-orange action color. Queue, Review and Receipt are native interactive states, not screenshots. The only raster image is a new abstract brand sculpture served as AVIF or WebP; it never replaces product proof.
 
 ## Why this exists
 
@@ -60,8 +58,6 @@ Missing critical information, contradictions, prompt injection, credential signa
 The default provider is a transparent deterministic baseline for CI. An optional OpenAI Responses API provider uses strict Structured Outputs, no tools, `store=False`, a bounded timeout, and synthetic-data preflight. No live model score is claimed without a real versioned run.
 
 Read the [governed intake evidence](https://mattyu-dev.github.io/creative-launch-workspace/brief-evidence.html), [model card](docs/ai/model_card.md), [evaluation protocol](docs/ai/evaluation.md), and [system architecture](docs/architecture/system.md).
-
-[![Field-level brief evidence and human review](docs/assets/brief-evidence.png)](https://mattyu-dev.github.io/creative-launch-workspace/brief-evidence.html)
 
 ## Fix & Revalidate Lab
 
