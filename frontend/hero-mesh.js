@@ -80,8 +80,11 @@ export function mountDecisionMesh(canvas, {reducedMotion = false, onStateChange}
   }
 
   function renderFrame(progress, seconds, shouldFloat) {
+    const isMobile = window.innerWidth < 768;
+    const baseY = isMobile ? -2.45 : -1.86;
+    const floatAmplitude = isMobile ? 0.18 : 0.3;
     mesh.position.x = anchor;
-    mesh.position.y = -1.86 + (shouldFloat ? Math.sin(seconds * 1.2) * 0.3 : 0);
+    mesh.position.y = baseY + (shouldFloat ? Math.sin(seconds * 1.2) * floatAmplitude : 0);
     mesh.rotation.x = seconds * 0.55;
     mesh.rotation.y = seconds * 0.8;
     renderer.render(scene, camera);
@@ -128,6 +131,7 @@ export function mountDecisionMesh(canvas, {reducedMotion = false, onStateChange}
       onStateChange?.('static', debug);
       return;
     }
+    onStateChange?.('playing', debug);
     debug.rafActive = true;
     frameId = requestAnimationFrame(tick);
   }

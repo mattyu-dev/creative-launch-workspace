@@ -62,6 +62,7 @@ class ProductSurfaceTests(unittest.TestCase):
             "--charcoal:#171719",
             "--orange:#E34A32",
             "--orange-hover:#F05A3C",
+            "--orange-copy:#A93625",
             "--body:#55575C",
         ):
             self.assertIn(token, html)
@@ -81,10 +82,12 @@ class ProductSurfaceTests(unittest.TestCase):
         self.assertIn("Catch creative launch mistakes before Ads Manager.", html)
         self.assertIn("Try the live workspace", html)
         self.assertIn("Pre-launch QA for Meta Ads", html)
-        self.assertIn("Detect the quiet failures.", html)
-        self.assertIn("Automation proposes. Rules verify.", html)
-        self.assertIn("Rules verify", html)
-        self.assertIn("People decide", html)
+        self.assertIn("From creative manifest", html)
+        self.assertIn("Creative manifest", html)
+        self.assertIn("Check, route, review", html)
+        self.assertIn("Reviewed launch plan", html)
+        self.assertIn("AI prepares the review.", html)
+        self.assertIn("Only people approve", html)
         self.assertIn("Current synthetic run", html)
         self.assertIn("Fixture data, no external writes", html)
         self.assertIn('softwareVersion":"4.0.0"', html)

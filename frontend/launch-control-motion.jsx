@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Badge} from '@astryxdesign/core/Badge';
-import {Button} from '@astryxdesign/core/Button';
 import {Card} from '@astryxdesign/core/Card';
 import {ProgressBar} from '@astryxdesign/core/ProgressBar';
 import {StatusDot} from '@astryxdesign/core/StatusDot';
@@ -17,6 +16,12 @@ const PHASES = [
   {label: 'Route', detail: 'Owner assigned'},
   {label: 'Prove', detail: 'Receipt saved'},
 ];
+const ROUTE_AT_MS = 2350;
+const PROVE_AT_MS = 4750;
+const TRACE_MOTION_MS = 6600;
+const CALM_PAUSE_MS = 3200;
+const LOOP_DURATION_MS = TRACE_MOTION_MS + CALM_PAUSE_MS;
+const MANUAL_HOLD_MS = 5200;
 
 let meshController = null;
 
@@ -68,7 +73,7 @@ function PhasePanel({phase}) {
   return <ProvePanel />;
 }
 
-function MeshCanvas({active, reducedMotion, runId, onWebGL}) {
+function MeshCanvas({active, reducedMotion, onWebGL}) {
   const canvasRef = useRef(null);
   useEffect(() => {
     if (!active || !canvasRef.current) return undefined;
@@ -108,7 +113,7 @@ function MeshCanvas({active, reducedMotion, runId, onWebGL}) {
       localController?.destroy();
       if (meshController === localController) meshController = null;
     };
-  }, [active, reducedMotion, runId, onWebGL]);
+  }, [active, reducedMotion, onWebGL]);
   return <canvas ref={canvasRef} className="trace-mesh" id="meshGL" aria-hidden="true" />;
 }
 
@@ -116,6 +121,8 @@ function RecordedTrace() {
   const rootRef = useRef(null);
   const reducedMotion = useReducedMotion();
   const [hasEntered, setHasEntered] = useState(reducedMotion);
+  const [isInView, setIsInView] = useState(false);
+  const [pageVisible, setPageVisible] = useState(() => !document.hidden);
   const [phase, setPhase] = useState(reducedMotion ? 2 : 0);
   const [runId, setRunId] = useState(0);
   const [isManual, setIsManual] = useState(false);
@@ -129,25 +136,59 @@ function RecordedTrace() {
       return undefined;
     }
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.intersectionRatio >= 0.6) {
-        setHasEntered(true);
-        observer.disconnect();
-      }
-    }, {threshold: [0.6]});
+      if (entry.intersectionRatio >= 0.72) setHasEntered(true);
+      setIsInView(entry.isIntersecting && entry.intersectionRatio >= 0.15);
+    }, {threshold: [0, 0.15, 0.72]});
     observer.observe(rootRef.current);
     return () => observer.disconnect();
   }, [reducedMotion]);
 
   useEffect(() => {
-    if (!hasEntered || reducedMotion || isManual) return undefined;
-    setPhase(0);
-    const routeTimer = window.setTimeout(() => setPhase(1), 2350);
-    const proveTimer = window.setTimeout(() => setPhase(2), 4750);
-    return () => {
-      clearTimeout(routeTimer);
-      clearTimeout(proveTimer);
+    const update = () => setPageVisible(!document.hidden);
+    document.addEventListener('visibilitychange', update);
+    return () => document.removeEventListener('visibilitychange', update);
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion) {
+      setPhase(2);
+      return undefined;
+    }
+    if (!hasEntered || !isInView || !pageVisible || isManual) return undefined;
+
+    let cancelled = false;
+    const timers = new Set();
+    const later = (callback, delay) => {
+      const timer = window.setTimeout(() => {
+        timers.delete(timer);
+        if (!cancelled) callback();
+      }, delay);
+      timers.add(timer);
     };
-  }, [hasEntered, isManual, reducedMotion, runId]);
+    const startCycle = () => {
+      if (cancelled) return;
+      setPhase(0);
+      setRunId((value) => value + 1);
+      window.__launchControlMotion.cycleCount += 1;
+      meshController?.replay();
+      later(() => setPhase(1), ROUTE_AT_MS);
+      later(() => setPhase(2), PROVE_AT_MS);
+      later(startCycle, LOOP_DURATION_MS);
+    };
+
+    startCycle();
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => clearTimeout(timer));
+      timers.clear();
+    };
+  }, [hasEntered, isInView, isManual, pageVisible, reducedMotion]);
+
+  useEffect(() => {
+    if (!isManual || reducedMotion || !isInView || !pageVisible) return undefined;
+    const resumeTimer = window.setTimeout(() => setIsManual(false), MANUAL_HOLD_MS);
+    return () => clearTimeout(resumeTimer);
+  }, [isInView, isManual, pageVisible, reducedMotion]);
 
   function selectPhase(index) {
     setIsManual(true);
@@ -156,23 +197,16 @@ function RecordedTrace() {
     setLiveMessage(`${PHASES[index].label}: ${PHASES[index].detail}`);
   }
 
-  function replay() {
-    setIsManual(false);
-    setPhase(0);
-    setRunId((value) => value + 1);
-    setLiveMessage('Recorded trace replayed from Detect.');
-  }
-
   const progress = [34, 68, 100][phase];
   return <div ref={rootRef} className="lc-motion" data-phase={PHASES[phase].label.toLowerCase()} data-webgl={webgl ? 'ready' : 'fallback'}>
     <Theme theme={launchControlTheme} mode="light">
       <Card className="trace-card" padding={0} minHeight={430}>
         <div className="trace-topbar">
-          <div className="trace-run-state"><StatusDot variant="accent" label="Recorded synthetic run" /><span>Recorded synthetic run</span></div>
-          <span className="trace-boundary">Read-only replay · local data</span>
+          <div className="trace-run-state"><StatusDot variant="accent" label="Live product walkthrough" /><span>Live product walkthrough</span></div>
+          <span className="trace-boundary">Automatic loop · local data</span>
         </div>
-        <div className="trace-progress"><ProgressBar value={progress} label="Recorded decision trace progress" isLabelHidden /></div>
-        <ol className="trace-steps" aria-label="Recorded decision trace">
+        <div className="trace-progress"><ProgressBar value={progress} label="Product walkthrough progress" isLabelHidden /></div>
+        <ol className="trace-steps" aria-label="Product walkthrough">
           {PHASES.map((item, index) => <li key={item.label} data-complete={index < phase ? 'true' : 'false'}>
             <button type="button" aria-current={index === phase ? 'step' : undefined} onClick={() => selectPhase(index)}>
               <b>{index < phase ? '✓' : `0${index + 1}`}</b><span><strong>{item.label}</strong><small>{item.detail}</small></span>
@@ -183,13 +217,12 @@ function RecordedTrace() {
           <PhasePanel phase={phase} key={`${phase}-${runId}`} />
           <div className="trace-rail" aria-hidden="true"><span></span><span></span><span></span></div>
           <div className="trace-token-fallback" aria-hidden="true"></div>
-          <MeshCanvas active={hasEntered} reducedMotion={reducedMotion} runId={runId} onWebGL={setWebgl} />
+          <MeshCanvas active={hasEntered} reducedMotion={reducedMotion} onWebGL={setWebgl} />
         </div>
         <div className="trace-footer">
-          <span>One exception. One owner. One receipt.</span>
-          <Button className="trace-replay" label="Replay trace" variant="secondary" size="lg" onClick={replay} />
+          <small className="trace-loop-note">One exception. One owner. One receipt. The walkthrough loops automatically.</small>
         </div>
-        <p className="trace-static-summary">Recorded replay: cr_007 is detected as a possible duplicate, routed to the Creative Ops Manager, then saved locally after a human confirms “Keep both”.</p>
+        <p className="trace-static-summary">Looping walkthrough: cr_007 is detected as a possible duplicate, routed to the Creative Ops Manager, then saved locally after a human confirms “Keep both”.</p>
         <span className="trace-live" aria-live="polite">{liveMessage}</span>
       </Card>
     </Theme>
@@ -202,6 +235,13 @@ window.__launchControlMotion = {
   astryx: '0.1.6',
   three: '0.128.0',
   sequence: ['Detect', 'Route', 'Prove'],
+  loop: true,
+  routeAtMs: ROUTE_AT_MS,
+  proveAtMs: PROVE_AT_MS,
+  motionDurationMs: TRACE_MOTION_MS,
+  calmPauseMs: CALM_PAUSE_MS,
+  loopDurationMs: LOOP_DURATION_MS,
+  cycleCount: 0,
 };
 
 const host = document.getElementById('hero-motion-root');
