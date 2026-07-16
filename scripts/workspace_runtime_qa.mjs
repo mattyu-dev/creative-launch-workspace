@@ -314,7 +314,7 @@ await page.evaluate(() => localStorage.clear());
 
 if (
   !guidedStepOne.open
-  || guidedStepOne.progress !== "1 of 3 · Find"
+  || guidedStepOne.progress !== "1 of 3 · Detect"
   || guidedStepOne.selectedRow !== "8"
   || guidedStepOne.issue !== "Possible duplicate"
   || guidedStepOne.owner !== "Creative Ops Manager"
@@ -324,7 +324,7 @@ if (
   || guidedStepTwo.progress !== "2 of 3 · Decide"
   || !guidedStepTwo.confirmVisible
   || guidedStepTwo.confirmLabel !== "Confirm reuse for dry-run export"
-  || guidedStepThree.progress !== "3 of 3 · Verify"
+  || guidedStepThree.progress !== "3 of 3 · Prove"
   || guidedStepThree.state !== "Confirmed for dry-run export"
   || guidedStepThree.role !== "Creative Ops Manager"
   || !guidedStepThree.event?.includes("row_decision_updated")
@@ -344,7 +344,7 @@ if (
   || guidedExit.guidedParam !== null
   || (guidedExit.focusedRow !== "8" && guidedExit.focusedId !== "review-workspace")
   || guidedPersistence.selectedRow !== "18"
-  || guidedPersistence.progress !== "1 of 3 · Find"
+  || guidedPersistence.progress !== "1 of 3 · Detect"
   || !guidedMobile.open
   || !guidedMobile.noDocumentOverflow
   || !guidedMobile.dialogWithinViewport
@@ -354,7 +354,7 @@ if (
   || !guidedSmallPhoneStepTwo.actionsBeforeCase
   || !guidedSmallPhoneStepTwo.everyDecisionVisible
   || !guidedSmallPhoneStepTwo.titleUsesCustomFocus
-  || guidedSmallPhoneStepThree.progress !== "3 of 3 · Verify"
+  || guidedSmallPhoneStepThree.progress !== "3 of 3 · Prove"
   || !guidedSmallPhoneStepThree.footerVisible
   || guidedSmallPhoneStepThree.productBuilderHref !== "https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md"
   || !guidedSmallPhoneStepThree.noPersonalContact
@@ -640,8 +640,8 @@ const productPage = await page.evaluate(() => ({
   visibleWordCount: document.body.innerText.trim().split(/\s+/).length,
   scrollHeight: document.body.scrollHeight,
   copyFreeze: {
-    boundary: document.body.textContent.includes("Demo data / local only")
-      && document.body.textContent.includes("No Meta API call")
+    boundary: document.body.textContent.includes("Demo data · stays on this device")
+      && document.body.textContent.includes("Nothing is sent to Meta")
       && document.body.textContent.includes("External mutation")
       && document.body.textContent.includes("false"),
     reviewScope: document.body.textContent.includes("checks every creative row before upload"),
@@ -656,7 +656,7 @@ const productPage = await page.evaluate(() => ({
     noLongDash: !/[—–]/.test(`${document.title}\n${document.body.innerText}`),
     concreteHero: document.body.textContent.includes("Catch creative launch mistakes before Ads Manager"),
     concreteProblem: document.body.textContent.includes("10 creatives need a decision"),
-    concreteWorkflow: document.body.textContent.includes("From creative manifest")
+    concreteWorkflow: document.body.textContent.includes("From launch sheet")
       && document.body.textContent.includes("Check, route, review")
       && document.body.textContent.includes("Reviewed launch plan"),
     directEvidence: document.body.textContent.includes("Proof you can inspect")
@@ -710,9 +710,9 @@ if (
   || !productPage.ogImage?.endsWith("/assets/social-card-v5.png")
   || !productPage.hasWorkspaceCta
   || productPage.hasCaseStudyLink
-  || productPage.mainSectionCount !== 5
+  || productPage.mainSectionCount !== 6
   || productPage.visibleWordCount > 850
-  || productPage.scrollHeight > 7000
+  || productPage.scrollHeight > 7600
   || !productPage.copyFreeze.boundary
   || !productPage.copyFreeze.reviewScope
   || !productPage.copyFreeze.reviewState
@@ -829,7 +829,14 @@ const productDecision = await page.evaluate(() => ({
   remaining: document.querySelector("#decision-count")?.textContent.trim(),
   receiptLive: document.querySelector("#receipt-card")?.dataset.live
 }));
-await page.click("#back-to-queue");
+const receiptBridge = await page.evaluate(() => {
+  const bridge = document.querySelector("#panel-receipt .receipt-actions a");
+  return {
+    href: bridge?.getAttribute("href"),
+    label: bridge?.textContent.trim()
+  };
+});
+await page.click("#tab-queue");
 const productBackNavigation = await page.evaluate(() => ({
   selectedTab: document.querySelector('[role="tab"][aria-selected="true"]')?.textContent.trim(),
   visiblePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id,
@@ -853,6 +860,8 @@ if (
   || productDecision.liveRegion !== "Decision saved locally. 9 decisions remaining."
   || productDecision.remaining !== "9 decisions remaining"
   || productDecision.receiptLive !== "true"
+  || receiptBridge.href !== "workspace.html?guided=1"
+  || !receiptBridge.label?.startsWith("Decide the 9 remaining in the workspace")
   || productBackNavigation.selectedTab !== "Queue"
   || productBackNavigation.visiblePanel !== "panel-queue"
   || productBackNavigation.focused !== "tab-queue"
@@ -942,7 +951,7 @@ if (
   || productMobile.legacyScreenshotReferences.length
   || productMobile.activePanel !== "panel-queue"
   || productMobile.touchTargetFailures.length
-  || productMobile.scrollHeight > 7300
+  || productMobile.scrollHeight > 8300
   || productMobile.bodyFontPx < 16
   || productMobile.meshMounted
   || !productMobile.tokenVisible

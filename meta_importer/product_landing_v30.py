@@ -212,6 +212,17 @@ def _shared_styles() -> str:
     .proof-label strong{margin-top:7px;font-size:16px;line-height:1.15}
     .proof-number strong{font-size:34px;font-weight:620;line-height:1}
     .proof-number span{margin-top:7px;color:var(--muted);font-size:11px}
+    .cta-note{margin:12px 0 0;color:var(--muted);font-size:13px}
+    .hero-copy [data-rise]:nth-child(5){animation-delay:240ms}
+    .tabs-hint{margin:-4px 14px 10px;color:var(--muted);font-size:12px}
+    .stakes{padding:118px 0 0}
+    .stakes-heading{margin-bottom:40px}
+    .stakes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .stake-card{padding:26px;border:1px solid var(--line);border-radius:var(--radius-card);background:white;box-shadow:var(--shadow-card)}
+    .stake-card h3{margin:0;font-size:22px;font-weight:640}
+    .stake-card p{margin:10px 0 0;font-size:14px;line-height:1.55}
+    .closing-note{grid-column:1/-1;margin:0;color:var(--muted);font-size:13px}
+    .closing-note a{font-weight:640;text-underline-offset:3px}
     .section{padding:128px 0}
     .section-heading{display:grid;grid-template-columns:minmax(0,.9fr) minmax(320px,.55fr);gap:70px;align-items:end;margin-bottom:48px}
     .section-title{max-width:820px;margin:0;font-size:clamp(44px,5vw,70px);font-weight:610;line-height:.98;letter-spacing:-.048em}
@@ -270,7 +281,7 @@ def _shared_styles() -> str:
     .evidence-link strong{margin-top:auto;font-size:17px;font-weight:640}
     .evidence-link span{margin-top:7px;color:var(--muted);font-size:12px}
     .closing{padding:96px 0 40px}
-    .app-stage,.section,.safeguard,.evidence{scroll-margin-top:100px}
+    .app-stage,.section,.safeguard,.evidence,.stakes{scroll-margin-top:100px}
     .closing-panel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:54px;align-items:end;padding:58px;border:1px solid rgba(23,23,25,.08);border-radius:30px;background:white;box-shadow:var(--shadow-card)}
     .closing-panel h2{max-width:820px;margin:0;font-size:clamp(42px,5.2vw,68px);font-weight:610;line-height:.98;letter-spacing:-.05em}
     .closing-panel p{margin:17px 0 0;font-size:16px}
@@ -326,6 +337,7 @@ def _shared_styles() -> str:
       .feature-card[data-card="source"]{grid-column:span 2}
       .feature-card[data-card="local"]{grid-column:span 1}
       .guardrails,.evidence-grid{grid-template-columns:1fr 1fr}
+      .stakes-grid{grid-template-columns:1fr}
       .closing-panel{grid-template-columns:minmax(0,1fr);align-items:start}
     }
     @media(max-width:640px){
@@ -391,6 +403,8 @@ def _shared_styles() -> str:
       .feature-card[data-card="source"],.feature-card[data-card="local"]{grid-column:auto}
       .source-map{right:20px;bottom:20px;width:58%}
       .local-window{right:20px;width:55%}
+      .stakes{padding-top:80px}
+      .stake-card{padding:22px}
       .safeguard{padding-bottom:86px}
       .safeguard-panel{padding:42px 24px;border-radius:24px}
       .guardrails,.evidence-grid{grid-template-columns:1fr}
@@ -407,6 +421,7 @@ def _shared_styles() -> str:
       .brand-copy strong{font-size:12px}
       .nav-links .button{display:none}
       .hero-actions .button-arrow{display:none}
+      .cta-note{display:none}
       .display{font-size:39px}
       .run-proof>div{padding:15px}
       .proof-number strong{font-size:29px}
@@ -440,14 +455,15 @@ def _product_shell() -> str:
       <div class="app-shell">
         <div class="app-topbar">
           <div class="app-title"><span class="brand-mark" aria-hidden="true"></span><span>Launch Control</span></div>
-          <div class="app-meta"><span>Launch / 14 Jul</span><span class="badge" data-tone="orange">Demo data / local only</span></div>
+          <div class="app-meta"><span>Launch / 14 Jul</span><span class="badge" data-tone="orange">Demo data · stays on this device</span></div>
         </div>
-        <div class="product-tabs" role="tablist" aria-label="Live product walkthrough">
+        <div class="product-tabs" role="tablist" aria-label="Interactive demo: queue, review, receipt">
           <span class="t-tabs-pill" aria-hidden="true"></span>
           <button class="product-tab" id="tab-queue" type="button" role="tab" aria-selected="true" aria-controls="panel-queue" tabindex="0">Queue</button>
           <button class="product-tab" id="tab-review" type="button" role="tab" aria-selected="false" aria-controls="panel-review" tabindex="-1">Review</button>
           <button class="product-tab" id="tab-receipt" type="button" role="tab" aria-selected="false" aria-controls="panel-receipt" tabindex="-1">Receipt</button>
         </div>
+        <p class="tabs-hint">Click any row to review it.</p>
         <section class="app-panel" id="panel-queue" role="tabpanel" aria-labelledby="tab-queue">
           <div class="queue-layout">
             <nav class="queue-nav" aria-label="Queue filters">
@@ -455,12 +471,12 @@ def _product_shell() -> str:
               <button class="queue-filter" type="button">All <span>100</span></button>
               <button class="queue-filter" type="button">Ready <span>30</span></button>
               <button class="queue-filter" data-active="true" type="button">Needs decision <span>10</span></button>
-              <button class="queue-filter" type="button">Needs fix <span>60</span></button>
+              <button class="queue-filter" type="button">Blocked <span>60</span></button>
             </nav>
             <div class="queue-main">
               <div class="queue-head"><div><h2>10 creatives need a decision</h2><p>One owner and one next action for every exception.</p></div><span class="badge">Batch 78f20843aea8a367</span></div>
               <div class="run-strip" role="img" aria-label="30 ready, 10 need a human decision, 60 blocked"><span></span><span></span><span></span></div>
-              <div class="run-legend"><span><b>30</b> ready</span><span><b>10</b> human decision</span><span><b>60</b> blocked</span></div>
+              <div class="run-legend"><span><b>30</b> ready</span><span><b>10</b> need a decision</span><span><b>60</b> blocked</span></div>
               <div class="queue-list" aria-label="Rows requiring a decision">
                 <button class="queue-row" data-selected="true" data-open-review type="button"><span class="row-id">cr_007</span><span class="row-name"><strong>Launch offer 07</strong><span>Possible duplicate</span></span><span class="row-owner"><strong>Creative Ops Manager</strong><span>Decision required</span></span><span class="row-status">Review now</span></button>
                 <button class="queue-row" data-open-review type="button"><span class="row-id">cr_017</span><span class="row-name"><strong>Launch offer 17</strong><span>Possible duplicate</span></span><span class="row-owner"><strong>Creative Ops Manager</strong><span>Decision required</span></span><span class="row-status">Review now</span></button>
@@ -488,15 +504,15 @@ def _product_shell() -> str:
               <p>Asset appears to be reused and needs intent confirmed.</p>
               <div class="decision-card"><strong>Proposed fix</strong><p>Confirm intentional reuse or return the row for replacement.</p><div class="owner-line"><span>Owner</span><strong>Creative Ops Manager</strong></div></div>
               <div class="inspector-actions"><button class="button" data-variant="orange" id="confirm-decision" type="button">Confirm intentional reuse</button><button class="button" data-variant="outline" type="button">Return for replacement</button><button class="button" data-variant="danger" type="button">Block row</button></div>
-              <p class="inspector-foot">Saves browser-local state / No Meta API call</p>
+              <p class="inspector-foot">Saved on this device only. Nothing is sent to Meta.</p>
             </aside>
           </div>
         </section>
         <section class="app-panel" id="panel-receipt" role="tabpanel" aria-labelledby="tab-receipt" hidden>
           <div class="receipt-panel">
             <div class="receipt-card" id="receipt-card" data-live="false">
-              <div class="receipt-summary"><div class="success-icon"><img src="assets/icons/check-circle-2.svg" alt=""></div><h2>Intentional reuse confirmed</h2><p>cr_007 is ready for dry-run export.</p><ol class="timeline"><li><strong>Duplicate flagged</strong><span>System validator</span></li><li><strong>Reuse confirmed</strong><span>Creative Ops Manager</span></li><li><strong>Review state updated</strong><span>Browser-local</span></li></ol><p id="decision-count">Decision saved locally.</p></div>
-              <div class="receipt-data"><h4>Decision receipt</h4><dl><div><dt>State</dt><dd>confirmed_ready</dd></div><div><dt>Event</dt><dd>row_decision_updated</dd></div><div><dt>Creative</dt><dd>cr_007</dd></div><div><dt>Source</dt><dd>row_007</dd></div><div><dt>Reviewer</dt><dd>Creative Ops Manager</dd></div><div><dt>Dataset</dt><dd title="synthetic_fixture_only">synthetic fixture</dd></div><div><dt>Storage</dt><dd>Browser local</dd></div><div><dt>Mutation allowed</dt><dd>false</dd></div><div><dt>External mutation</dt><dd>false</dd></div><div><dt>Batch</dt><dd>78f20843aea8a367</dd></div><div><dt>Manifest SHA</dt><dd title="4b09268ddcb1f49020f66777d0bcdd734e22add2e77657578d68201ad38ccabf">4b09268ddcb1…</dd></div></dl><div class="receipt-actions"><button class="button" data-variant="primary" id="back-to-queue" type="button">Back to queue</button><button class="button" data-variant="outline" id="export-review" type="button">Export JSON</button></div></div>
+              <div class="receipt-summary"><div class="success-icon"><img src="assets/icons/check-circle-2.svg" alt=""></div><h2>Intentional reuse confirmed</h2><p>cr_007 is ready for dry-run export, the plan file you download instead of publishing.</p><ol class="timeline"><li><strong>Duplicate flagged</strong><span>System validator</span></li><li><strong>Reuse confirmed</strong><span>Creative Ops Manager</span></li><li><strong>Review state updated</strong><span>This device</span></li></ol><p id="decision-count">Decision saved locally.</p></div>
+              <div class="receipt-data"><h4>Decision receipt</h4><dl><div><dt>State</dt><dd>confirmed_ready</dd></div><div><dt>Event</dt><dd>row_decision_updated</dd></div><div><dt>Creative</dt><dd>cr_007</dd></div><div><dt>Source</dt><dd>row_007</dd></div><div><dt>Reviewer</dt><dd>Creative Ops Manager</dd></div><div><dt>Dataset</dt><dd title="synthetic_fixture_only">synthetic fixture</dd></div><div><dt>Storage</dt><dd>Browser local</dd></div><div><dt>Mutation allowed</dt><dd>false</dd></div><div><dt>External mutation</dt><dd>false</dd></div><div><dt>Batch</dt><dd>78f20843aea8a367</dd></div><div><dt>Manifest SHA</dt><dd title="4b09268ddcb1f49020f66777d0bcdd734e22add2e77657578d68201ad38ccabf">4b09268ddcb1…</dd></div></dl><div class="receipt-actions"><a class="button" data-variant="primary" href="workspace.html?guided=1">Decide the 9 remaining in the workspace <span class="button-arrow" aria-hidden="true">→</span></a><button class="button" data-variant="outline" id="export-review" type="button">Export JSON</button></div></div>
             </div>
           </div>
         </section>
@@ -546,7 +562,7 @@ def render_product_landing_v30() -> str:
   <header class="site-header" data-scrolled="false">
     <nav class="site-nav" aria-label="Product navigation">
       <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"></span><span class="brand-copy"><strong>Launch Control</strong><span>Pre-launch QA for Meta Ads</span></span></a>
-      <div class="nav-links"><a href="#product">Product</a><a href="#workflow">Workflow</a><a href="#safeguards">Safeguards</a><a href="#evidence">Evidence</a><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">↗</span></a></div>
+      <div class="nav-links"><a href="#product">Product</a><a href="#workflow">Workflow</a><a href="#safeguards">Safeguards</a><a href="#evidence">Evidence</a><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">→</span></a></div>
     </nav>
   </header>
   <div class="page">
@@ -554,36 +570,47 @@ def render_product_landing_v30() -> str:
       <section class="hero" aria-labelledby="hero-title">
         <div class="container">
           <div class="hero-main">
-            <div class="hero-copy"><div class="eyebrow" data-rise>Pre-launch QA for Meta Ads</div><h1 class="display" id="hero-title" data-rise data-wchar>Catch creative launch mistakes before Ads Manager.</h1><p class="lead" data-rise>Launch Control checks every creative row before upload, routes each problem to a named owner and records the human decision.</p><div class="hero-actions" data-rise><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">↗</span></a><a class="button" data-variant="outline" href="#workflow">See how it works <span aria-hidden="true">↓</span></a></div></div>
-            <div class="hero-motion-host" id="hero-motion-root" aria-label="Looping product walkthrough from detection to receipt"><div class="motion-fallback"><header><span>Live product walkthrough</span><span>Local demo data</span></header><ol><li><b>01</b>Detect</li><li><b>02</b>Route</li><li><b>03</b>Prove</li></ol><article><div><small>Human decision recorded</small><strong>cr_007 · Possible duplicate</strong><span>The issue is routed to Creative Ops Manager, then saved locally after review.</span></div></article><footer>Checks one row, routes the issue and records the decision.</footer></div></div>
+            <div class="hero-copy"><div class="eyebrow" data-rise>Pre-launch QA for Meta Ads</div><h1 class="display" id="hero-title" data-rise data-wchar>Catch creative launch mistakes before Ads Manager.</h1><p class="lead" data-rise>Launch Control checks every creative row before upload, routes each problem to a named owner and records the human decision.</p><div class="hero-actions" data-rise><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">→</span></a><a class="button" data-variant="outline" href="#workflow">See how it works <span aria-hidden="true">↓</span></a></div><p class="cta-note" data-rise>Inspect the queue, decide one exception, export the receipt. Read-only.</p></div>
+            <div class="hero-motion-host" id="hero-motion-root" aria-label="Looping product walkthrough from detection to receipt"><div class="motion-fallback"><header><span>Live product walkthrough</span></header><ol><li><b>01</b>Detect</li><li><b>02</b>Route</li><li><b>03</b>Prove</li></ol><article><div><small>Human decision recorded</small><strong>cr_007 · Possible duplicate</strong><span>The issue is routed to Creative Ops Manager, then recorded with a receipt after review.</span></div></article><footer>Checks one row, routes the issue and records the decision.</footer></div></div>
           </div>
           __PRODUCT_SHELL__
-          <div class="run-proof" aria-label="Current synthetic run summary" data-reveal><div class="proof-label"><span>Current synthetic run</span><strong>Fixture data, no external writes</strong></div><div class="proof-number"><strong>100</strong><span>creative rows</span></div><div class="proof-number"><strong>70</strong><span>issues routed</span></div><div class="proof-number"><strong>10</strong><span>human reviews</span></div><div class="proof-number"><strong>0</strong><span>external writes</span></div></div>
+          <div class="run-proof" aria-label="Current synthetic run summary" data-reveal><div class="proof-label"><span>Current synthetic run</span><strong>Same input, same verdicts, every run.</strong></div><div class="proof-number"><strong>100</strong><span>rows checked</span></div><div class="proof-number"><strong>60</strong><span>blocked, each with a named fix</span></div><div class="proof-number"><strong>10</strong><span>held for a human decision</span></div><div class="proof-number"><strong>0</strong><span>writes to Meta</span></div></div>
+        </div>
+      </section>
+
+      <section class="stakes" id="stakes" aria-labelledby="stakes-title">
+        <div class="container">
+          <div class="stakes-heading" data-reveal><div class="eyebrow">What a bad row costs</div><h2 class="section-title" id="stakes-title">One bad row costs more than the review.</h2></div>
+          <div class="stakes-grid">
+            <article class="stake-card" data-reveal><h3>Wrong destination.</h3><p>The ad spends. Every click lands on a page that does not resolve.</p></article>
+            <article class="stake-card" data-reveal><h3>Broken UTM.</h3><p>The campaign delivers, but reporting can no longer attribute a single result to it.</p></article>
+            <article class="stake-card" data-reveal><h3>Missing approval.</h3><p>A creative that never passed review ships to a client account under your name.</p></article>
+          </div>
         </div>
       </section>
 
       <section class="section" id="workflow" aria-labelledby="workflow-title">
         <div class="container">
-          <div class="section-heading" data-reveal><h2 class="section-title" id="workflow-title">From creative manifest to a <span class="serif-accent">launch-ready review.</span></h2><p class="section-lead">Import a manifest. Launch Control checks every row, groups each failure with its source evidence, assigns an owner and saves the final decision locally.</p></div>
-          <ol class="product-flow" aria-label="What goes into Launch Control and what comes out" data-reveal><li><span>Input</span><strong>Creative manifest</strong><small>Assets, approvals, placements, URLs, names and UTM fields.</small></li><li class="flow-arrow" aria-hidden="true">→</li><li data-core><span>Launch Control</span><strong>Check, route, review</strong><small>Deterministic validation first. A named person decides every ambiguous case.</small></li><li class="flow-arrow" aria-hidden="true">→</li><li><span>Output</span><strong>Reviewed launch plan</strong><small>An owner, a next action and a local decision receipt for every exception.</small></li></ol>
+          <div class="section-heading" data-reveal><h2 class="section-title" id="workflow-title">From launch sheet to a <span class="serif-accent">reviewed launch plan.</span></h2><p class="section-lead">Import your launch sheet. Launch Control reads it as a manifest, checks every row, groups each failure with its evidence and assigns a named owner.</p></div>
+          <ol class="product-flow" aria-label="What goes into Launch Control and what comes out" data-reveal><li><span>Input</span><strong>Launch sheet</strong><small>Assets, approvals, placements, URLs, names and UTM fields.</small></li><li class="flow-arrow" aria-hidden="true">→</li><li data-core><span>Launch Control</span><strong>Check, route, review</strong><small>Deterministic validation first. A named person decides every ambiguous case.</small></li><li class="flow-arrow" aria-hidden="true">→</li><li><span>Output</span><strong>Reviewed launch plan</strong><small>An owner, a next action and a decision receipt for every exception. You upload the reviewed plan through your normal Ads Manager process. Launch Control never needs access to your account.</small></li></ol>
           <div class="bento">
             <article class="feature-card" data-card="source" data-reveal><img class="icon" src="assets/icons/scan-line.svg" alt=""><h3>Check every launch field</h3><p>Each asset, approval, placement, destination, name and UTM stays connected to its source row.</p><div class="source-map" aria-hidden="true"><span></span><span></span><span></span></div></article>
             <article class="feature-card" data-card="route" data-reveal><img class="icon" src="assets/icons/route.svg" alt=""><h3>Route each failure to a named owner</h3><p>The issue, its evidence and the next action travel together.</p><div class="route-visual" aria-hidden="true"><span></span><b>ROUTE</b><span></span></div></article>
-            <article class="feature-card" data-card="local" data-reveal><img class="icon" src="assets/icons/file-json.svg" alt=""><h3>Record the human decision</h3><p>Every review creates browser-local state and an exportable receipt without calling Meta.</p><div class="local-window" aria-hidden="true"><span></span><span></span><span></span><span></span></div></article>
-            <article class="feature-card" data-card="boundary" data-reveal><img class="icon" src="assets/icons/shield-check.svg" alt=""><h3>Export a plan, never publish</h3><p>The demo records local review state. It cannot call Meta, upload assets or change spend.</p><div class="boundary-signal"><span>external_mutation</span><strong>false</strong></div></article>
+            <article class="feature-card" data-card="local" data-reveal><img class="icon" src="assets/icons/file-json.svg" alt=""><h3>Record the human decision</h3><p>Every review saves the decision on your device and stamps it into an exportable receipt.</p><div class="local-window" aria-hidden="true"><span></span><span></span><span></span><span></span></div></article>
+            <article class="feature-card" data-card="boundary" data-reveal><img class="icon" src="assets/icons/shield-check.svg" alt=""><h3>Plans, not publishes.</h3><p>Launch Control produces a reviewed plan and an exportable receipt. It never calls Meta, never uploads assets, never touches spend.</p><div class="boundary-signal"><span>external_mutation</span><strong>false</strong></div></article>
           </div>
         </div>
       </section>
 
       <section class="safeguard" id="safeguards" aria-labelledby="safeguard-title">
-        <div class="container"><div class="safeguard-panel" data-reveal><div class="eyebrow">Human in the loop by design</div><h2 id="safeguard-title">AI prepares the review. <span class="serif-accent">Only people approve.</span></h2><p>Launch Control can organize source context, suggest typed corrections and rerun deterministic validators. It cannot approve a field, bypass a rule or publish to Meta.</p><div class="guardrails"><div><b>Proposal</b><strong>AI suggests a typed correction with evidence from the imported manifest.</strong></div><div><b>Verification</b><strong>Deterministic rules block invalid approvals, placements, URLs, names and UTMs.</strong></div><div><b>Decision</b><strong>A named reviewer chooses the final action and saves the decision locally.</strong></div></div></div></div>
+        <div class="container"><div class="safeguard-panel" data-reveal><div class="eyebrow">Human in the loop by design</div><h2 id="safeguard-title">AI prepares the review. <span class="serif-accent">Only people approve.</span></h2><p>Launch Control can organize source context, suggest structured fixes and rerun deterministic validators. It cannot approve a field, bypass a rule or publish to Meta.</p><div class="guardrails"><div><b>Proposal</b><strong>AI suggests a structured fix with evidence from the imported launch sheet.</strong></div><div><b>Verification</b><strong>Deterministic rules block invalid approvals, placements, URLs, names and UTMs.</strong></div><div><b>Decision</b><strong>A named reviewer chooses the final action and saves the decision.</strong></div></div></div></div>
       </section>
 
       <section class="evidence" id="evidence" aria-labelledby="evidence-title">
-        <div class="container"><div class="section-heading" data-reveal><h2 class="section-title" id="evidence-title">Proof you can inspect.</h2><p class="section-lead">The product surface is backed by versioned contracts, reproducible validators and browser quality gates.</p></div><div class="evidence-grid"><a class="evidence-link" href="brief-evidence.html" data-reveal><img src="assets/icons/file-json.svg" alt=""><strong>Contracts</strong><span>Inspect field evidence and review state.</span></a><a class="evidence-link" href="fix-lab.html" data-reveal><img src="assets/icons/route.svg" alt=""><strong>Deterministic replay</strong><span>Run the same golden scenarios again.</span></a><a class="evidence-link" href="https://github.com/mattyu-dev/creative-launch-workspace/actions" data-reveal><img src="assets/icons/shield-check.svg" alt=""><strong>CI quality gates</strong><span>See tests, browser QA and accessibility checks.</span></a><a class="evidence-link" href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md" data-reveal><img src="assets/icons/external-link.svg" alt=""><strong>Architecture</strong><span>Trace the trust boundaries end to end.</span></a></div></div>
+        <div class="container"><div class="section-heading" data-reveal><h2 class="section-title" id="evidence-title">Proof you can inspect.</h2><p class="section-lead">Every claim on this page is checkable: versioned contracts, replayable validation runs and automated quality gates.</p></div><div class="evidence-grid"><a class="evidence-link" href="brief-evidence.html" data-reveal><img src="assets/icons/file-json.svg" alt=""><strong>Contracts</strong><span>Inspect field evidence and review state.</span></a><a class="evidence-link" href="fix-lab.html" data-reveal><img src="assets/icons/route.svg" alt=""><strong>Deterministic replay</strong><span>Re-run the same scenarios, get the same verdicts.</span></a><a class="evidence-link" href="https://github.com/mattyu-dev/creative-launch-workspace/actions" target="_blank" rel="noopener" data-reveal><img src="assets/icons/shield-check.svg" alt=""><strong>CI quality gates</strong><span>See tests, browser QA and accessibility checks.</span></a><a class="evidence-link" href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md" target="_blank" rel="noopener" data-reveal><img src="assets/icons/external-link.svg" alt=""><strong>Architecture</strong><span>Trace the trust boundaries end to end.</span></a></div></div>
       </section>
 
-      <section class="closing" aria-labelledby="closing-title"><div class="container"><div class="closing-panel" data-reveal><div><div class="eyebrow">Launch with control</div><h2 id="closing-title">Review the manifest before it reaches Meta.</h2><p>Open the guided demo to inspect the queue, decide one exception and export the local receipt.</p></div><div class="closing-actions"><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">↗</span></a><a class="button" data-variant="outline" href="https://github.com/mattyu-dev/creative-launch-workspace">View source</a></div></div></div></section>
+      <section class="closing" aria-labelledby="closing-title"><div class="container"><div class="closing-panel" data-reveal><div><div class="eyebrow">Launch with control</div><h2 id="closing-title">Review the launch sheet before it reaches Meta.</h2><p>Open the workspace to inspect the queue, decide one exception and export the receipt.</p></div><div class="closing-actions"><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">→</span></a><a class="button" data-variant="outline" href="https://github.com/mattyu-dev/creative-launch-workspace">View source</a></div><p class="closing-note">Running real launches? <a href="https://github.com/mattyu-dev/creative-launch-workspace/discussions/24" target="_blank" rel="noopener">Tell us what your preflight needs →</a></p></div></div></section>
     </main>
     <footer><div class="container footer-row"><span>© Launch Control</span><span class="footer-links"><a href="https://github.com/mattyu-dev/creative-launch-workspace">Source</a><a href="brief-evidence.html">Evidence</a><a href="fix-lab.html">Fix lab</a></span></div></footer>
   </div>
@@ -616,7 +643,6 @@ def render_product_landing_v30() -> str:
       const confirmed=()=>localStorage.getItem(storageKey)==='confirmed';
       function showReceipt(fromDecision=false){receipt.dataset.live='true';count.textContent=fromDecision?'9 decisions remaining':'Decision saved locally.';activateTab(tabs[2],true)}
       document.getElementById('confirm-decision').addEventListener('click',()=>{localStorage.setItem(storageKey,'confirmed');live.textContent='Decision saved locally. 9 decisions remaining.';showReceipt(true)});
-      document.getElementById('back-to-queue').addEventListener('click',()=>activateTab(tabs[0],true));
       document.getElementById('export-review').addEventListener('click',()=>{const data={state:'confirmed_ready',event:'row_decision_updated',creative:'cr_007',source:'row_007',reviewer:'Creative Ops Manager',dataset:'synthetic_fixture_only',storage:'Browser local',mutation_allowed:false,external_mutation:false,batch:'78f20843aea8a367',manifest_sha:'4b09268ddcb1f49020f66777d0bcdd734e22add2e77657578d68201ad38ccabf'};const link=document.createElement('a');link.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));link.download='review_state.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),0)});
       tabs[2].addEventListener('click',()=>{receipt.dataset.live=confirmed()?'true':'false';count.textContent='Decision saved locally.'});
 
@@ -638,4 +664,4 @@ def render_social_card_page_v30() -> str:
     return r"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1200, initial-scale=1"><style>
 @font-face{font-family:"Inter";src:url("assets/inter-latin-variable.woff2") format("woff2-variations");font-weight:100 900;font-display:swap}@font-face{font-family:"Instrument Serif";src:url("assets/instrument-serif-latin-italic.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap}*{box-sizing:border-box}html,body{width:1200px;height:630px;margin:0;overflow:hidden}body{padding:18px;color:#232427;background:#ECEDEE;font-family:"Inter",sans-serif}main{width:1164px;height:594px;position:relative;overflow:hidden;display:grid;grid-template-columns:535px 629px;border:1px solid rgba(255,255,255,.75);border-radius:40px;background:#F4F5F5;box-shadow:0 1px 0 rgba(255,255,255,.9) inset}.copy{z-index:2;display:flex;flex-direction:column;padding:43px 18px 40px 48px}.brand{display:flex;align-items:center;gap:11px}.mark{width:31px;height:31px;position:relative}.mark:before,.mark:after{content:"";position:absolute;top:6px;width:19px;height:19px;border-radius:50%}.mark:before{left:0;background:#171719}.mark:after{left:12px;background:#E34A32}.brand-copy{display:grid;line-height:1}.brand-copy strong{font-size:15px}.brand-copy span{margin-top:6px;color:#7B7D82;font-size:10px}.hero{margin-top:65px}.eyebrow{color:#E34A32;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}.hero h1{max-width:500px;margin:15px 0 0;font-size:56px;font-weight:620;line-height:.94;letter-spacing:-.05em}.hero p{max-width:455px;margin:20px 0 0;color:#55575C;font-size:15px;line-height:1.5}.copy footer{display:flex;justify-content:space-between;margin-top:auto;color:#7B7D82;font-size:10px}.visual{position:relative}.trace{position:absolute;left:18px;right:50px;top:92px;height:112px;padding:18px 22px;border:1px solid rgba(23,23,25,.08);border-radius:18px;background:rgba(255,255,255,.82);box-shadow:0 22px 50px -36px rgba(35,36,39,.65)}.trace-line{height:2px;position:absolute;left:54px;right:54px;top:54px;background:linear-gradient(90deg,rgba(227,74,50,.2),#E34A32,rgba(227,74,50,.2))}.trace-node{width:34px;height:34px;position:absolute;top:38px;display:grid;place-items:center;border:2px solid #E34A32;border-radius:50%;color:#E34A32;background:#FFF9F7;font-size:9px;font-weight:760}.trace-node:nth-child(2){left:38px}.trace-node:nth-child(3){left:50%;transform:translateX(-50%)}.trace-node:nth-child(4){right:38px}.trace-labels{display:flex;justify-content:space-between;margin-top:52px;color:#55575C;font-size:8px;font-weight:650;text-transform:uppercase}.app{position:absolute;left:-12px;right:30px;bottom:34px;height:245px;overflow:hidden;border:8px solid rgba(255,255,255,.68);border-radius:22px;background:#FCFCFB;box-shadow:0 26px 60px -36px rgba(35,36,39,.7)}.bar{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border-bottom:1px solid rgba(23,23,25,.09);font-size:8px;font-weight:650}.bar span:last-child{padding:3px 7px;border-radius:999px;color:#B93624;background:#FFF0EC}.tabs{display:flex;gap:5px;padding:7px 11px;border-bottom:1px solid rgba(23,23,25,.09)}.tabs b{padding:5px 12px;border-radius:7px;color:#777;font-size:8px}.tabs b:first-child{color:#232427;background:#F0F0EE}.window{display:grid;grid-template-columns:100px 1fr;height:176px}.side{padding:12px 10px;border-right:1px solid rgba(23,23,25,.09);background:#F8F8F6}.side span{display:block;height:8px;margin-bottom:8px;border-radius:5px;background:#E4E4E1}.side span:nth-child(2){background:#FFF0EC}.rows{padding:13px}.rows h2{margin:0 0 12px;font-size:15px}.row{height:32px;display:grid;grid-template-columns:55px 1fr 110px;align-items:center;border-top:1px solid rgba(23,23,25,.08);font-size:7px}.row:first-of-type{box-shadow:3px 0 0 #E34A32 inset;background:#FFF9F7}.row b{font-family:monospace}.route{position:absolute;right:50px;top:45px;color:#E34A32;font-size:9px;font-weight:720;letter-spacing:.06em}
-</style></head><body><main><section class="copy"><div class="brand"><span class="mark"></span><span class="brand-copy"><strong>Launch Control</strong><span>Pre-launch QA for Meta Ads</span></span></div><div class="hero"><div class="eyebrow">Detect / Route / Prove</div><h1>Catch creative launch mistakes before Ads Manager.</h1><p>Validate every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.</p></div><footer><strong>Interactive product</strong><span>Pre-launch QA for Meta Ads</span></footer></section><section class="visual"><span class="route">RECORDED DECISION TRACE</span><div class="trace"><div class="trace-line"></div><b class="trace-node">01</b><b class="trace-node">02</b><b class="trace-node">✓</b><div class="trace-labels"><span>Detect</span><span>Route</span><span>Prove</span></div></div><div class="app"><div class="bar"><span>Launch Control</span><span>Demo data / local only</span></div><div class="tabs"><b>Queue</b><b>Review</b><b>Receipt</b></div><div class="window"><div class="side"><span></span><span></span><span></span><span></span></div><div class="rows"><h2>10 creatives need a decision</h2><div class="row"><b>cr_007</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_017</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_027</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div></div></div></div></section></main></body></html>"""
+</style></head><body><main><section class="copy"><div class="brand"><span class="mark"></span><span class="brand-copy"><strong>Launch Control</strong><span>Pre-launch QA for Meta Ads</span></span></div><div class="hero"><div class="eyebrow">Detect / Route / Prove</div><h1>Catch creative launch mistakes before Ads Manager.</h1><p>Validate every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.</p></div><footer><strong>Interactive product</strong><span>Pre-launch QA for Meta Ads</span></footer></section><section class="visual"><span class="route">RECORDED DECISION TRACE</span><div class="trace"><div class="trace-line"></div><b class="trace-node">01</b><b class="trace-node">02</b><b class="trace-node">✓</b><div class="trace-labels"><span>Detect</span><span>Route</span><span>Prove</span></div></div><div class="app"><div class="bar"><span>Launch Control</span><span>Demo data · local only</span></div><div class="tabs"><b>Queue</b><b>Review</b><b>Receipt</b></div><div class="window"><div class="side"><span></span><span></span><span></span><span></span></div><div class="rows"><h2>10 creatives need a decision</h2><div class="row"><b>cr_007</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_017</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_027</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div></div></div></div></section></main></body></html>"""

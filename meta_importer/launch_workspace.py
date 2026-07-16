@@ -1438,7 +1438,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       </div>
     </a>
     <div class="header-status">
-      <a class="header-proof" href="brief-evidence.html">Governed intake evidence</a>
+      <a class="header-proof" href="brief-evidence.html">See the import evidence</a>
       <span class="local-signal">Stored locally</span>
       <span class="badge">Dry run only</span>
     </div>
@@ -1462,7 +1462,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     </section>
     <dialog class="guided-dialog" id="guided-dialog" aria-labelledby="guided-title">
       <div class="guided-head">
-        <span class="guided-progress" id="guided-progress" aria-live="polite">1 of 3 · Find</span>
+        <span class="guided-progress" id="guided-progress" aria-live="polite">1 of 3 · Detect</span>
         <button class="guided-close" id="guided-close" type="button" aria-label="Close guided review">Close</button>
       </div>
       <div class="guided-body">
@@ -2199,7 +2199,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       guidedDecisionLocked = guidedStep === 3;
       guidedStepTwo.querySelectorAll("button").forEach((button) => { button.disabled = guidedDecisionLocked; });
       if (guidedStep === 1) {
-        guidedProgress.textContent = "1 of 3 · Find";
+        guidedProgress.textContent = "1 of 3 · Detect";
         guidedTitle.textContent = "Find the ambiguous row.";
         guidedCopy.textContent = "The workflow separated a possible duplicate from rows that can pass or must return for fixes.";
       } else if (guidedStep === 2) {
@@ -2207,7 +2207,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
         guidedTitle.textContent = "Make the human decision.";
         guidedCopy.textContent = "Confirm intentional reuse for dry-run export, return it for a fix or block it from the dry-run export.";
       } else {
-        guidedProgress.textContent = "3 of 3 · Verify";
+        guidedProgress.textContent = "3 of 3 · Prove";
         guidedTitle.textContent = row ? "Inspect what changed." : "No ambiguous case exists in this batch.";
         guidedCopy.textContent = row
           ? "The decision and audit event are now inspectable."

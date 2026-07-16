@@ -103,7 +103,7 @@ def audit_workspace_html(html: str) -> dict[str, object]:
             )
         ),
         "has_guided_progress": all(
-            token in html for token in ("1 of 3 · Find", "2 of 3 · Decide", "3 of 3 · Verify")
+            token in html for token in ("1 of 3 · Detect", "2 of 3 · Decide", "3 of 3 · Prove")
         ),
         "has_guided_local_evidence": all(
             token in html

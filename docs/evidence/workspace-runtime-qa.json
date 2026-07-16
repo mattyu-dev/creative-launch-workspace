@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v20",
-  "tested_at": "2026-07-16T17:09:34.769Z",
+  "tested_at": "2026-07-16T17:28:49.589Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -84,7 +84,7 @@
   "guided_review": {
     "step_one": {
       "open": true,
-      "progress": "1 of 3 · Find",
+      "progress": "1 of 3 · Detect",
       "selectedRow": "8",
       "issue": "Possible duplicate",
       "owner": "Creative Ops Manager",
@@ -98,12 +98,12 @@
       "confirmLabel": "Confirm reuse for dry-run export"
     },
     "step_three": {
-      "progress": "3 of 3 · Verify",
+      "progress": "3 of 3 · Prove",
       "state": "Confirmed for dry-run export",
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-16T17:08:18.136Z",
+      "occurredAt": "2026-07-16T17:27:32.513Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784221698136_8",
+        "event_id": "evt_local_1784222852513_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-16T17:08:18.136Z"
+        "occurred_at": "2026-07-16T17:27:32.513Z"
       }
     },
     "request_violations": [],
@@ -131,13 +131,13 @@
     },
     "persistence": {
       "selectedRow": "18",
-      "progress": "1 of 3 · Find"
+      "progress": "1 of 3 · Detect"
     },
     "mobile": {
       "open": true,
       "noDocumentOverflow": true,
       "dialogWithinViewport": true,
-      "progress": "1 of 3 · Find"
+      "progress": "1 of 3 · Detect"
     },
     "small_phone_step_two": {
       "viewport": {
@@ -156,7 +156,7 @@
       "bodyScrollHeight": 644
     },
     "small_phone_step_three": {
-      "progress": "3 of 3 · Verify",
+      "progress": "3 of 3 · Prove",
       "bodyScrollable": true,
       "footerVisible": true,
       "productBuilderHref": "https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md",
@@ -253,9 +253,9 @@
     "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v5.png",
     "hasWorkspaceCta": true,
     "hasCaseStudyLink": false,
-    "mainSectionCount": 5,
-    "visibleWordCount": 584,
-    "scrollHeight": 4655,
+    "mainSectionCount": 6,
+    "visibleWordCount": 710,
+    "scrollHeight": 5209,
     "copyFreeze": {
       "boundary": true,
       "reviewScope": true,
@@ -419,12 +419,12 @@
     "headingVisible": true,
     "primaryCtaVisible": true,
     "ctaBeforeProduct": true,
-    "productTop": 561,
+    "productTop": 610,
     "nativeProductVisible": true,
     "legacyScreenshotReferences": [],
     "activePanel": "panel-queue",
     "touchTargetFailures": [],
-    "scrollHeight": 7118,
+    "scrollHeight": 8128,
     "bodyFontPx": 16,
     "meshMounted": false,
     "tokenVisible": true,
@@ -454,7 +454,7 @@
       },
       {
         "className": "button",
-        "label": "Try the live workspace ↗"
+        "label": "Try the live workspace →"
       }
     ]
   },
@@ -476,7 +476,7 @@
     "fileAbsent": true,
     "excludedFromSitemap": true,
     "httpStatus": 404,
-    "destination": "http://127.0.0.1:64018/docs/case-study.html",
+    "destination": "http://127.0.0.1:64726/docs/case-study.html",
     "consoleMessages": [
       "Failed to load resource: the server responded with a status of 404 (Not Found)"
     ]
@@ -492,7 +492,7 @@
       "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.webp",
       "dimensionsMatch": true,
-      "psnr": 43.11
+      "psnr": 43.1
     },
     {
       "referenceSrc": "assets/workspace-mobile.png",
@@ -510,7 +510,7 @@
       "referenceSrc": "assets/guided-receipt-mobile.png",
       "candidateSrc": "assets/guided-receipt-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 47.34
+      "psnr": 47.17
     }
   ],
   "social_card": {
@@ -565,16 +565,16 @@
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 483,
-      "cls": 0,
+      "lcpMs": 502,
+      "cls": 0.00005708399001838718,
       "tbtMs": 0
     },
     "product_mobile": {
-      "performanceScore": 0.99,
+      "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1877,
-      "cls": 0,
+      "lcpMs": 1802,
+      "cls": 0.00182003358652326,
       "tbtMs": 0
     }
   },
