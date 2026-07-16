@@ -58,7 +58,7 @@ def build_platform_payload_preview(plan: LaunchPlan) -> dict[str, object]:
         readiness_counts[readiness] = readiness_counts.get(readiness, 0) + 1
 
     return {
-        "product": "Creative Launch Workspace for Meta Ads",
+        "product": "Launch Control",
         "contract_version": "meta_platform_payload_preview.v1",
         "source_contract_version": "offline_launch_plan.v2",
         "mode": "offline_platform_payload_preview_only",

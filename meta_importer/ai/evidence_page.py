@@ -45,18 +45,15 @@ def render_evidence_page(
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
   <meta name="description" content="Inspect the field-level evidence, policy boundary and human decisions behind a synthetic brief mapping proposal.">
-  <meta name="author" content="Mathieu Petroni">
   <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/brief-evidence.html">
-  <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
-  <meta property="og:type" content="article">
-  <meta property="article:author" content="https://www.linkedin.com/in/mathieu-petroni/">
-  <meta property="og:title" content="Governed intake evidence · Mathieu Petroni">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Governed intake evidence · Launch Control">
   <meta property="og:description" content="Source evidence, bounded proposals, policy checks and explicit human decisions.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v4.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v5.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/mona-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
-  <title>Brief mapping evidence · Mathieu Petroni</title>
+  <title>Brief mapping evidence · Launch Control</title>
   <style>
     @font-face{{font-family:"Mona Sans";src:url("assets/mona-sans-latin-variable.woff2") format("woff2-variations");font-weight:200 900;font-display:optional}}
     :root {{ --ink:#232427; --body:#55575C; --muted:#7B7D82; --canvas:#ECEDEE; --paper:#ffffff; --line:#DCDDDC; --brand:#171719; --brand-hover:#2C2C30; --brand-soft:#FFF0EC; --accent:#E34A32; --action:#E34A32; --action-hover:#F05A3C; --success:#176143; --success-soft:#e3eee8; }}
@@ -121,7 +118,7 @@ def render_evidence_page(
   </style>
 </head>
 <body>
-  <header><nav aria-label="Product navigation"><a href="index.html">&larr; Creative Launch Workspace</a><a class="product-link" href="workspace.html?guided=1">Open the workspace</a></nav></header>
+  <header><nav aria-label="Product navigation"><a href="index.html">&larr; Launch Control</a><a class="product-link" href="workspace.html?guided=1">Open the workspace</a></nav></header>
   <main>
     <div class="eyebrow">Versioned synthetic evidence</div>
     <h1>A proposal you can inspect before you trust it.</h1>

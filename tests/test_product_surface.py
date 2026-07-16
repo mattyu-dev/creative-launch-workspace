@@ -47,10 +47,11 @@ class ProductSurfaceTests(unittest.TestCase):
         html = render_product_page()
 
         self.assertIn('property="og:image"', html)
-        self.assertIn('property="og:site_name" content="Creative Launch Workspace"', html)
-        self.assertIn('name="author" content="Mathieu Petroni"', html)
+        self.assertIn('property="og:site_name" content="Launch Control"', html)
+        self.assertNotIn('name="author"', html)
+        self.assertNotIn("Mathieu", html)
         self.assertIn('property="og:type" content="website"', html)
-        self.assertIn("social-card-v4.png", html)
+        self.assertIn("social-card-v5.png", html)
         self.assertIn('name="theme-color" content="#ECEDEE"', html)
         self.assertIn('name="twitter:image:alt"', html)
         self.assertIn('name="twitter:card" content="summary_large_image"', html)
@@ -77,7 +78,7 @@ class ProductSurfaceTests(unittest.TestCase):
         self.assertIn('href="workspace.html?guided=1"', html)
         self.assertNotIn('href="case-study.html"', html)
         self.assertIn('class="skip-link" href="#main"', html)
-        self.assertIn('rel="me" href="https://www.linkedin.com/in/mathieu-petroni/"', html)
+        self.assertNotIn("linkedin.com", html)
         self.assertIn('rel="me" href="https://github.com/mattyu-dev"', html)
         self.assertIn("Catch creative launch mistakes before Ads Manager.", html)
         self.assertIn("Try the live workspace", html)
@@ -98,7 +99,10 @@ class ProductSurfaceTests(unittest.TestCase):
         self.assertIn('font-family:"Inter"', html)
         self.assertIn("font-display:optional", html)
         self.assertIn('id="hero-motion-root"', html)
-        self.assertIn('id="meshGL"', Path("frontend/launch-control-motion.jsx").read_text())
+        motion_source = Path("frontend/launch-control-motion.jsx").read_text()
+        self.assertIn('className="trace-token"', motion_source)
+        self.assertNotIn("meshGL", motion_source)
+        self.assertNotIn("three", Path("package.json").read_text())
         self.assertIn('import("./assets/launch-control-motion.js")', html)
         self.assertNotIn('rel="stylesheet" href="assets/launch-control-motion.css"', html)
         self.assertIn("stylesheet.href = 'assets/launch-control-motion.css'", Path("frontend/launch-control-motion.jsx").read_text())
@@ -126,6 +130,13 @@ class ProductSurfaceTests(unittest.TestCase):
         self.assertIn('aria-live="polite"', html)
         self.assertIn("new ResizeObserver", html)
         self.assertIn("prefers-reduced-motion:reduce", html)
+        self.assertIn("document.documentElement.classList.add('js')", html)
+        self.assertIn(".js [data-reveal]:not([data-visible=\"true\"])", html)
+        self.assertNotIn("\n    [data-reveal]{opacity:0", html)
+        self.assertIn("@media print{[data-reveal]", html)
+        self.assertIn('font-family:"Inter Fallback"', html)
+        self.assertIn("size-adjust:101.75%", html)
+        self.assertIn(":focus-visible{outline:3px solid var(--ring)", html)
         visible_main = re.search(r"<main[^>]*>(.*?)</main>", html, re.DOTALL)
         self.assertIsNotNone(visible_main)
         before_closing = visible_main.group(1).split('class="closing"', maxsplit=1)[0]  # type: ignore[union-attr]
@@ -159,10 +170,11 @@ class ProductSurfaceTests(unittest.TestCase):
         graph = json.loads(json_ld_match.group(1))["@graph"]  # type: ignore[union-attr]
         self.assertEqual(
             {item["@type"] for item in graph},
-            {"Person", "SoftwareApplication", "WebSite"},
+            {"SoftwareApplication", "WebSite"},
         )
-        person = next(item for item in graph if item["@type"] == "Person")
-        self.assertEqual(person["jobTitle"], "AI Automation Builder")
+        application = next(item for item in graph if item["@type"] == "SoftwareApplication")
+        self.assertEqual(application["author"]["@type"], "Organization")
+        self.assertEqual(application["author"]["name"], "Launch Control")
 
     def test_removed_route_has_no_generated_file_or_sitemap_entry(self) -> None:
         self.assertFalse(Path("docs/case-study.html").exists())
@@ -172,7 +184,7 @@ class ProductSurfaceTests(unittest.TestCase):
         html = render_social_card_page()
 
         self.assertIn("width:1200px;height:630px", html)
-        self.assertIn("Mathieu Petroni", html)
+        self.assertNotIn("Mathieu", html)
         self.assertIn("Launch Control", html)
         self.assertIn("RECORDED DECISION TRACE", html)
         self.assertNotIn("launch-control-core-v3", html)
@@ -211,7 +223,7 @@ class ProductSurfaceTests(unittest.TestCase):
         self.assertIn("external_write:false", html)
         self.assertIn('href="evidence/interactive-rule-pack.json"', html)
         self.assertIn('rel="icon" href="assets/favicon.svg"', html)
-        self.assertIn('name="author" content="Mathieu Petroni"', html)
+        self.assertNotIn("Mathieu", html)
         self.assertIn('aria-label="Product navigation"', html)
         self.assertIn("Open the workspace", html)
         self.assertIn("Back to product", html)
@@ -248,13 +260,13 @@ class ProductSurfaceTests(unittest.TestCase):
             },
         )
 
-        self.assertIn('name="author" content="Mathieu Petroni"', rendered)
+        self.assertNotIn("Mathieu", rendered)
         self.assertIn('aria-label="Product navigation"', rendered)
         self.assertIn("Open the workspace", rendered)
         self.assertIn("Back to product", rendered)
         self.assertNotIn("case study", rendered.lower())
         self.assertNotIn("hiring", rendered.lower())
-        self.assertIn("social-card-v4.png", rendered)
+        self.assertIn("social-card-v5.png", rendered)
 
     def test_github_pages_discovery_and_not_found_surfaces(self) -> None:
         robots = render_robots_txt()
@@ -268,7 +280,8 @@ class ProductSurfaceTests(unittest.TestCase):
         self.assertIn("workspace.html", sitemap)
         self.assertIn('name="robots" content="noindex"', not_found)
         self.assertIn("Return to the product", not_found)
-        self.assertIn("Contact Mathieu", not_found)
+        self.assertNotIn("Mathieu", not_found)
+        self.assertNotIn("linkedin.com", not_found)
         nested_missing_url = (
             "https://mattyu-dev.github.io/creative-launch-workspace/missing/nested/page"
         )

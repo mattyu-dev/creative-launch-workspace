@@ -61,7 +61,7 @@ def export_workspace_state_dict(plan: LaunchPlan) -> dict[str, object]:
         issues_by_row[issue.source_row].append(issue)
 
     return {
-        "product": "Creative Launch Workspace for Meta Ads",
+        "product": "Launch Control",
         "mode": "local_review_state_only",
         "contract_version": "workspace_review_state.v1",
         "generated_at": today_iso(),

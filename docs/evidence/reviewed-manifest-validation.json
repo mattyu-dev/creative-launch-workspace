@@ -210,7 +210,7 @@
     "contract_version": "offline_launch_plan.v2",
     "data_classification": "synthetic_fixture_only",
     "fix_queue": [],
-    "generated_at": "2026-07-14",
+    "generated_at": "2026-07-16",
     "guardrails": [
       "No Meta API calls are made.",
       "No credentials, OAuth tokens, or live ad account identifiers are loaded.",
@@ -220,7 +220,7 @@
     "meta_api_compatibility": "not_claimed",
     "mode": "offline_dry_run_only",
     "mutation_allowed": false,
-    "product": "Creative Launch Workspace for Meta Ads",
+    "product": "Launch Control",
     "source_manifest": "docs/evidence/reviewed-manifest-example.csv",
     "source_manifest_sha256": "a01a03bf39e4fc25e004972b5b0eeb16535b24a2026e561263b0ed8cf9020842",
     "summary": {

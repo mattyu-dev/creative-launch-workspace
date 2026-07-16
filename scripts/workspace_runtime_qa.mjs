@@ -268,7 +268,7 @@ const guidedSmallPhoneStepThree = await page.evaluate(() => {
       && footerRect.top >= dialogRect.top
       && footerRect.bottom <= dialogRect.bottom,
     productBuilderHref: document.querySelector("#guided-product-builder")?.getAttribute("href"),
-    linkedinHref: document.querySelector("#guided-linkedin")?.getAttribute("href")
+    noPersonalContact: !document.querySelector('a[href*="linkedin.com"]')
   };
 });
 await page.screenshot({ path: join(assetsDir, "guided-review-mobile-step-3.png") });
@@ -333,7 +333,7 @@ if (
   || !guidedStepThree.summary?.includes("No external system was changed. Technical receipt: mutation_allowed:false.")
   || guidedStepThree.brandHref !== "index.html"
   || guidedStepThree.returnHref !== "index.html"
-  || guidedStepThree.returnLabel !== "Back to the product"
+  || guidedStepThree.returnLabel !== "Back to the overview"
   || !guidedStepThree.primaryBeforeReturn
   || guidedStepThree.persistedStatus !== "confirmed_ready"
   || guidedStepThree.latestAudit?.source_row !== 8
@@ -357,7 +357,7 @@ if (
   || guidedSmallPhoneStepThree.progress !== "3 of 3 · Verify"
   || !guidedSmallPhoneStepThree.footerVisible
   || guidedSmallPhoneStepThree.productBuilderHref !== "https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md"
-  || guidedSmallPhoneStepThree.linkedinHref !== "https://www.linkedin.com/in/mathieu-petroni/"
+  || !guidedSmallPhoneStepThree.noPersonalContact
   || !guidedReceiptMobile.hasReceipt
   || guidedReceiptMobile.hasPersonalCta
 ) {
@@ -568,58 +568,57 @@ await page.setViewport({ width: 1366, height: 768 });
 recordProductRequests = true;
 await page.goto(productUrl, { waitUntil: "load" });
 await page.waitForFunction(() => window.__launchControlMotion?.ready === true, { timeout: 15000 });
-await page.waitForFunction(() => Number.isFinite(window.__launchControlMotion?.mesh?.positionX), { timeout: 15000 });
+await page.waitForFunction(() => window.__launchControlMotion?.state === 'playing', { timeout: 15000 });
 const productMotionStart = await page.evaluate(() => ({
   ...window.__launchControlMotion,
-  mesh: { ...window.__launchControlMotion.mesh },
   astryxMounted: Boolean(document.querySelector('[data-astryx-theme="launch-control"] .trace-card')),
-  canvasMounted: Boolean(document.querySelector('#meshGL')),
+  tokenMounted: Boolean(document.querySelector('.trace-token')),
+  webglAbsent: !document.querySelector('#meshGL') && !window.__launchControlMotion.mesh && !document.querySelector('.trace-workspace canvas'),
   oldRasterAbsent: !document.documentElement.innerHTML.includes('launch-control-core-v3')
 }));
-await new Promise((resolve) => setTimeout(resolve, 320));
-const productMotionEnd = await page.evaluate(() => ({ ...window.__launchControlMotion.mesh }));
 recordProductRequests = false;
 const productMotion = {
   start: productMotionStart,
-  end: productMotionEnd,
-  yChanged: productMotionStart.mesh?.positionY !== productMotionEnd.positionY,
   externalRequests: productRequests.filter(({ url }) => new URL(url).origin !== new URL(productUrl).origin)
 };
-await page.waitForFunction(() => (
-  window.__launchControlMotion?.state === 'complete'
-  && window.__launchControlMotion?.mesh?.rafActive === false
-), { timeout: 9000 });
-productMotion.complete = await page.evaluate(() => ({
-  state: window.__launchControlMotion.state,
-  phase: document.querySelector('.lc-motion')?.dataset.phase,
-  frameCount: window.__launchControlMotion.mesh?.frameCount,
-  rafActive: window.__launchControlMotion.mesh?.rafActive
-}));
+await page.waitForFunction(() => window.__launchControlMotion?.state === 'complete', { timeout: 9000 });
+await new Promise((resolve) => setTimeout(resolve, 700));
+productMotion.complete = await page.evaluate(() => {
+  const workspace = document.querySelector('.trace-workspace')?.getBoundingClientRect();
+  const token = document.querySelector('.trace-token')?.getBoundingClientRect();
+  return {
+    state: window.__launchControlMotion.state,
+    phase: document.querySelector('.lc-motion')?.dataset.phase,
+    tokenCenterPct: workspace && token
+      ? Math.round(((token.left + token.width / 2 - workspace.left) / workspace.width) * 100)
+      : null
+  };
+});
 await page.waitForFunction(() => (
   window.__launchControlMotion?.cycleCount >= 2
   && window.__launchControlMotion?.state === 'playing'
   && document.querySelector('.lc-motion')?.dataset.phase === 'detect'
-), { timeout: 5000 });
+), { timeout: 12000 });
 productMotion.loopRestart = await page.evaluate(() => ({
   cycleCount: window.__launchControlMotion.cycleCount,
   state: window.__launchControlMotion.state,
-  phase: document.querySelector('.lc-motion')?.dataset.phase,
-  rafActive: window.__launchControlMotion.mesh?.rafActive
+  phase: document.querySelector('.lc-motion')?.dataset.phase
 }));
 await page.evaluate(() => document.querySelector('#workflow')?.scrollIntoView({ block: 'center' }));
-await page.waitForFunction(() => window.__launchControlMotion?.mesh?.rafActive === false, { timeout: 2500 });
-const offscreenFrameStart = await page.evaluate(() => window.__launchControlMotion.mesh?.frameCount);
-await new Promise((resolve) => setTimeout(resolve, 260));
-productMotion.offscreenPause = await page.evaluate((frameStart) => ({
-  frameStart,
-  frameEnd: window.__launchControlMotion.mesh?.frameCount,
-  rafActive: window.__launchControlMotion.mesh?.rafActive
-}), offscreenFrameStart);
+await new Promise((resolve) => setTimeout(resolve, 400));
+const offscreenStart = await page.evaluate(() => ({
+  cycleCount: window.__launchControlMotion.cycleCount,
+  phase: document.querySelector('.lc-motion')?.dataset.phase
+}));
+await new Promise((resolve) => setTimeout(resolve, 2600));
+productMotion.offscreenPause = await page.evaluate((start) => ({
+  cycleStart: start.cycleCount,
+  cycleEnd: window.__launchControlMotion.cycleCount,
+  phaseStart: start.phase,
+  phaseEnd: document.querySelector('.lc-motion')?.dataset.phase
+}), offscreenStart);
 await page.evaluate(() => window.scrollTo(0, 0));
-await page.waitForFunction(() => (
-  window.__launchControlMotion?.state === 'playing'
-  && window.__launchControlMotion?.mesh?.rafActive === true
-), { timeout: 3000 });
+await page.waitForFunction(() => window.__launchControlMotion?.state === 'playing', { timeout: 3000 });
 const productHoverState = await page.evaluate(() => {
   const styles = [...document.querySelectorAll("style")].map((item) => item.textContent).join("\n");
   return {
@@ -651,7 +650,7 @@ const productPage = await page.evaluate(() => ({
       && document.body.textContent.includes("Only people approve")
       && document.body.textContent.includes("cannot approve a field, bypass a rule or publish to Meta"),
     heroSecondaryCta: document.querySelector('.hero-copy .button[data-variant="outline"]')?.textContent.trim(),
-    structuredJobTitle: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "Person")?.jobTitle
+    structuredAuthorName: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "SoftwareApplication")?.author?.name
   },
   humanizedCopy: {
     noLongDash: !/[—–]/.test(`${document.title}\n${document.body.innerText}`),
@@ -672,7 +671,7 @@ const productPage = await page.evaluate(() => ({
     && !document.querySelector("main")?.innerHTML.toLowerCase().includes("personal project")
     && !document.querySelector("main")?.innerHTML.toLowerCase().includes("portfolio")
     && !document.querySelector("main")?.innerHTML.toLowerCase().includes("hiring"),
-  hasContact: Boolean(document.querySelector('a[href="https://www.linkedin.com/in/mathieu-petroni/"]')),
+  noPersonalContact: !document.querySelector('a[href*="linkedin.com"]'),
   structuredTypes: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.map((item) => item["@type"]) || [],
   workflowStepCount: document.querySelectorAll(".product-flow > li:not(.flow-arrow)").length,
   controlCount: document.querySelectorAll(".guardrails > div").length,
@@ -682,7 +681,7 @@ const productPage = await page.evaluate(() => ({
   nativeProduct: Boolean(document.querySelector(".app-stage .app-shell"))
     && !document.querySelector(".app-stage picture"),
   astryxMotion: Boolean(document.querySelector('[data-astryx-theme="launch-control"] .trace-card'))
-    && Boolean(document.querySelector('#meshGL')),
+    && Boolean(document.querySelector('.trace-token')),
   oldRasterAbsent: !document.documentElement.innerHTML.includes('launch-control-core-v3'),
   automaticLoop: window.__launchControlMotion?.loop === true
     && !document.body.textContent.includes('Replay trace')
@@ -708,7 +707,7 @@ const productPage = await page.evaluate(() => ({
 if (
   productPage.title !== "Catch creative launch mistakes before Ads Manager."
   || !productPage.canonical?.endsWith("/creative-launch-workspace/")
-  || !productPage.ogImage?.endsWith("/assets/social-card-v4.png")
+  || !productPage.ogImage?.endsWith("/assets/social-card-v5.png")
   || !productPage.hasWorkspaceCta
   || productPage.hasCaseStudyLink
   || productPage.mainSectionCount !== 5
@@ -719,7 +718,7 @@ if (
   || !productPage.copyFreeze.reviewState
   || !productPage.copyFreeze.boundedAuthority
   || productPage.copyFreeze.heroSecondaryCta !== "See how it works ↓"
-  || productPage.copyFreeze.structuredJobTitle !== "AI Automation Builder"
+  || productPage.copyFreeze.structuredAuthorName !== "Launch Control"
   || !Object.values(productPage.humanizedCopy).every(Boolean)
   || JSON.stringify(productPage.exactTokens) !== JSON.stringify({
     "--canvas": "#ECEDEE",
@@ -736,8 +735,9 @@ if (
   })
   || !productPage.legacyPaletteAbsent
   || !productPage.productFirst
-  || !productPage.hasContact
-  || !["Person", "SoftwareApplication", "WebSite"].every((item) => productPage.structuredTypes.includes(item))
+  || !productPage.noPersonalContact
+  || !["SoftwareApplication", "WebSite"].every((item) => productPage.structuredTypes.includes(item))
+  || productPage.structuredTypes.includes("Person")
   || productPage.workflowStepCount !== 3
   || productPage.controlCount !== 3
   || productPage.productTabCount !== 3
@@ -754,31 +754,21 @@ if (
   || !productPage.primaryCtaVisible
   || !productPage.heroProductVisible
   || !productMotion.start.astryxMounted
-  || !productMotion.start.canvasMounted
+  || !productMotion.start.tokenMounted
+  || !productMotion.start.webglAbsent
   || !productMotion.start.oldRasterAbsent
-  || productMotion.start.mesh?.geometry !== "IcosahedronGeometry"
-  || productMotion.start.mesh?.radius !== 3
-  || productMotion.start.mesh?.detail !== 0
-  || productMotion.start.mesh?.color !== "#E34A32"
-  || productMotion.start.mesh?.roughness !== 0.3
-  || productMotion.start.mesh?.metalness !== 0.6
-  || !productMotion.start.mesh?.flatShading
-  || productMotion.start.mesh?.anchorX !== 4.5
-  || productMotion.start.mesh?.positionX !== 4.5
-  || productMotion.end.positionX !== 4.5
-  || productMotion.end.frameCount < 2
-  || !productMotion.yChanged
+  || productMotion.start.renderer !== "css-token"
   || productMotion.complete.state !== "complete"
   || productMotion.complete.phase !== "prove"
-  || productMotion.complete.rafActive !== false
+  || productMotion.complete.tokenCenterPct === null
+  || Math.abs(productMotion.complete.tokenCenterPct - 87) > 4
   || productMotion.start.loop !== true
   || productMotion.start.loopDurationMs !== 9800
   || productMotion.loopRestart.cycleCount < 2
   || productMotion.loopRestart.state !== "playing"
   || productMotion.loopRestart.phase !== "detect"
-  || productMotion.loopRestart.rafActive !== true
-  || productMotion.offscreenPause.rafActive !== false
-  || productMotion.offscreenPause.frameStart !== productMotion.offscreenPause.frameEnd
+  || productMotion.offscreenPause.cycleStart !== productMotion.offscreenPause.cycleEnd
+  || productMotion.offscreenPause.phaseStart !== productMotion.offscreenPause.phaseEnd
   || productMotion.externalRequests.length
   || !productPage.sectionNavTargetsResolve
   || !productPage.noDocumentOverflow
@@ -790,6 +780,22 @@ if (
   || productHoverState.foreground !== "#171719"
 ) {
   throw new Error(`Product entry contract failed: ${JSON.stringify({ productPage, productHoverState, productMotion })}`);
+}
+
+const noJsPage = await browser.newPage();
+await noJsPage.setJavaScriptEnabled(false);
+await noJsPage.goto(productUrl, { waitUntil: "load" });
+const noJsReveal = await noJsPage.evaluate(() => {
+  const reveals = [...document.querySelectorAll("[data-reveal]")];
+  return {
+    total: reveals.length,
+    hidden: reveals.filter((item) => getComputedStyle(item).opacity !== "1").length,
+    jsClassAbsent: !document.documentElement.classList.contains("js")
+  };
+});
+await noJsPage.close();
+if (!noJsReveal.total || noJsReveal.hidden || !noJsReveal.jsClassAbsent) {
+  throw new Error(`No-JS reveal contract failed: ${JSON.stringify(noJsReveal)}`);
 }
 
 await page.evaluate(() => localStorage.clear());
@@ -871,6 +877,7 @@ await page.setViewport({ width: 390, height: 844 });
 await page.goto(productUrl, { waitUntil: "load" });
 await page.evaluate(() => document.querySelector('.hero-motion-host')?.scrollIntoView({ block: 'center' }));
 await page.waitForFunction(() => window.__launchControlMotion?.ready === true, { timeout: 15000 });
+await page.waitForFunction(() => (window.__launchControlMotion?.cycleCount || 0) >= 1, { timeout: 15000 });
 await page.evaluate(() => window.scrollTo(0, 0));
 const productMobile = await page.evaluate(() => {
   const heroCta = document.querySelector(".hero-copy .button");
@@ -921,8 +928,9 @@ const productMobile = await page.evaluate(() => {
     touchTargetFailures: touchTargets.filter((target) => target.width < 44 || target.height < 44),
     scrollHeight: document.body.scrollHeight,
     bodyFontPx: parseFloat(getComputedStyle(document.body).fontSize),
-    meshAnchorX: window.__launchControlMotion?.mesh?.anchorX,
-    meshPositionX: window.__launchControlMotion?.mesh?.positionX
+    meshMounted: Boolean(window.__launchControlMotion?.mesh) || Boolean(document.querySelector(".trace-workspace canvas")),
+    tokenVisible: ((token) => Boolean(token) && getComputedStyle(token).display !== "none")(document.querySelector(".trace-token")),
+    loopStarted: (window.__launchControlMotion?.cycleCount || 0) >= 1
   };
 });
 if (
@@ -936,8 +944,9 @@ if (
   || productMobile.touchTargetFailures.length
   || productMobile.scrollHeight > 7300
   || productMobile.bodyFontPx < 16
-  || productMobile.meshAnchorX !== 0
-  || productMobile.meshPositionX !== 0
+  || productMobile.meshMounted
+  || !productMobile.tokenVisible
+  || !productMobile.loopStarted
 ) {
   throw new Error(`Product mobile contract failed: ${JSON.stringify(productMobile)}`);
 }
@@ -949,7 +958,7 @@ await new Promise((resolve) => setTimeout(resolve, 500));
 const proveBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-prove.png"), ".trace-workspace");
 const productCompositor = { routeBlackPixelRatio, proveBlackPixelRatio };
 if (routeBlackPixelRatio > 0.02 || proveBlackPixelRatio > 0.02) {
-  throw new Error(`Product WebGL compositor corruption detected: ${JSON.stringify(productCompositor)}`);
+  throw new Error(`Product compositor corruption detected: ${JSON.stringify(productCompositor)}`);
 }
 await page.evaluate(async () => {
   const visibleImages = [...document.images].filter((image) => !image.closest("[hidden]"));
@@ -1128,7 +1137,7 @@ if (
 ) {
   throw new Error(`Product navigation contract failed: ${JSON.stringify(productNavigation)}`);
 }
-await page.setViewport({ width: 390, height: 844 });
+await page.setViewport({ width: 1366, height: 768 });
 await page.goto(productUrl, { waitUntil: "load" });
 
 await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
@@ -1137,28 +1146,28 @@ await page.waitForFunction(() => window.__launchControlMotion?.ready === true, {
 await new Promise((resolve) => setTimeout(resolve, 160));
 const reducedMotionStart = await page.evaluate(() => ({
   phase: document.querySelector('.lc-motion')?.dataset.phase,
-  frameCount: window.__launchControlMotion.mesh?.frameCount,
-  rafActive: window.__launchControlMotion.mesh?.rafActive,
-  reducedMotion: window.__launchControlMotion.mesh?.reducedMotion
+  state: window.__launchControlMotion.state,
+  cycleCount: window.__launchControlMotion.cycleCount,
+  webglAbsent: !document.querySelector('.trace-workspace canvas') && !window.__launchControlMotion.mesh
 }));
 await new Promise((resolve) => setTimeout(resolve, 260));
 const reducedMotionEnd = await page.evaluate(() => ({
-  frameCount: window.__launchControlMotion.mesh?.frameCount,
-  rafActive: window.__launchControlMotion.mesh?.rafActive
+  phase: document.querySelector('.lc-motion')?.dataset.phase,
+  cycleCount: window.__launchControlMotion.cycleCount
 }));
 const productReducedMotion = {
   start: reducedMotionStart,
   end: reducedMotionEnd,
-  noRenderLoop: reducedMotionStart.frameCount === reducedMotionEnd.frameCount
+  noLoop: reducedMotionStart.cycleCount === 0 && reducedMotionEnd.cycleCount === 0
 };
 const reducedBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-reduced.png"), ".trace-workspace");
 productReducedMotion.blackPixelRatio = reducedBlackPixelRatio;
 if (
   reducedMotionStart.phase !== "prove"
-  || !reducedMotionStart.reducedMotion
-  || reducedMotionStart.rafActive !== false
-  || reducedMotionEnd.rafActive !== false
-  || !productReducedMotion.noRenderLoop
+  || reducedMotionStart.state !== "static"
+  || !reducedMotionStart.webglAbsent
+  || reducedMotionEnd.phase !== "prove"
+  || !productReducedMotion.noLoop
   || reducedBlackPixelRatio > 0.02
 ) {
   throw new Error(`Product reduced-motion contract failed: ${JSON.stringify(productReducedMotion)}`);
@@ -1247,7 +1256,7 @@ if (
   throw new Error(`Social card contract failed: ${JSON.stringify(socialCard)}`);
 }
 await page.screenshot({ path: join(assetsDir, "social-card.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
-await page.screenshot({ path: join(assetsDir, "social-card-v4.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+await page.screenshot({ path: join(assetsDir, "social-card-v5.png"), clip: { x: 0, y: 0, width: 1200, height: 630 } });
 
 const labUrl = `${baseUrl}/docs/fix-lab.html`;
 await page.setViewport({ width: 1280, height: 900 });

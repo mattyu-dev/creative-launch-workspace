@@ -74,7 +74,8 @@ class LaunchWorkspaceTests(unittest.TestCase):
         plan = build_launch_plan(rows, source_manifest=str(FIXTURE))
         html = render_html_workspace(plan)
 
-        self.assertIn("Creative Launch Workspace for Meta Ads", html)
+        self.assertIn("Launch Control", html)
+        self.assertNotIn("Creative Launch Workspace", html)
         self.assertIn("Dry run only", html)
         self.assertIn('data-filter="launch_ready"', html)
         self.assertIn('data-filter="blocked"', html)
@@ -106,16 +107,14 @@ class LaunchWorkspaceTests(unittest.TestCase):
         self.assertIn('class="brand" href="index.html"', html)
         self.assertNotIn('class="brand" href="index.html" aria-label=', html)
         self.assertIn('id="guided-return" href="index.html"', html)
-        self.assertIn("Back to the product", html)
+        self.assertIn("Back to the overview", html)
         self.assertIn("View the architecture", html)
         self.assertIn(
             'id="guided-product-builder" href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md"',
             html,
         )
-        self.assertIn(
-            'id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/"',
-            html,
-        )
+        self.assertNotIn("guided-linkedin", html)
+        self.assertNotIn("linkedin.com", html)
         self.assertIn('id="guided-step-three-actions"', html)
         self.assertIn('role="group" aria-label="Batch status"', html)
         self.assertIn('role="group" aria-label="Batch filters"', html)

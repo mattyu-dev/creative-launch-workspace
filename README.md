@@ -15,9 +15,9 @@ Validate approvals, placements, destinations, naming and UTMs across every creat
 
 **Mathieu Petroni** designed and built the review workflow, AI orchestration, evaluations, trust boundaries, deterministic validators and responsive interface.
 
-[![Launch Control product](docs/assets/social-card-v4.png)](https://mattyu-dev.github.io/creative-launch-workspace/)
+[![Launch Control product](docs/assets/social-card-v5.png)](https://mattyu-dev.github.io/creative-launch-workspace/)
 
-The V4 public product is an Apple and Linear inspired system built with Inter, restrained Instrument Serif accents, a neutral depth shell, charcoal controls and one operational orange. The hero uses a real Astryx React island and an on-demand Three.js r128 decision trace; Queue, Review and Receipt remain native interactive states rather than screenshots.
+The V4 public product is an Apple and Linear inspired system built with Inter, restrained Instrument Serif accents, a neutral depth shell, charcoal controls and one operational orange. The hero uses a real Astryx React island with a CSS decision token that travels the Detect, Route, Prove rail; Queue, Review and Receipt remain native interactive states rather than screenshots.
 
 ## Why this exists
 

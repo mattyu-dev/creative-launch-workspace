@@ -23,8 +23,6 @@ const CALM_PAUSE_MS = 3200;
 const LOOP_DURATION_MS = TRACE_MOTION_MS + CALM_PAUSE_MS;
 const MANUAL_HOLD_MS = 5200;
 
-let meshController = null;
-
 function useReducedMotion() {
   const [reduced, setReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   useEffect(() => {
@@ -73,50 +71,6 @@ function PhasePanel({phase}) {
   return <ProvePanel />;
 }
 
-function MeshCanvas({active, reducedMotion, onWebGL}) {
-  const canvasRef = useRef(null);
-  useEffect(() => {
-    if (!active || !canvasRef.current) return undefined;
-    if (navigator.connection?.saveData) {
-      window.__launchControlMotion.fallback = 'save-data';
-      return undefined;
-    }
-    let cancelled = false;
-    let localController = null;
-    import('./hero-mesh.js').then(({mountDecisionMesh}) => {
-      if (cancelled || !canvasRef.current) return;
-      try {
-        localController = mountDecisionMesh(canvasRef.current, {
-          reducedMotion,
-          onStateChange(state, debug) {
-            window.__launchControlMotion.mesh = debug;
-            window.__launchControlMotion.state = state;
-          },
-        });
-        meshController = localController;
-        window.__launchControlMotion.mesh = localController.debug;
-        window.__launchControlMotion.ready = true;
-        window.dispatchEvent(new CustomEvent('launch-control-motion-ready'));
-        onWebGL(true);
-      } catch (error) {
-        window.__launchControlMotion.fallback = 'webgl-unavailable';
-        window.__launchControlMotion.error = String(error);
-        window.__launchControlMotion.ready = true;
-      }
-    }).catch((error) => {
-      window.__launchControlMotion.fallback = 'chunk-unavailable';
-      window.__launchControlMotion.error = String(error);
-      window.__launchControlMotion.ready = true;
-    });
-    return () => {
-      cancelled = true;
-      localController?.destroy();
-      if (meshController === localController) meshController = null;
-    };
-  }, [active, reducedMotion, onWebGL]);
-  return <canvas ref={canvasRef} className="trace-mesh" id="meshGL" aria-hidden="true" />;
-}
-
 function RecordedTrace() {
   const rootRef = useRef(null);
   const reducedMotion = useReducedMotion();
@@ -126,8 +80,12 @@ function RecordedTrace() {
   const [phase, setPhase] = useState(reducedMotion ? 2 : 0);
   const [runId, setRunId] = useState(0);
   const [isManual, setIsManual] = useState(false);
-  const [webgl, setWebgl] = useState(false);
   const [liveMessage, setLiveMessage] = useState('');
+
+  useEffect(() => {
+    window.__launchControlMotion.ready = true;
+    window.dispatchEvent(new CustomEvent('launch-control-motion-ready'));
+  }, []);
 
   useEffect(() => {
     if (reducedMotion) {
@@ -135,10 +93,11 @@ function RecordedTrace() {
       setPhase(2);
       return undefined;
     }
+    const enterRatio = window.innerWidth < 768 ? 0.5 : 0.72;
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.intersectionRatio >= 0.72) setHasEntered(true);
+      if (entry.intersectionRatio >= enterRatio) setHasEntered(true);
       setIsInView(entry.isIntersecting && entry.intersectionRatio >= 0.15);
-    }, {threshold: [0, 0.15, 0.72]});
+    }, {threshold: [0, 0.15, 0.5, 0.72]});
     observer.observe(rootRef.current);
     return () => observer.disconnect();
   }, [reducedMotion]);
@@ -152,6 +111,7 @@ function RecordedTrace() {
   useEffect(() => {
     if (reducedMotion) {
       setPhase(2);
+      window.__launchControlMotion.state = 'static';
       return undefined;
     }
     if (!hasEntered || !isInView || !pageVisible || isManual) return undefined;
@@ -170,9 +130,12 @@ function RecordedTrace() {
       setPhase(0);
       setRunId((value) => value + 1);
       window.__launchControlMotion.cycleCount += 1;
-      meshController?.replay();
+      window.__launchControlMotion.state = 'playing';
       later(() => setPhase(1), ROUTE_AT_MS);
       later(() => setPhase(2), PROVE_AT_MS);
+      later(() => {
+        window.__launchControlMotion.state = 'complete';
+      }, TRACE_MOTION_MS);
       later(startCycle, LOOP_DURATION_MS);
     };
 
@@ -193,12 +156,12 @@ function RecordedTrace() {
   function selectPhase(index) {
     setIsManual(true);
     setPhase(index);
-    meshController?.seek(index);
+    window.__launchControlMotion.state = 'seek';
     setLiveMessage(`${PHASES[index].label}: ${PHASES[index].detail}`);
   }
 
   const progress = [34, 68, 100][phase];
-  return <div ref={rootRef} className="lc-motion" data-phase={PHASES[phase].label.toLowerCase()} data-webgl={webgl ? 'ready' : 'fallback'}>
+  return <div ref={rootRef} className="lc-motion" data-phase={PHASES[phase].label.toLowerCase()}>
     <Theme theme={launchControlTheme} mode="light">
       <Card className="trace-card" padding={0} minHeight={430}>
         <div className="trace-topbar">
@@ -216,8 +179,7 @@ function RecordedTrace() {
         <div className="trace-workspace">
           <PhasePanel phase={phase} key={`${phase}-${runId}`} />
           <div className="trace-rail" aria-hidden="true"><span></span><span></span><span></span></div>
-          <div className="trace-token-fallback" aria-hidden="true"></div>
-          <MeshCanvas active={hasEntered} reducedMotion={reducedMotion} onWebGL={setWebgl} />
+          <div className="trace-token" aria-hidden="true"></div>
         </div>
         <div className="trace-footer">
           <small className="trace-loop-note">One exception. One owner. One receipt. The walkthrough loops automatically.</small>
@@ -233,7 +195,7 @@ window.__launchControlMotion = {
   ready: false,
   version: '4.0.0',
   astryx: '0.1.6',
-  three: '0.128.0',
+  renderer: 'css-token',
   sequence: ['Detect', 'Route', 'Prove'],
   loop: true,
   routeAtMs: ROUTE_AT_MS,
@@ -242,6 +204,7 @@ window.__launchControlMotion = {
   calmPauseMs: CALM_PAUSE_MS,
   loopDurationMs: LOOP_DURATION_MS,
   cycleCount: 0,
+  state: 'idle',
 };
 
 const host = document.getElementById('hero-motion-root');

@@ -27,7 +27,7 @@ from .workspace_state import export_workspace_state_dict
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Creative Launch Workspace offline review system")
+    parser = argparse.ArgumentParser(description="Launch Control offline review system")
     sub = parser.add_subparsers(dest="command", required=True)
 
     plan = sub.add_parser("plan", help="Build a dry-run launch plan from a manifest CSV")

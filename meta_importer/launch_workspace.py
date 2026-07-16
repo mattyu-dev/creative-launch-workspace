@@ -271,7 +271,7 @@ def build_launch_plan(rows: list[ManifestRow], *, source_manifest: str = "") -> 
 
 def export_plan_dict(plan: LaunchPlan) -> dict[str, object]:
     return {
-        "product": "Creative Launch Workspace for Meta Ads",
+        "product": "Launch Control",
         "mode": "offline_dry_run_only",
         "contract_version": "offline_launch_plan.v2",
         "contract_status": "local_adapter_draft",
@@ -400,7 +400,7 @@ def render_markdown_review(plan: LaunchPlan) -> str:
     batch_states = summary["batch_states"]
     issue_codes = summary["issue_codes"]
     lines = [
-        "# Creative Launch Workspace for Meta Ads - 100 Row Review",
+        "# Launch Control - 100 Row Review",
         "",
         "> [!warning]",
         "> Offline dry run only. This report does not call Meta, load credentials, publish ads, change budgets, or prove live Marketing API compatibility.",
@@ -485,12 +485,12 @@ def render_html_workspace(plan: LaunchPlan) -> str:
   <meta name="description" content="Review a 100-row synthetic Meta creative batch, inspect routed launch issues and record local human decisions.">
   <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/workspace.html">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Interactive review workspace · Creative Launch Workspace">
+  <meta property="og:title" content="Interactive review workspace · Launch Control">
   <meta property="og:description" content="A task-first review queue for approval, destination, placement, mapping and duplicate issues.">
-  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v4.png">
+  <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v5.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%2324142b%22%2F%3E%3C%2Fsvg%3E" type="image/svg+xml">
-  <title>Creative Launch Workspace for Meta Ads</title>
+  <title>Launch Control · Creative launch workspace for Meta Ads</title>
   <style>
     :root {
       color-scheme: light;
@@ -1433,7 +1433,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     <a class="brand" href="index.html">
       <div class="brand-mark" aria-hidden="true"><span></span></div>
       <div>
-        <h1>Creative Launch Workspace for Meta Ads</h1>
+        <h1>Launch Control</h1>
         <div class="batch-line" title="Batch __BATCH_ID__ &middot; __DATA_CLASSIFICATION__">__DATA_BADGE__ &middot; batch __BATCH_SHORT__</div>
       </div>
     </a>
@@ -1486,8 +1486,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
           <div class="guided-actions" id="guided-step-three-actions">
             <button class="button-primary" id="guided-explore" type="button">Explore the full queue</button>
             <a class="guided-return" id="guided-product-builder" href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md">View the architecture</a>
-            <a class="guided-return" id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/">Connect with Mathieu on LinkedIn</a>
-            <a class="guided-return" id="guided-return" href="index.html">Back to the product</a>
+            <a class="guided-return" id="guided-return" href="index.html">Back to the overview</a>
             <button id="guided-replay" type="button">Review another case</button>
           </div>
           <dl class="guided-proof">

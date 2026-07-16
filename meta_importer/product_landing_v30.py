@@ -2,12 +2,13 @@ from __future__ import annotations
 
 VERSION = "4.0.0"
 UPDATED_DATE = "2026-07-16"
-SOCIAL_CARD = "social-card-v4.png"
+SOCIAL_CARD = "social-card-v5.png"
 
 
 def _shared_styles() -> str:
     return r"""
     @font-face{font-family:"Inter";src:url("assets/inter-latin-variable.woff2") format("woff2-variations");font-style:normal;font-weight:100 900;font-display:optional}
+    @font-face{font-family:"Inter Fallback";src:local("Arial");size-adjust:101.75%;ascent-override:97%;descent-override:24%;line-gap-override:0%}
     @font-face{font-family:"Instrument Serif";src:url("assets/instrument-serif-latin-italic.woff2") format("woff2");font-style:italic;font-weight:400;font-display:optional}
     :root{
       color-scheme:light;
@@ -30,7 +31,7 @@ def _shared_styles() -> str:
       --danger:#B9382B;
       --warning:#9A5A12;
       --ring:#E34A32;
-      --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --sans:"Inter","Inter Fallback",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       --serif:"Instrument Serif",Georgia,serif;
       --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
       --ease-out:cubic-bezier(.22,1,.36,1);
@@ -56,7 +57,7 @@ def _shared_styles() -> str:
     button{color:inherit}
     img{max-width:100%}
     [hidden]{display:none!important}
-    :focus-visible{outline:3px solid color-mix(in srgb,var(--ring) 72%,white);outline-offset:3px}
+    :focus-visible{outline:3px solid var(--ring);outline-offset:3px}
     .page{width:min(1440px,calc(100% - 24px));margin:12px auto 0;overflow:hidden;border:1px solid rgba(255,255,255,.68);border-radius:var(--radius-shell);background:var(--shell);box-shadow:var(--shadow-shell)}
     .container{width:min(1240px,calc(100% - 64px));margin-inline:auto}
     .skip-link{position:fixed;z-index:100;left:20px;top:-80px;min-height:44px;display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;color:white;background:var(--charcoal);font-weight:650;text-decoration:none}
@@ -167,7 +168,7 @@ def _shared_styles() -> str:
     .facts dd{min-width:0;margin:0;font-size:12px;font-weight:570;overflow-wrap:anywhere}
     .inspector{min-width:0;display:flex;flex-direction:column;padding:25px;border-left:1px solid var(--line);background:#F8F8F6}
     .inspector[data-animate="in"]{animation:inspector-in 280ms var(--ease-out) both}
-    .inspector-kicker{display:flex;align-items:center;gap:8px;color:var(--orange);font-size:12px;font-weight:700;letter-spacing:.055em;text-transform:uppercase}
+    .inspector-kicker{display:flex;align-items:center;gap:8px;color:var(--orange-copy);font-size:12px;font-weight:700;letter-spacing:.055em;text-transform:uppercase}
     .inspector-kicker img{width:15px;height:15px}
     .inspector h3{margin:16px 0 0;font-size:25px;font-weight:650;line-height:1.05}
     .inspector>p{margin:10px 0 0;font-size:14px;line-height:1.55}
@@ -274,11 +275,12 @@ def _shared_styles() -> str:
     .closing-panel h2{max-width:820px;margin:0;font-size:clamp(42px,5.2vw,68px);font-weight:610;line-height:.98;letter-spacing:-.05em}
     .closing-panel p{margin:17px 0 0;font-size:16px}
     .closing-actions{display:flex;flex-wrap:wrap;gap:9px}
-    footer{padding:24px 0 36px;color:var(--muted);font-size:11px}
+    footer{padding:24px 0 36px;color:var(--body);font-size:11px}
     .footer-row{display:flex;justify-content:space-between;gap:24px}
     .footer-links{display:flex;gap:18px}
-    [data-reveal]{opacity:0;transform:translateY(16px);transition:opacity 620ms var(--ease-out),transform 620ms var(--ease-out)}
-    [data-reveal][data-visible="true"]{opacity:1;transform:translateY(0)}
+    [data-reveal]{transition:opacity 620ms var(--ease-out),transform 620ms var(--ease-out)}
+    .js [data-reveal]:not([data-visible="true"]){opacity:0;transform:translateY(16px)}
+    @media print{[data-reveal]{opacity:1!important;transform:none!important}}
     .hero-copy [data-rise]{opacity:0;transform:translateY(12px);animation:rise-in 620ms var(--ease-out) forwards}
     .hero-copy .display[data-rise]{opacity:1;transform:none;animation:none}
     .hero-copy [data-rise]:nth-child(2){animation-delay:60ms}
@@ -314,7 +316,7 @@ def _shared_styles() -> str:
       .hero-main{grid-template-columns:1fr;min-height:auto}
       .hero-copy{padding-bottom:0}
       .hero-motion-host{width:min(620px,100%);margin:26px auto 0}
-      .app-stage{margin-top:-34px}
+      .app-stage{margin-top:8px}
       .queue-layout{grid-template-columns:150px minmax(0,1fr)}
       .review-layout{grid-template-columns:1fr}
       .inspector{border-top:1px solid var(--line);border-left:0}
@@ -514,15 +516,13 @@ def render_product_landing_v30() -> str:
   <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#ECEDEE">
   <meta name="description" content="Catch creative launch mistakes before Ads Manager. Validate every row, route exceptions and keep ambiguous decisions human.">
-  <meta name="author" content="Mathieu Petroni">
   <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preload" href="assets/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="me" href="https://www.linkedin.com/in/mathieu-petroni/">
   <link rel="me" href="https://github.com/mattyu-dev">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Creative Launch Workspace">
+  <meta property="og:site_name" content="Launch Control">
   <meta property="og:title" content="Catch creative launch mistakes before Ads Manager">
   <meta property="og:description" content="Check every creative row, route each failure to its owner and record the human decision before upload.">
   <meta property="og:url" content="https://mattyu-dev.github.io/creative-launch-workspace/">
@@ -536,8 +536,9 @@ def render_product_landing_v30() -> str:
   <meta name="twitter:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/__SOCIAL_CARD__">
   <meta name="twitter:image:alt" content="Launch Control pre-launch QA interface for Meta Ads">
   <title>Launch Control | Pre-launch QA for Meta Ads</title>
+  <script>document.documentElement.classList.add('js')</script>
   <style>__STYLES__</style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://mattyu-dev.github.io/#person","name":"Mathieu Petroni","jobTitle":"AI Automation Builder","url":"https://www.linkedin.com/in/mathieu-petroni/","sameAs":["https://github.com/mattyu-dev","https://www.linkedin.com/in/mathieu-petroni/"]},{"@type":"SoftwareApplication","name":"Launch Control","alternateName":"Creative Launch Workspace","applicationCategory":"BusinessApplication","operatingSystem":"Web","softwareVersion":"__VERSION__","description":"Pre-launch QA and exception routing for Meta Ads creative operations.","url":"https://mattyu-dev.github.io/creative-launch-workspace/","author":{"@id":"https://mattyu-dev.github.io/#person"}},{"@type":"WebSite","name":"Creative Launch Workspace","url":"https://mattyu-dev.github.io/creative-launch-workspace/","dateModified":"__UPDATED_DATE__","author":{"@id":"https://mattyu-dev.github.io/#person"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Launch Control","alternateName":"Creative Launch Workspace","applicationCategory":"BusinessApplication","operatingSystem":"Web","softwareVersion":"__VERSION__","description":"Pre-launch QA and exception routing for Meta Ads creative operations.","url":"https://mattyu-dev.github.io/creative-launch-workspace/","author":{"@type":"Organization","@id":"https://mattyu-dev.github.io/creative-launch-workspace/#org","name":"Launch Control"}},{"@type":"WebSite","name":"Launch Control","url":"https://mattyu-dev.github.io/creative-launch-workspace/","dateModified":"__UPDATED_DATE__","author":{"@id":"https://mattyu-dev.github.io/creative-launch-workspace/#org"}}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to product</a>
@@ -584,7 +585,7 @@ def render_product_landing_v30() -> str:
 
       <section class="closing" aria-labelledby="closing-title"><div class="container"><div class="closing-panel" data-reveal><div><div class="eyebrow">Launch with control</div><h2 id="closing-title">Review the manifest before it reaches Meta.</h2><p>Open the guided demo to inspect the queue, decide one exception and export the local receipt.</p></div><div class="closing-actions"><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">↗</span></a><a class="button" data-variant="outline" href="https://github.com/mattyu-dev/creative-launch-workspace">View source</a></div></div></div></section>
     </main>
-    <footer><div class="container footer-row"><span>Launch Control. Built by <a href="https://www.linkedin.com/in/mathieu-petroni/" rel="me external">Mathieu Petroni</a>.</span><span class="footer-links"><a href="https://github.com/mattyu-dev/creative-launch-workspace">MIT source</a><a href="brief-evidence.html">Evidence</a><a href="fix-lab.html">Fix lab</a></span></div></footer>
+    <footer><div class="container footer-row"><span>© Launch Control</span><span class="footer-links"><a href="https://github.com/mattyu-dev/creative-launch-workspace">Source</a><a href="brief-evidence.html">Evidence</a><a href="fix-lab.html">Fix lab</a></span></div></footer>
   </div>
   <script>
     (()=>{
@@ -635,6 +636,6 @@ def render_product_landing_v30() -> str:
 
 def render_social_card_page_v30() -> str:
     return r"""<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1200, initial-scale=1"><meta name="author" content="Mathieu Petroni"><style>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1200, initial-scale=1"><style>
 @font-face{font-family:"Inter";src:url("assets/inter-latin-variable.woff2") format("woff2-variations");font-weight:100 900;font-display:swap}@font-face{font-family:"Instrument Serif";src:url("assets/instrument-serif-latin-italic.woff2") format("woff2");font-style:italic;font-weight:400;font-display:swap}*{box-sizing:border-box}html,body{width:1200px;height:630px;margin:0;overflow:hidden}body{padding:18px;color:#232427;background:#ECEDEE;font-family:"Inter",sans-serif}main{width:1164px;height:594px;position:relative;overflow:hidden;display:grid;grid-template-columns:535px 629px;border:1px solid rgba(255,255,255,.75);border-radius:40px;background:#F4F5F5;box-shadow:0 1px 0 rgba(255,255,255,.9) inset}.copy{z-index:2;display:flex;flex-direction:column;padding:43px 18px 40px 48px}.brand{display:flex;align-items:center;gap:11px}.mark{width:31px;height:31px;position:relative}.mark:before,.mark:after{content:"";position:absolute;top:6px;width:19px;height:19px;border-radius:50%}.mark:before{left:0;background:#171719}.mark:after{left:12px;background:#E34A32}.brand-copy{display:grid;line-height:1}.brand-copy strong{font-size:15px}.brand-copy span{margin-top:6px;color:#7B7D82;font-size:10px}.hero{margin-top:65px}.eyebrow{color:#E34A32;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}.hero h1{max-width:500px;margin:15px 0 0;font-size:56px;font-weight:620;line-height:.94;letter-spacing:-.05em}.hero p{max-width:455px;margin:20px 0 0;color:#55575C;font-size:15px;line-height:1.5}.copy footer{display:flex;justify-content:space-between;margin-top:auto;color:#7B7D82;font-size:10px}.visual{position:relative}.trace{position:absolute;left:18px;right:50px;top:92px;height:112px;padding:18px 22px;border:1px solid rgba(23,23,25,.08);border-radius:18px;background:rgba(255,255,255,.82);box-shadow:0 22px 50px -36px rgba(35,36,39,.65)}.trace-line{height:2px;position:absolute;left:54px;right:54px;top:54px;background:linear-gradient(90deg,rgba(227,74,50,.2),#E34A32,rgba(227,74,50,.2))}.trace-node{width:34px;height:34px;position:absolute;top:38px;display:grid;place-items:center;border:2px solid #E34A32;border-radius:50%;color:#E34A32;background:#FFF9F7;font-size:9px;font-weight:760}.trace-node:nth-child(2){left:38px}.trace-node:nth-child(3){left:50%;transform:translateX(-50%)}.trace-node:nth-child(4){right:38px}.trace-labels{display:flex;justify-content:space-between;margin-top:52px;color:#55575C;font-size:8px;font-weight:650;text-transform:uppercase}.app{position:absolute;left:-12px;right:30px;bottom:34px;height:245px;overflow:hidden;border:8px solid rgba(255,255,255,.68);border-radius:22px;background:#FCFCFB;box-shadow:0 26px 60px -36px rgba(35,36,39,.7)}.bar{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border-bottom:1px solid rgba(23,23,25,.09);font-size:8px;font-weight:650}.bar span:last-child{padding:3px 7px;border-radius:999px;color:#B93624;background:#FFF0EC}.tabs{display:flex;gap:5px;padding:7px 11px;border-bottom:1px solid rgba(23,23,25,.09)}.tabs b{padding:5px 12px;border-radius:7px;color:#777;font-size:8px}.tabs b:first-child{color:#232427;background:#F0F0EE}.window{display:grid;grid-template-columns:100px 1fr;height:176px}.side{padding:12px 10px;border-right:1px solid rgba(23,23,25,.09);background:#F8F8F6}.side span{display:block;height:8px;margin-bottom:8px;border-radius:5px;background:#E4E4E1}.side span:nth-child(2){background:#FFF0EC}.rows{padding:13px}.rows h2{margin:0 0 12px;font-size:15px}.row{height:32px;display:grid;grid-template-columns:55px 1fr 110px;align-items:center;border-top:1px solid rgba(23,23,25,.08);font-size:7px}.row:first-of-type{box-shadow:3px 0 0 #E34A32 inset;background:#FFF9F7}.row b{font-family:monospace}.route{position:absolute;right:50px;top:45px;color:#E34A32;font-size:9px;font-weight:720;letter-spacing:.06em}
-</style></head><body><main><section class="copy"><div class="brand"><span class="mark"></span><span class="brand-copy"><strong>Launch Control</strong><span>Pre-launch QA for Meta Ads</span></span></div><div class="hero"><div class="eyebrow">Detect / Route / Prove</div><h1>Catch creative launch mistakes before Ads Manager.</h1><p>Validate every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.</p></div><footer><strong>Interactive product</strong><span>Mathieu Petroni</span></footer></section><section class="visual"><span class="route">RECORDED DECISION TRACE</span><div class="trace"><div class="trace-line"></div><b class="trace-node">01</b><b class="trace-node">02</b><b class="trace-node">✓</b><div class="trace-labels"><span>Detect</span><span>Route</span><span>Prove</span></div></div><div class="app"><div class="bar"><span>Launch Control</span><span>Demo data / local only</span></div><div class="tabs"><b>Queue</b><b>Review</b><b>Receipt</b></div><div class="window"><div class="side"><span></span><span></span><span></span><span></span></div><div class="rows"><h2>10 creatives need a decision</h2><div class="row"><b>cr_007</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_017</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_027</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div></div></div></div></section></main></body></html>"""
+</style></head><body><main><section class="copy"><div class="brand"><span class="mark"></span><span class="brand-copy"><strong>Launch Control</strong><span>Pre-launch QA for Meta Ads</span></span></div><div class="hero"><div class="eyebrow">Detect / Route / Prove</div><h1>Catch creative launch mistakes before Ads Manager.</h1><p>Validate every creative row. Route exceptions to the right owner. Keep ambiguous decisions human.</p></div><footer><strong>Interactive product</strong><span>Pre-launch QA for Meta Ads</span></footer></section><section class="visual"><span class="route">RECORDED DECISION TRACE</span><div class="trace"><div class="trace-line"></div><b class="trace-node">01</b><b class="trace-node">02</b><b class="trace-node">✓</b><div class="trace-labels"><span>Detect</span><span>Route</span><span>Prove</span></div></div><div class="app"><div class="bar"><span>Launch Control</span><span>Demo data / local only</span></div><div class="tabs"><b>Queue</b><b>Review</b><b>Receipt</b></div><div class="window"><div class="side"><span></span><span></span><span></span><span></span></div><div class="rows"><h2>10 creatives need a decision</h2><div class="row"><b>cr_007</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_017</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div><div class="row"><b>cr_027</b><span>Possible duplicate</span><span>Creative Ops Manager</span></div></div></div></div></section></main></body></html>"""

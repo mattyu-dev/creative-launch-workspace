@@ -51,7 +51,6 @@ await build({
 const bundleFiles = [
   path.join(outdir, 'launch-control-motion.js'),
   path.join(outdir, 'launch-control-motion.css'),
-  ...(await readdir(chunkdir)).map((name) => path.join(chunkdir, name)),
 ];
 for (const bundlePath of bundleFiles) {
   const content = await readFile(bundlePath, 'utf8');
@@ -69,12 +68,10 @@ for (const [name, maxGzip] of budgets) {
   console.log(`${name}: ${gzip} bytes gzip`);
 }
 
-const chunks = await readdir(chunkdir);
-for (const name of chunks) {
-  const bytes = await readFile(path.join(chunkdir, name));
-  const gzip = gzipSync(bytes).byteLength;
-  if (name.endsWith('.js') && gzip > 145 * 1024) {
-    throw new Error(`${name} exceeds Three.js chunk budget: ${gzip} > ${145 * 1024}`);
+const {existsSync} = await import('node:fs');
+if (existsSync(chunkdir)) {
+  const chunks = await readdir(chunkdir);
+  if (chunks.length) {
+    throw new Error(`Unexpected code-split chunks: ${chunks.join(', ')} (the landing bundle must stay single-file since the Three.js removal)`);
   }
-  console.log(`${name}: ${gzip} bytes gzip`);
 }

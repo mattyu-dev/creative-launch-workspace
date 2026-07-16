@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v20",
-  "tested_at": "2026-07-16T15:14:04.714Z",
+  "tested_at": "2026-07-16T17:09:34.769Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,21 +103,21 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-16T15:12:48.057Z",
+      "occurredAt": "2026-07-16T17:08:18.136Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
-      "returnLabel": "Back to the product",
+      "returnLabel": "Back to the overview",
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784214768058_8",
+        "event_id": "evt_local_1784221698136_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-16T15:12:48.057Z"
+        "occurred_at": "2026-07-16T17:08:18.136Z"
       }
     },
     "request_violations": [],
@@ -160,7 +160,7 @@
       "bodyScrollable": true,
       "footerVisible": true,
       "productBuilderHref": "https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md",
-      "linkedinHref": "https://www.linkedin.com/in/mathieu-petroni/"
+      "noPersonalContact": true
     },
     "receipt_mobile": {
       "hasReceipt": true,
@@ -250,19 +250,19 @@
   "product_page": {
     "title": "Catch creative launch mistakes before Ads Manager.",
     "canonical": "https://mattyu-dev.github.io/creative-launch-workspace/",
-    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v4.png",
+    "ogImage": "https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v5.png",
     "hasWorkspaceCta": true,
     "hasCaseStudyLink": false,
     "mainSectionCount": 5,
-    "visibleWordCount": 588,
-    "scrollHeight": 4589,
+    "visibleWordCount": 584,
+    "scrollHeight": 4655,
     "copyFreeze": {
       "boundary": true,
       "reviewScope": true,
       "reviewState": true,
       "boundedAuthority": true,
       "heroSecondaryCta": "See how it works ↓",
-      "structuredJobTitle": "AI Automation Builder"
+      "structuredAuthorName": "Launch Control"
     },
     "humanizedCopy": {
       "noLongDash": true,
@@ -286,9 +286,8 @@
     },
     "legacyPaletteAbsent": true,
     "productFirst": true,
-    "hasContact": true,
+    "noPersonalContact": true,
     "structuredTypes": [
-      "Person",
       "SoftwareApplication",
       "WebSite"
     ],
@@ -324,7 +323,7 @@
       "ready": true,
       "version": "4.0.0",
       "astryx": "0.1.6",
-      "three": "0.128.0",
+      "renderer": "css-token",
       "sequence": [
         "Detect",
         "Route",
@@ -337,65 +336,28 @@
       "calmPauseMs": 3200,
       "loopDurationMs": 9800,
       "cycleCount": 1,
-      "mesh": {
-        "geometry": "IcosahedronGeometry",
-        "radius": 3,
-        "detail": 0,
-        "color": "#E34A32",
-        "roughness": 0.3,
-        "metalness": 0.6,
-        "flatShading": true,
-        "desktopAnchorX": 4.5,
-        "mobileAnchorX": 0,
-        "dpr": 1,
-        "frameCount": 2,
-        "rafActive": true,
-        "reducedMotion": false,
-        "anchorX": 4.5,
-        "positionX": 4.5,
-        "positionY": -1.8101917149052196
-      },
-      "state": "ready",
+      "state": "playing",
       "astryxMounted": true,
-      "canvasMounted": true,
+      "tokenMounted": true,
+      "webglAbsent": true,
       "oldRasterAbsent": true
     },
-    "end": {
-      "geometry": "IcosahedronGeometry",
-      "radius": 3,
-      "detail": 0,
-      "color": "#E34A32",
-      "roughness": 0.3,
-      "metalness": 0.6,
-      "flatShading": true,
-      "desktopAnchorX": 4.5,
-      "mobileAnchorX": 0,
-      "dpr": 1,
-      "frameCount": 41,
-      "rafActive": true,
-      "reducedMotion": false,
-      "anchorX": 4.5,
-      "positionX": 4.5,
-      "positionY": -1.7014583200434696
-    },
-    "yChanged": true,
     "externalRequests": [],
     "complete": {
       "state": "complete",
       "phase": "prove",
-      "frameCount": 778,
-      "rafActive": false
+      "tokenCenterPct": 87
     },
     "loopRestart": {
       "cycleCount": 2,
       "state": "playing",
-      "phase": "detect",
-      "rafActive": true
+      "phase": "detect"
     },
     "offscreenPause": {
-      "frameStart": 799,
-      "frameEnd": 799,
-      "rafActive": false
+      "cycleStart": 2,
+      "cycleEnd": 2,
+      "phaseStart": "detect",
+      "phaseEnd": "detect"
     }
   },
   "product_compositor": {
@@ -405,16 +367,16 @@
   "product_reduced_motion": {
     "start": {
       "phase": "prove",
-      "frameCount": 2,
-      "rafActive": false,
-      "reducedMotion": true
+      "state": "static",
+      "cycleCount": 0,
+      "webglAbsent": true
     },
     "end": {
-      "frameCount": 2,
-      "rafActive": false
+      "phase": "prove",
+      "cycleCount": 0
     },
-    "noRenderLoop": true,
-    "blackPixelRatio": 0.003209242618741977
+    "noLoop": true,
+    "blackPixelRatio": 0.003010632142340518
   },
   "product_interaction": {
     "initial": {
@@ -462,10 +424,11 @@
     "legacyScreenshotReferences": [],
     "activePanel": "panel-queue",
     "touchTargetFailures": [],
-    "scrollHeight": 7075,
+    "scrollHeight": 7118,
     "bodyFontPx": 16,
-    "meshAnchorX": 0,
-    "meshPositionX": 0
+    "meshMounted": false,
+    "tokenVisible": true,
+    "loopStarted": true
   },
   "product_small_phone": {
     "noDocumentOverflow": true,
@@ -513,7 +476,7 @@
     "fileAbsent": true,
     "excludedFromSitemap": true,
     "httpStatus": 404,
-    "destination": "http://127.0.0.1:58733/docs/case-study.html",
+    "destination": "http://127.0.0.1:64018/docs/case-study.html",
     "consoleMessages": [
       "Failed to load resource: the server responded with a status of 404 (Not Found)"
     ]
@@ -529,13 +492,13 @@
       "referenceSrc": "assets/workspace-desktop.png",
       "candidateSrc": "assets/workspace-desktop.webp",
       "dimensionsMatch": true,
-      "psnr": 43.09
+      "psnr": 43.11
     },
     {
       "referenceSrc": "assets/workspace-mobile.png",
       "candidateSrc": "assets/workspace-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 44.96
+      "psnr": 45.01
     },
     {
       "referenceSrc": "assets/workspace-mobile-hero.png",
@@ -547,7 +510,7 @@
       "referenceSrc": "assets/guided-receipt-mobile.png",
       "candidateSrc": "assets/guided-receipt-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 47.16
+      "psnr": 47.34
     }
   ],
   "social_card": {
@@ -604,13 +567,13 @@
       "seoScore": 1,
       "lcpMs": 483,
       "cls": 0,
-      "tbtMs": 13
+      "tbtMs": 0
     },
     "product_mobile": {
-      "performanceScore": 1,
+      "performanceScore": 0.99,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1652,
+      "lcpMs": 1877,
       "cls": 0,
       "tbtMs": 0
     }

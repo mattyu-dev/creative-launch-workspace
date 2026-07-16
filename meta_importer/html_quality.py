@@ -14,7 +14,7 @@ def audit_workspace_html(html: str) -> dict[str, object]:
         attrs for tag, attrs in parser.start_tags if tag == "div" and attrs.get("aria-label")
     ]
     checks = {
-        "has_title": "Creative Launch Workspace for Meta Ads" in html,
+        "has_title": "Launch Control" in html,
         "has_row_detail": "Decision workspace" in html,
         "has_preview": "Creative preview" in html,
         "has_export_panel": "Local state and export" in html,
@@ -129,12 +129,9 @@ def audit_workspace_html(html: str) -> dict[str, object]:
         )
         and html.find('id="guided-step-two"') < html.find('id="guided-case"')
         and html.find('id="guided-step-three-actions"') < html.find('class="guided-proof"'),
-        "has_guided_architecture_and_contact_exits": all(
-            token in html
-            for token in (
-                'id="guided-product-builder" href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md"',
-                'id="guided-linkedin" href="https://www.linkedin.com/in/mathieu-petroni/"',
-            )
+        "has_guided_architecture_exit": (
+            'id="guided-product-builder" href="https://github.com/mattyu-dev/creative-launch-workspace/blob/main/docs/architecture/system.md"'
+            in html
         ),
         "brand_accessible_name_matches_visible_text": (
             '<a class="brand" href="index.html">' in html
@@ -304,8 +301,8 @@ def _check_messages(checks: dict[str, bool]) -> list[tuple[str, bool, str]]:
             "Guided decisions and completion actions must precede scrollable evidence on small screens.",
         ),
         (
-            "has_guided_architecture_and_contact_exits",
-            checks["has_guided_architecture_and_contact_exits"],
+            "has_guided_architecture_exit",
+            checks["has_guided_architecture_exit"],
             "Guided completion lacks explicit routes to the product architecture and contact profile.",
         ),
         (
