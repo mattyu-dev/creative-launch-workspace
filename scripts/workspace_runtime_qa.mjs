@@ -543,8 +543,11 @@ await page.screenshot({ path: join(assetsDir, "workspace-desktop.png") });
 await page.screenshot({ path: join(assetsDir, "workspace-desktop.webp"), type: "webp", quality: 90 });
 
 const productUrl = `${baseUrl}/docs/index.html`;
-const captureBlackPixelRatio = async (outputPath) => {
-  const screenshot = await page.screenshot({ path: outputPath });
+const captureBlackPixelRatio = async (outputPath, selector = null) => {
+  const target = selector ? await page.$(selector) : null;
+  const screenshot = target
+    ? await target.screenshot({ path: outputPath })
+    : await page.screenshot({ path: outputPath });
   return page.evaluate(async (encoded) => {
     const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
     const bitmap = await createImageBitmap(new Blob([bytes], { type: "image/png" }));
@@ -592,6 +595,31 @@ productMotion.complete = await page.evaluate(() => ({
   frameCount: window.__launchControlMotion.mesh?.frameCount,
   rafActive: window.__launchControlMotion.mesh?.rafActive
 }));
+await page.waitForFunction(() => (
+  window.__launchControlMotion?.cycleCount >= 2
+  && window.__launchControlMotion?.state === 'playing'
+  && document.querySelector('.lc-motion')?.dataset.phase === 'detect'
+), { timeout: 5000 });
+productMotion.loopRestart = await page.evaluate(() => ({
+  cycleCount: window.__launchControlMotion.cycleCount,
+  state: window.__launchControlMotion.state,
+  phase: document.querySelector('.lc-motion')?.dataset.phase,
+  rafActive: window.__launchControlMotion.mesh?.rafActive
+}));
+await page.evaluate(() => document.querySelector('#workflow')?.scrollIntoView({ block: 'center' }));
+await page.waitForFunction(() => window.__launchControlMotion?.mesh?.rafActive === false, { timeout: 2500 });
+const offscreenFrameStart = await page.evaluate(() => window.__launchControlMotion.mesh?.frameCount);
+await new Promise((resolve) => setTimeout(resolve, 260));
+productMotion.offscreenPause = await page.evaluate((frameStart) => ({
+  frameStart,
+  frameEnd: window.__launchControlMotion.mesh?.frameCount,
+  rafActive: window.__launchControlMotion.mesh?.rafActive
+}), offscreenFrameStart);
+await page.evaluate(() => window.scrollTo(0, 0));
+await page.waitForFunction(() => (
+  window.__launchControlMotion?.state === 'playing'
+  && window.__launchControlMotion?.mesh?.rafActive === true
+), { timeout: 3000 });
 const productHoverState = await page.evaluate(() => {
   const styles = [...document.querySelectorAll("style")].map((item) => item.textContent).join("\n");
   return {
@@ -617,11 +645,11 @@ const productPage = await page.evaluate(() => ({
       && document.body.textContent.includes("No Meta API call")
       && document.body.textContent.includes("External mutation")
       && document.body.textContent.includes("false"),
-    reviewScope: document.body.textContent.includes("Validate approvals, placements, destinations, naming and UTMs across every creative row"),
-    reviewState: document.body.textContent.includes("Route exceptions to the right owner"),
-    boundedAuthority: document.body.textContent.includes("Automation proposes")
-      && document.body.textContent.includes("Rules verify")
-      && document.body.textContent.includes("People decide"),
+    reviewScope: document.body.textContent.includes("checks every creative row before upload"),
+    reviewState: document.body.textContent.includes("routes each problem to a named owner"),
+    boundedAuthority: document.body.textContent.includes("AI prepares the review")
+      && document.body.textContent.includes("Only people approve")
+      && document.body.textContent.includes("cannot approve a field, bypass a rule or publish to Meta"),
     heroSecondaryCta: document.querySelector('.hero-copy .button[data-variant="outline"]')?.textContent.trim(),
     structuredJobTitle: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.find((item) => item["@type"] === "Person")?.jobTitle
   },
@@ -629,13 +657,14 @@ const productPage = await page.evaluate(() => ({
     noLongDash: !/[—–]/.test(`${document.title}\n${document.body.innerText}`),
     concreteHero: document.body.textContent.includes("Catch creative launch mistakes before Ads Manager"),
     concreteProblem: document.body.textContent.includes("10 creatives need a decision"),
-    concreteWorkflow: document.body.textContent.includes("Detect the quiet failures")
-      && document.body.textContent.includes("Route the decision"),
+    concreteWorkflow: document.body.textContent.includes("From creative manifest")
+      && document.body.textContent.includes("Check, route, review")
+      && document.body.textContent.includes("Reviewed launch plan"),
     directEvidence: document.body.textContent.includes("Proof you can inspect")
   },
   exactTokens: Object.fromEntries([
     "--canvas", "--shell", "--surface", "--surface-soft", "--ink", "--charcoal",
-    "--body", "--orange", "--orange-hover", "--orange-soft"
+    "--body", "--orange", "--orange-hover", "--orange-copy", "--orange-soft"
   ].map((token) => [token, getComputedStyle(document.documentElement).getPropertyValue(token).trim()])),
   legacyPaletteAbsent: !["--plum", "--lemon", "--fuchsia", "--lavender"]
     .some((token) => getComputedStyle(document.documentElement).getPropertyValue(token).trim()),
@@ -645,7 +674,7 @@ const productPage = await page.evaluate(() => ({
     && !document.querySelector("main")?.innerHTML.toLowerCase().includes("hiring"),
   hasContact: Boolean(document.querySelector('a[href="https://www.linkedin.com/in/mathieu-petroni/"]')),
   structuredTypes: JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent || "{}")["@graph"]?.map((item) => item["@type"]) || [],
-  workflowStepCount: document.querySelectorAll(".route-step").length,
+  workflowStepCount: document.querySelectorAll(".product-flow > li:not(.flow-arrow)").length,
   controlCount: document.querySelectorAll(".guardrails > div").length,
   productTabCount: document.querySelectorAll('[role="tab"]').length,
   productPanelCount: document.querySelectorAll('.app-shell [role="tabpanel"]').length,
@@ -655,6 +684,9 @@ const productPage = await page.evaluate(() => ({
   astryxMotion: Boolean(document.querySelector('[data-astryx-theme="launch-control"] .trace-card'))
     && Boolean(document.querySelector('#meshGL')),
   oldRasterAbsent: !document.documentElement.innerHTML.includes('launch-control-core-v3'),
+  automaticLoop: window.__launchControlMotion?.loop === true
+    && !document.body.textContent.includes('Replay trace')
+    && document.body.textContent.includes('The walkthrough loops automatically'),
   legacyScreenshotReferences: [...document.querySelectorAll("img,source")]
     .map((item) => item.getAttribute("src") || item.getAttribute("srcset") || "")
     .filter((src) => /(workspace-(?:mobile-hero|desktop)|guided-review|brief-evidence)/.test(src)),
@@ -699,6 +731,7 @@ if (
     "--body": "#55575C",
     "--orange": "#E34A32",
     "--orange-hover": "#F05A3C",
+    "--orange-copy": "#A93625",
     "--orange-soft": "#FFF0EC"
   })
   || !productPage.legacyPaletteAbsent
@@ -713,6 +746,7 @@ if (
   || !productPage.nativeProduct
   || !productPage.astryxMotion
   || !productPage.oldRasterAbsent
+  || !productPage.automaticLoop
   || productPage.legacyScreenshotReferences.length
   || !productPage.exactFixture
   || !productPage.exactReceipt
@@ -737,6 +771,14 @@ if (
   || productMotion.complete.state !== "complete"
   || productMotion.complete.phase !== "prove"
   || productMotion.complete.rafActive !== false
+  || productMotion.start.loop !== true
+  || productMotion.start.loopDurationMs !== 9800
+  || productMotion.loopRestart.cycleCount < 2
+  || productMotion.loopRestart.state !== "playing"
+  || productMotion.loopRestart.phase !== "detect"
+  || productMotion.loopRestart.rafActive !== true
+  || productMotion.offscreenPause.rafActive !== false
+  || productMotion.offscreenPause.frameStart !== productMotion.offscreenPause.frameEnd
   || productMotion.externalRequests.length
   || !productPage.sectionNavTargetsResolve
   || !productPage.noDocumentOverflow
@@ -827,7 +869,9 @@ await page.screenshot({ path: join(assetsDir, "product-desktop.png"), fullPage: 
 
 await page.setViewport({ width: 390, height: 844 });
 await page.goto(productUrl, { waitUntil: "load" });
+await page.evaluate(() => document.querySelector('.hero-motion-host')?.scrollIntoView({ block: 'center' }));
 await page.waitForFunction(() => window.__launchControlMotion?.ready === true, { timeout: 15000 });
+await page.evaluate(() => window.scrollTo(0, 0));
 const productMobile = await page.evaluate(() => {
   const heroCta = document.querySelector(".hero-copy .button");
   const heroProduct = document.querySelector(".hero-motion-host");
@@ -890,7 +934,7 @@ if (
   || productMobile.legacyScreenshotReferences.length
   || productMobile.activePanel !== "panel-queue"
   || productMobile.touchTargetFailures.length
-  || productMobile.scrollHeight > 7000
+  || productMobile.scrollHeight > 7300
   || productMobile.bodyFontPx < 16
   || productMobile.meshAnchorX !== 0
   || productMobile.meshPositionX !== 0
@@ -899,12 +943,12 @@ if (
 }
 await page.click('.trace-steps li:nth-child(2) button');
 await new Promise((resolve) => setTimeout(resolve, 500));
-const routeBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-route.png"));
+const routeBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-route.png"), ".trace-workspace");
 await page.click('.trace-steps li:nth-child(3) button');
 await new Promise((resolve) => setTimeout(resolve, 500));
-const proveBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-prove.png"));
+const proveBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-prove.png"), ".trace-workspace");
 const productCompositor = { routeBlackPixelRatio, proveBlackPixelRatio };
-if (routeBlackPixelRatio > 0.2 || proveBlackPixelRatio > 0.2) {
+if (routeBlackPixelRatio > 0.02 || proveBlackPixelRatio > 0.02) {
   throw new Error(`Product WebGL compositor corruption detected: ${JSON.stringify(productCompositor)}`);
 }
 await page.evaluate(async () => {
@@ -1107,7 +1151,7 @@ const productReducedMotion = {
   end: reducedMotionEnd,
   noRenderLoop: reducedMotionStart.frameCount === reducedMotionEnd.frameCount
 };
-const reducedBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-reduced.png"));
+const reducedBlackPixelRatio = await captureBlackPixelRatio(join(assetsDir, "product-motion-reduced.png"), ".trace-workspace");
 productReducedMotion.blackPixelRatio = reducedBlackPixelRatio;
 if (
   reducedMotionStart.phase !== "prove"
@@ -1115,7 +1159,7 @@ if (
   || reducedMotionStart.rafActive !== false
   || reducedMotionEnd.rafActive !== false
   || !productReducedMotion.noRenderLoop
-  || reducedBlackPixelRatio > 0.2
+  || reducedBlackPixelRatio > 0.02
 ) {
   throw new Error(`Product reduced-motion contract failed: ${JSON.stringify(productReducedMotion)}`);
 }

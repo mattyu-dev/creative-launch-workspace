@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v20",
-  "tested_at": "2026-07-15T16:47:06.316Z",
+  "tested_at": "2026-07-16T15:14:04.714Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-15T16:45:55.371Z",
+      "occurredAt": "2026-07-16T15:12:48.057Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784133955371_8",
+        "event_id": "evt_local_1784214768058_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-15T16:45:55.371Z"
+        "occurred_at": "2026-07-16T15:12:48.057Z"
       }
     },
     "request_violations": [],
@@ -254,8 +254,8 @@
     "hasWorkspaceCta": true,
     "hasCaseStudyLink": false,
     "mainSectionCount": 5,
-    "visibleWordCount": 506,
-    "scrollHeight": 4483,
+    "visibleWordCount": 588,
+    "scrollHeight": 4589,
     "copyFreeze": {
       "boundary": true,
       "reviewScope": true,
@@ -281,6 +281,7 @@
       "--body": "#55575C",
       "--orange": "#E34A32",
       "--orange-hover": "#F05A3C",
+      "--orange-copy": "#A93625",
       "--orange-soft": "#FFF0EC"
     },
     "legacyPaletteAbsent": true,
@@ -299,13 +300,14 @@
     "nativeProduct": true,
     "astryxMotion": true,
     "oldRasterAbsent": true,
+    "automaticLoop": true,
     "legacyScreenshotReferences": [],
     "exactFixture": true,
     "exactReceipt": true,
     "singlePrimaryReviewAction": true,
     "primaryCtaVisible": true,
     "heroProductVisible": true,
-    "heroProductTop": 216,
+    "heroProductTop": 201,
     "sectionNavTargetsResolve": true,
     "noDocumentOverflow": true
   },
@@ -328,6 +330,13 @@
         "Route",
         "Prove"
       ],
+      "loop": true,
+      "routeAtMs": 2350,
+      "proveAtMs": 4750,
+      "motionDurationMs": 6600,
+      "calmPauseMs": 3200,
+      "loopDurationMs": 9800,
+      "cycleCount": 1,
       "mesh": {
         "geometry": "IcosahedronGeometry",
         "radius": 3,
@@ -339,12 +348,12 @@
         "desktopAnchorX": 4.5,
         "mobileAnchorX": 0,
         "dpr": 1,
-        "frameCount": 3,
+        "frameCount": 2,
         "rafActive": true,
         "reducedMotion": false,
         "anchorX": 4.5,
         "positionX": 4.5,
-        "positionY": -1.8221570853398725
+        "positionY": -1.8101917149052196
       },
       "state": "ready",
       "astryxMounted": true,
@@ -362,25 +371,36 @@
       "desktopAnchorX": 4.5,
       "mobileAnchorX": 0,
       "dpr": 1,
-      "frameCount": 42,
+      "frameCount": 41,
       "rafActive": true,
       "reducedMotion": false,
       "anchorX": 4.5,
       "positionX": 4.5,
-      "positionY": -1.7118846026130445
+      "positionY": -1.7014583200434696
     },
     "yChanged": true,
     "externalRequests": [],
     "complete": {
       "state": "complete",
       "phase": "prove",
-      "frameCount": 783,
+      "frameCount": 778,
+      "rafActive": false
+    },
+    "loopRestart": {
+      "cycleCount": 2,
+      "state": "playing",
+      "phase": "detect",
+      "rafActive": true
+    },
+    "offscreenPause": {
+      "frameStart": 799,
+      "frameEnd": 799,
       "rafActive": false
     }
   },
   "product_compositor": {
-    "routeBlackPixelRatio": 0.09767894033296877,
-    "proveBlackPixelRatio": 0.09670069267225666
+    "routeBlackPixelRatio": 0.00887890457851947,
+    "proveBlackPixelRatio": 0.003209242618741977
   },
   "product_reduced_motion": {
     "start": {
@@ -394,7 +414,7 @@
       "rafActive": false
     },
     "noRenderLoop": true,
-    "blackPixelRatio": 0.09670069267225666
+    "blackPixelRatio": 0.003209242618741977
   },
   "product_interaction": {
     "initial": {
@@ -442,7 +462,7 @@
     "legacyScreenshotReferences": [],
     "activePanel": "panel-queue",
     "touchTargetFailures": [],
-    "scrollHeight": 6475,
+    "scrollHeight": 7075,
     "bodyFontPx": 16,
     "meshAnchorX": 0,
     "meshPositionX": 0
@@ -453,10 +473,10 @@
     "ctaBeforeProduct": true,
     "brandNameVisible": true,
     "touchTargetFailures": [],
-    "ctaTop": 502,
-    "ctaBottom": 546,
+    "ctaTop": 478,
+    "ctaBottom": 522,
     "headingHeight": 150,
-    "productTop": 566,
+    "productTop": 542,
     "nativeProductVisible": true,
     "activePanel": "panel-queue",
     "brandAccessibleName": "Launch Control",
@@ -493,7 +513,7 @@
     "fileAbsent": true,
     "excludedFromSitemap": true,
     "httpStatus": 404,
-    "destination": "http://127.0.0.1:60754/docs/case-study.html",
+    "destination": "http://127.0.0.1:58733/docs/case-study.html",
     "consoleMessages": [
       "Failed to load resource: the server responded with a status of 404 (Not Found)"
     ]
@@ -527,7 +547,7 @@
       "referenceSrc": "assets/guided-receipt-mobile.png",
       "candidateSrc": "assets/guided-receipt-mobile.webp",
       "dimensionsMatch": true,
-      "psnr": 47.25
+      "psnr": 47.16
     }
   ],
   "social_card": {
@@ -584,13 +604,13 @@
       "seoScore": 1,
       "lcpMs": 483,
       "cls": 0,
-      "tbtMs": 3
+      "tbtMs": 13
     },
     "product_mobile": {
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1651,
+      "lcpMs": 1652,
       "cls": 0,
       "tbtMs": 0
     }
