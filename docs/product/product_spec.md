@@ -4,7 +4,7 @@
 
 Creative operations teams receive campaign intent as prose, assets as folders, and launch rules as spreadsheets. The last mile is repetitive but risky: one missing approval, wrong destination, unsupported placement, or broken UTM can invalidate a large batch.
 
-Creative Launch Workspace turns that material into a review queue with an explicit owner and fix for every issue.
+Launch Control turns that material into a review queue with an explicit owner and fix for every issue.
 
 ## Workflow
 
@@ -26,7 +26,7 @@ The system never publishes ads. The final artifact is intentionally non-executab
 - A blocked row cannot be approved through either the browser or SQLite path.
 - The same synthetic inputs produce byte-stable evidence artifacts.
 - All external writes remain impossible in the current release.
-- A LinkedIn visitor can understand the business problem, Mathieu's ownership, the authority boundary and the product workflow before opening the operator UI.
+- A first-time visitor can understand the business problem, the authority boundary and the product workflow before opening the operator UI.
 - A first-time visitor can complete one real local decision without learning the full 100-row workspace first.
 
 ## Current proof

@@ -481,7 +481,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="design-system" content="Creative Launch Product UI v3">
+  <meta name="design-system" content="Launch Control Product UI v4">
   <meta name="description" content="Review a 100-row synthetic Meta creative batch, inspect routed launch issues and record local human decisions.">
   <link rel="canonical" href="https://mattyu-dev.github.io/creative-launch-workspace/workspace.html">
   <meta property="og:type" content="website">
@@ -489,7 +489,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
   <meta property="og:description" content="A task-first review queue for approval, destination, placement, mapping and duplicate issues.">
   <meta property="og:image" content="https://mattyu-dev.github.io/creative-launch-workspace/assets/social-card-v5.png">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%2324142b%22%2F%3E%3C%2Fsvg%3E" type="image/svg+xml">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2216%22%20r%3D%2210%22%20fill%3D%22%23171719%22%2F%3E%3Ccircle%20cx%3D%2221%22%20cy%3D%2216%22%20r%3D%2210%22%20fill%3D%22%23E34A32%22%2F%3E%3C%2Fsvg%3E" type="image/svg+xml">
   <title>Launch Control · Creative launch workspace for Meta Ads</title>
   <style>
     :root {
@@ -1699,6 +1699,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
     let persisted = loadPersistedState();
     let rows = mergeRows();
     let activeFilter = "needs_review";
+    queueMicrotask(() => updateFocusTitle());
     let activeRow = rows.find((row) => row.batch_state === "needs_review")?.source_row
       || (rows.length ? rows[0].source_row : null);
     let lastFocusedRow = activeRow;
@@ -1786,10 +1787,16 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       });
     }
 
+    function updateFocusTitle() {
+      const count = rows.filter((row) => row.batch_state === "needs_review" && row.review_status === "needs_confirmation").length;
+      document.getElementById("focus-title").textContent = count + " creatives need a human decision.";
+    }
+
     function saveState() {
       const payload = exportState();
       localStorage.setItem(storageKey, JSON.stringify(payload, null, 2));
       rows = mergeRows();
+      updateFocusTitle();
     }
 
     function exportState() {
@@ -2455,6 +2462,7 @@ def render_html_workspace(plan: LaunchPlan) -> str:
       localStorage.removeItem(storageKey);
       persisted = { rows: {}, audit: workspaceData.audit_events.slice() };
       rows = mergeRows();
+      updateFocusTitle();
       statusLine.textContent = "Browser review state reset.";
       renderOwnerOptions();
       selectRow(filteredRows().length ? filteredRows()[0].source_row : null, false, false);

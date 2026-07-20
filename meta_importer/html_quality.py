@@ -65,7 +65,7 @@ def audit_workspace_html(html: str) -> dict[str, object]:
             for token in ("ArrowDown", "ArrowUp", 'tr.tabIndex = row.source_row === activeRow ? 0 : -1')
         ),
         "has_responsive_css": "@media (max-width:" in html,
-        "has_design_system_contract": 'content="Creative Launch Product UI v3"' in html,
+        "has_design_system_contract": 'content="Launch Control Product UI v4"' in html,
         "has_ai_assist_trace": all(
             token in html
             for token in (
@@ -142,6 +142,7 @@ def audit_workspace_html(html: str) -> dict[str, object]:
         "has_encoded_data_favicon": (
             'href="data:image/svg+xml,%3Csvg%20xmlns%3D%22' in html
             and "data:image/svg+xml,%3Csvg xmlns='" not in html
+            and "%2324142b" not in html
         ),
         "has_skip_link": 'class="skip-link"' in html and 'href="#review-workspace"' in html,
         "has_active_row_semantics": 'setAttribute("aria-selected"' in html,

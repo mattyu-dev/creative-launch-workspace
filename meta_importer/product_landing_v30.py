@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import json
+
+from .demo_payload import build_demo_payload
+
 VERSION = "4.0.0"
 UPDATED_DATE = "2026-07-16"
 SOCIAL_CARD = "social-card-v5.png"
@@ -181,6 +185,11 @@ def _shared_styles() -> str:
     .inspector-actions .button{width:100%;border-radius:10px}
     .inspector-foot{margin:11px 0 0!important;color:var(--muted);font-size:12px!important;text-align:center}
     .receipt-panel{min-height:575px;display:grid;place-items:center;padding:36px;background:#F8F8F6}
+    .receipt-empty{max-width:430px;padding:34px;border:1px dashed var(--line-strong);border-radius:18px;background:white;text-align:center}
+    .receipt-empty h2{margin:0;font-size:23px;font-weight:650}
+    .receipt-empty p{margin:10px 0 18px;font-size:13px}
+    .queue-row[data-static="true"]{cursor:default}
+    .queue-more{min-height:52px;display:flex;align-items:center;justify-content:center;gap:7px;color:var(--orange-copy);background:#FFFDFC;font-size:13px;font-weight:640;text-decoration:none}
     .receipt-card{width:min(760px,100%);display:grid;grid-template-columns:minmax(0,.78fr) minmax(260px,1fr);overflow:hidden;border:1px solid var(--line);border-radius:18px;background:white;box-shadow:var(--shadow-card)}
     .receipt-summary{padding:30px}
     .success-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;background:var(--orange-soft)}
@@ -249,6 +258,7 @@ def _shared_styles() -> str:
     .feature-card[data-card="route"] p{color:#B7B8BA}
     .feature-card[data-card="route"]>.icon{filter:invert(1)}
     .feature-card[data-card="local"]{grid-column:span 2;background:#F0F0ED}
+    .feature-card[data-card="local"] p{max-width:calc(50% - 14px)}
     .source-map{position:absolute;right:26px;bottom:24px;width:47%;display:grid;gap:8px}
     .source-map span{height:28px;border:1px solid var(--line);border-radius:8px;background:var(--surface-soft)}
     .source-map span:nth-child(2){width:78%;margin-left:auto;border-color:rgba(227,74,50,.22);background:var(--orange-soft)}
@@ -289,9 +299,9 @@ def _shared_styles() -> str:
     footer{padding:24px 0 36px;color:var(--body);font-size:11px}
     .footer-row{display:flex;justify-content:space-between;gap:24px}
     .footer-links{display:flex;gap:18px}
-    [data-reveal]{transition:opacity 620ms var(--ease-out),transform 620ms var(--ease-out)}
-    .js [data-reveal]:not([data-visible="true"]){opacity:0;transform:translateY(16px)}
-    @media print{[data-reveal]{opacity:1!important;transform:none!important}}
+    [data-reveal]{transition:transform 620ms var(--ease-out)}
+    .js [data-reveal]:not([data-visible="true"]){transform:translateY(16px)}
+    @media print{[data-reveal]{transform:none!important}}
     .hero-copy [data-rise]{opacity:0;transform:translateY(12px);animation:rise-in 620ms var(--ease-out) forwards}
     .hero-copy .display[data-rise]{opacity:1;transform:none;animation:none}
     .hero-copy [data-rise]:nth-child(2){animation-delay:60ms}
@@ -307,7 +317,7 @@ def _shared_styles() -> str:
       .button[data-variant="outline"]:hover{border-color:var(--line-strong);background:white}
       .button[data-variant="ghost"]:hover{background:rgba(23,23,25,.05)}
       .button:hover .button-arrow{transform:translateX(2px)}
-      .queue-row:hover{z-index:1;background:#FFF9F7;transform:translateY(-1px)}
+      .queue-row[data-open-review]:hover{z-index:1;background:#FFF9F7;transform:translateY(-1px)}
       .evidence-link:hover{z-index:1;transform:translateY(-3px);border-color:rgba(227,74,50,.25);box-shadow:0 20px 44px -27px rgba(35,36,39,.45)}
     }
     @media(max-width:1040px){
@@ -449,8 +459,39 @@ def _finish(template: str) -> str:
     )
 
 
-def _product_shell() -> str:
-    return r"""
+def _queue_row_html(entry: dict, interactive: bool) -> str:
+    sub = entry["issue_title"] or "Passes offline checks"
+    owner_line = (
+        f'<span class="row-owner"><strong>{entry["owner"]}</strong><span>Decision required</span></span>'
+        if entry["batch_state"] == "needs_review"
+        else f'<span class="row-owner"><strong>{entry["owner"] or "Validator"}</strong><span>{entry["status_label"]}</span></span>'
+    )
+    status = "Review now" if entry["batch_state"] == "needs_review" else entry["status_label"]
+    selected = ' data-selected="true"' if interactive and entry["creative_id"] == "cr_007" else ""
+    if interactive:
+        return (
+            f'<button class="queue-row"{selected} data-open-review data-source-row="{entry["source_row"]}" type="button">'
+            f'<span class="row-id">{entry["creative_id"]}</span>'
+            f'<span class="row-name"><strong>{entry["name"]}</strong><span>{sub}</span></span>'
+            f'{owner_line}<span class="row-status">{status}</span></button>'
+        )
+    return (
+        f'<div class="queue-row" data-static="true">'
+        f'<span class="row-id">{entry["creative_id"]}</span>'
+        f'<span class="row-name"><strong>{entry["name"]}</strong><span>{sub}</span></span>'
+        f'{owner_line}<span class="row-status">{status}</span></div>'
+    )
+
+
+def _product_shell(payload: dict) -> str:
+    counts = payload["counts"]
+    exception = payload["walkthrough"]["exception"]
+    facts = exception["facts"]
+    initial_rows = "\n                ".join(
+        _queue_row_html(entry, True) for entry in payload["queue"]["needs_decision"][:4]
+    )
+    sha = payload["source_manifest_sha256"]
+    return f"""
     <div class="app-stage" id="product">
       <div class="app-shell">
         <div class="app-topbar">
@@ -468,20 +509,17 @@ def _product_shell() -> str:
           <div class="queue-layout">
             <nav class="queue-nav" aria-label="Queue filters">
               <strong>Creative rows</strong>
-              <button class="queue-filter" type="button">All <span>100</span></button>
-              <button class="queue-filter" type="button">Ready <span>30</span></button>
-              <button class="queue-filter" data-active="true" type="button">Needs decision <span>10</span></button>
-              <button class="queue-filter" type="button">Blocked <span>60</span></button>
+              <button class="queue-filter" data-filter="all" type="button">All <span>{counts["total"]}</span></button>
+              <button class="queue-filter" data-filter="ready" type="button">Ready <span>{counts["ready"]}</span></button>
+              <button class="queue-filter" data-filter="needs_decision" data-active="true" type="button">Needs decision <span>{counts["needs_decision"]}</span></button>
+              <button class="queue-filter" data-filter="blocked" type="button">Blocked <span>{counts["blocked"]}</span></button>
             </nav>
             <div class="queue-main">
-              <div class="queue-head"><div><h2>10 creatives need a decision</h2><p>One owner and one next action for every exception.</p></div><span class="badge">Batch 78f20843aea8a367</span></div>
-              <div class="run-strip" role="img" aria-label="30 ready, 10 need a human decision, 60 blocked"><span></span><span></span><span></span></div>
-              <div class="run-legend"><span><b>30</b> ready</span><span><b>10</b> need a decision</span><span><b>60</b> blocked</span></div>
-              <div class="queue-list" aria-label="Rows requiring a decision">
-                <button class="queue-row" data-selected="true" data-open-review type="button"><span class="row-id">cr_007</span><span class="row-name"><strong>Launch offer 07</strong><span>Possible duplicate</span></span><span class="row-owner"><strong>Creative Ops Manager</strong><span>Decision required</span></span><span class="row-status">Review now</span></button>
-                <button class="queue-row" data-open-review type="button"><span class="row-id">cr_017</span><span class="row-name"><strong>Launch offer 17</strong><span>Possible duplicate</span></span><span class="row-owner"><strong>Creative Ops Manager</strong><span>Decision required</span></span><span class="row-status">Review now</span></button>
-                <button class="queue-row" data-open-review type="button"><span class="row-id">cr_027</span><span class="row-name"><strong>Launch offer 27</strong><span>Possible duplicate</span></span><span class="row-owner"><strong>Creative Ops Manager</strong><span>Decision required</span></span><span class="row-status">Review now</span></button>
-                <button class="queue-row" data-open-review type="button"><span class="row-id">cr_037</span><span class="row-name"><strong>Launch offer 37</strong><span>Possible duplicate</span></span><span class="row-owner"><strong>Creative Ops Manager</strong><span>Decision required</span></span><span class="row-status">Review now</span></button>
+              <div class="queue-head"><div><h2 id="queue-title">{counts["needs_decision"]} creatives need a decision</h2><p id="queue-sub">One owner and one next action for every exception.</p></div><span class="badge">Batch {payload["batch_id"]}</span></div>
+              <div class="run-strip" role="img" aria-label="{counts["ready"]} ready, {counts["needs_decision"]} need a human decision, {counts["blocked"]} blocked"><span></span><span></span><span></span></div>
+              <div class="run-legend"><span><b>{counts["ready"]}</b> ready</span><span><b>{counts["needs_decision"]}</b> need a decision</span><span><b>{counts["blocked"]}</b> blocked</span></div>
+              <div class="queue-list" id="queue-list" aria-label="Creative rows for the active filter">
+                {initial_rows}
               </div>
             </div>
           </div>
@@ -489,30 +527,35 @@ def _product_shell() -> str:
         <section class="app-panel" id="panel-review" role="tabpanel" aria-labelledby="tab-review" hidden>
           <div class="review-layout">
             <div class="review-main">
-              <div class="breadcrumb">Review queue / cr_007</div>
-              <div class="review-title"><div><h2>Launch offer 07</h2><p>cr_007 / row 8 / image / feed</p></div><span class="badge">Creative Ops Manager</span></div>
+              <div class="breadcrumb">Review queue / <span id="review-crumb">{exception["creative_id"]}</span></div>
+              <div class="review-title"><div><h2 id="review-name">{exception["name"]}</h2><p id="review-meta">{exception["creative_id"]} / row {exception["source_row"]} / {exception["format"]} / feed</p></div><span class="badge" id="review-owner-badge">{exception["owner"]}</span></div>
               <div class="creative-layout">
-                <div class="creative-preview" role="img" aria-label="Synthetic orange creative preview for Launch offer 07"><span class="preview-chip">Prospecting US</span><div class="preview-copy"><span>Hook 07 for prospecting US</span><strong>Launch<br>offer 07</strong></div></div>
+                <div class="creative-preview" role="img" aria-label="Synthetic orange creative preview" id="review-preview"><span class="preview-chip">Prospecting US</span><div class="preview-copy"><span id="preview-hook">{exception["primary_text"]}</span><strong id="preview-name">{exception["name"]}</strong></div></div>
                 <dl class="facts">
-                  <div><dt>Campaign</dt><dd>camp_launch</dd></div><div><dt>Ad set</dt><dd>as_prospecting_us</dd></div><div><dt>Market</dt><dd>US</dd></div><div><dt>Post mode</dt><dd>reuse_existing_post</dd></div><div><dt>Post ID</dt><dd>post_c30fe8f1d4</dd></div><div><dt>Destination</dt><dd>example.invalid/launch-us</dd></div>
+                  <div><dt>Campaign</dt><dd id="fact-campaign">{facts["campaign"]}</dd></div><div><dt>Ad set</dt><dd id="fact-adset">{facts["adset"]}</dd></div><div><dt>Market</dt><dd id="fact-market">{facts["market"]}</dd></div><div><dt>Post mode</dt><dd id="fact-post-mode">{facts["post_mode"]}</dd></div><div><dt>Post ID</dt><dd id="fact-post-id">{facts["post_id"]}</dd></div><div><dt>Destination</dt><dd id="fact-destination">{facts["destination"]}</dd></div>
                 </dl>
               </div>
             </div>
             <aside class="inspector" data-animate="in" aria-labelledby="decision-title">
               <div class="inspector-kicker"><img src="assets/icons/circle-alert.svg" alt=""> Human decision required</div>
-              <h3 id="decision-title">Possible duplicate</h3>
-              <p>Asset appears to be reused and needs intent confirmed.</p>
-              <div class="decision-card"><strong>Proposed fix</strong><p>Confirm intentional reuse or return the row for replacement.</p><div class="owner-line"><span>Owner</span><strong>Creative Ops Manager</strong></div></div>
-              <div class="inspector-actions"><button class="button" data-variant="orange" id="confirm-decision" type="button">Confirm intentional reuse</button><button class="button" data-variant="outline" type="button">Return for replacement</button><button class="button" data-variant="danger" type="button">Block row</button></div>
+              <h3 id="decision-title">{exception["issue_title"]}</h3>
+              <p id="decision-message">{exception["issue_message"]}</p>
+              <div class="decision-card"><strong>Proposed fix</strong><p id="decision-fix">{exception["proposed_fix"]}</p><div class="owner-line"><span>Owner</span><strong id="decision-owner">{exception["owner"]}</strong></div></div>
+              <div class="inspector-actions"><button class="button" data-variant="orange" id="confirm-decision" type="button">Confirm intentional reuse</button><button class="button" data-variant="outline" id="return-decision" type="button">Return for replacement</button><button class="button" data-variant="danger" id="block-decision" type="button">Block row</button></div>
               <p class="inspector-foot">Saved on this device only. Nothing is sent to Meta.</p>
             </aside>
           </div>
         </section>
         <section class="app-panel" id="panel-receipt" role="tabpanel" aria-labelledby="tab-receipt" hidden>
           <div class="receipt-panel">
-            <div class="receipt-card" id="receipt-card" data-live="false">
-              <div class="receipt-summary"><div class="success-icon"><img src="assets/icons/check-circle-2.svg" alt=""></div><h2>Intentional reuse confirmed</h2><p>cr_007 is ready for dry-run export, the plan file you download instead of publishing.</p><ol class="timeline"><li><strong>Duplicate flagged</strong><span>System validator</span></li><li><strong>Reuse confirmed</strong><span>Creative Ops Manager</span></li><li><strong>Review state updated</strong><span>This device</span></li></ol><p id="decision-count">Decision saved locally.</p></div>
-              <div class="receipt-data"><h4>Decision receipt</h4><dl><div><dt>State</dt><dd>confirmed_ready</dd></div><div><dt>Event</dt><dd>row_decision_updated</dd></div><div><dt>Creative</dt><dd>cr_007</dd></div><div><dt>Source</dt><dd>row_007</dd></div><div><dt>Reviewer</dt><dd>Creative Ops Manager</dd></div><div><dt>Dataset</dt><dd title="synthetic_fixture_only">synthetic fixture</dd></div><div><dt>Storage</dt><dd>Browser local</dd></div><div><dt>Mutation allowed</dt><dd>false</dd></div><div><dt>External mutation</dt><dd>false</dd></div><div><dt>Batch</dt><dd>78f20843aea8a367</dd></div><div><dt>Manifest SHA</dt><dd title="4b09268ddcb1f49020f66777d0bcdd734e22add2e77657578d68201ad38ccabf">4b09268ddcb1…</dd></div></dl><div class="receipt-actions"><a class="button" data-variant="primary" href="workspace.html?guided=1">Decide the 9 remaining in the workspace <span class="button-arrow" aria-hidden="true">→</span></a><button class="button" data-variant="outline" id="export-review" type="button">Export JSON</button></div></div>
+            <div class="receipt-empty" id="receipt-empty">
+              <h2>No decision recorded yet.</h2>
+              <p>Review an exception and record one. The receipt appears here.</p>
+              <button class="button" data-variant="primary" data-open-review data-source-row="{exception["source_row"]}" type="button">Review {exception["creative_id"]}</button>
+            </div>
+            <div class="receipt-card" id="receipt-card" data-live="false" hidden>
+              <div class="receipt-summary"><div class="success-icon"><img src="assets/icons/check-circle-2.svg" alt=""></div><h2 id="receipt-title"></h2><p id="receipt-sub"></p><ol class="timeline"><li><strong id="timeline-issue"></strong><span>System validator</span></li><li><strong id="timeline-decision"></strong><span id="timeline-owner"></span></li><li><strong>Review state updated</strong><span>This device</span></li></ol><p id="decision-count"></p></div>
+              <div class="receipt-data"><h3>Decision receipt</h3><dl><div><dt>State</dt><dd id="receipt-state"></dd></div><div><dt>Event</dt><dd>row_decision_updated</dd></div><div><dt>Creative</dt><dd id="receipt-creative"></dd></div><div><dt>Source</dt><dd id="receipt-source"></dd></div><div><dt>Reviewer</dt><dd id="receipt-reviewer"></dd></div><div><dt>Dataset</dt><dd title="{payload["data_classification"]}">synthetic fixture</dd></div><div><dt>Storage</dt><dd>This device</dd></div><div><dt>Mutation allowed</dt><dd>false</dd></div><div><dt>External mutation</dt><dd>false</dd></div><div><dt>Batch</dt><dd>{payload["batch_id"]}</dd></div><div><dt>Manifest SHA</dt><dd title="{sha}">{sha[:12]}…</dd></div></dl><div class="receipt-actions"><a class="button" data-variant="primary" id="receipt-bridge" href="workspace.html?guided=1"></a><button class="button" data-variant="outline" id="export-review" type="button">Export JSON</button></div></div>
             </div>
           </div>
         </section>
@@ -522,7 +565,10 @@ def _product_shell() -> str:
     """
 
 
-def render_product_landing_v30() -> str:
+def render_product_landing_v30(payload: dict | None = None) -> str:
+    payload = payload or build_demo_payload()
+    exception = payload["walkthrough"]["exception"]
+    counts = payload["counts"]
     return _finish(
         r"""<!doctype html>
 <html lang="en">
@@ -570,11 +616,11 @@ def render_product_landing_v30() -> str:
       <section class="hero" aria-labelledby="hero-title">
         <div class="container">
           <div class="hero-main">
-            <div class="hero-copy"><div class="eyebrow" data-rise>Pre-launch QA for Meta Ads</div><h1 class="display" id="hero-title" data-rise data-wchar>Catch creative launch mistakes before Ads Manager.</h1><p class="lead" data-rise>Launch Control checks every creative row before upload, routes each problem to a named owner and records the human decision.</p><div class="hero-actions" data-rise><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">→</span></a><a class="button" data-variant="outline" href="#workflow">See how it works <span aria-hidden="true">↓</span></a></div><p class="cta-note" data-rise>Inspect the queue, decide one exception, export the receipt. Read-only.</p></div>
-            <div class="hero-motion-host" id="hero-motion-root" aria-label="Looping product walkthrough from detection to receipt"><div class="motion-fallback"><header><span>Live product walkthrough</span></header><ol><li><b>01</b>Detect</li><li><b>02</b>Route</li><li><b>03</b>Prove</li></ol><article><div><small>Human decision recorded</small><strong>cr_007 · Possible duplicate</strong><span>The issue is routed to Creative Ops Manager, then recorded with a receipt after review.</span></div></article><footer>Checks one row, routes the issue and records the decision.</footer></div></div>
+            <div class="hero-copy"><div class="eyebrow" data-rise>Pre-launch QA for Meta Ads</div><h1 class="display" id="hero-title" data-rise data-wchar>Catch creative launch mistakes before Ads Manager.</h1><p class="lead" data-rise>Launch Control checks every creative row before upload, routes each problem to a named owner and records the human decision.</p><div class="hero-actions" data-rise><a class="button" data-variant="primary" href="workspace.html?guided=1">Try the live workspace <span class="button-arrow" aria-hidden="true">→</span></a><a class="button" data-variant="outline" href="#workflow">See how it works <span aria-hidden="true">↓</span></a></div><p class="cta-note" data-rise>Inspect the queue, decide one exception, export the receipt. Local demo, no Meta writes.</p></div>
+            <div class="hero-motion-host" id="hero-motion-root" aria-label="Looping product walkthrough from detection to receipt"><div class="motion-fallback"><header><span>Recorded product walkthrough</span></header><ol><li><b>01</b>Detect</li><li><b>02</b>Route</li><li><b>03</b>Prove</li></ol><article><div><small>Human decision recorded</small><strong>__FALLBACK_STRONG__</strong><span>__FALLBACK_SPAN__</span></div></article><footer>Checks one row, routes the issue and records the decision.</footer></div></div>
           </div>
           __PRODUCT_SHELL__
-          <div class="run-proof" aria-label="Current synthetic run summary" data-reveal><div class="proof-label"><span>Current synthetic run</span><strong>Same input, same verdicts, every run.</strong></div><div class="proof-number"><strong>100</strong><span>rows checked</span></div><div class="proof-number"><strong>60</strong><span>blocked, each with a named fix</span></div><div class="proof-number"><strong>10</strong><span>held for a human decision</span></div><div class="proof-number"><strong>0</strong><span>writes to Meta</span></div></div>
+          <div class="run-proof" aria-label="Current synthetic run summary" data-reveal><div class="proof-label"><span>Current synthetic run</span><strong>Same input, same verdicts, every run.</strong></div><div class="proof-number"><strong>__COUNT_TOTAL__</strong><span>rows checked</span></div><div class="proof-number"><strong>__COUNT_BLOCKED__</strong><span>blocked, each with a named fix</span></div><div class="proof-number"><strong>__COUNT_NEEDS__</strong><span>held for a human decision</span></div><div class="proof-number"><strong>0</strong><span>writes to Meta</span></div></div>
         </div>
       </section>
 
@@ -582,17 +628,17 @@ def render_product_landing_v30() -> str:
         <div class="container">
           <div class="stakes-heading" data-reveal><div class="eyebrow">What a bad row costs</div><h2 class="section-title" id="stakes-title">One bad row costs more than the review.</h2></div>
           <div class="stakes-grid">
-            <article class="stake-card" data-reveal><h3>Wrong destination.</h3><p>The ad spends. Every click lands on a page that does not resolve.</p></article>
-            <article class="stake-card" data-reveal><h3>Broken UTM.</h3><p>The campaign delivers, but reporting can no longer attribute a single result to it.</p></article>
-            <article class="stake-card" data-reveal><h3>Missing approval.</h3><p>A creative that never passed review ships to a client account under your name.</p></article>
+            <article class="stake-card" data-reveal><h3>Wrong destination.</h3><p>The row ships with a URL its ad set never intended. The spend still delivers.</p></article>
+            <article class="stake-card" data-reveal><h3>Broken UTM.</h3><p>The campaign delivers, but its results no longer line up with the campaign they report to.</p></article>
+            <article class="stake-card" data-reveal><h3>Missing approval.</h3><p>A creative that never passed review is one upload away from going live.</p></article>
           </div>
         </div>
       </section>
 
       <section class="section" id="workflow" aria-labelledby="workflow-title">
         <div class="container">
-          <div class="section-heading" data-reveal><h2 class="section-title" id="workflow-title">From launch sheet to a <span class="serif-accent">reviewed launch plan.</span></h2><p class="section-lead">Import your launch sheet. Launch Control reads it as a manifest, checks every row, groups each failure with its evidence and assigns a named owner.</p></div>
-          <ol class="product-flow" aria-label="What goes into Launch Control and what comes out" data-reveal><li><span>Input</span><strong>Launch sheet</strong><small>Assets, approvals, placements, URLs, names and UTM fields.</small></li><li class="flow-arrow" aria-hidden="true">→</li><li data-core><span>Launch Control</span><strong>Check, route, review</strong><small>Deterministic validation first. A named person decides every ambiguous case.</small></li><li class="flow-arrow" aria-hidden="true">→</li><li><span>Output</span><strong>Reviewed launch plan</strong><small>An owner, a next action and a decision receipt for every exception. You upload the reviewed plan through your normal Ads Manager process. Launch Control never needs access to your account.</small></li></ol>
+          <div class="section-heading" data-reveal><h2 class="section-title" id="workflow-title">From launch sheet to a reviewed <span class="serif-accent">launch plan.</span></h2><p class="section-lead">Import your launch sheet. Launch Control reads it as a manifest, checks every row, groups each failure with its evidence and assigns a named owner.</p></div>
+          <ol class="product-flow" aria-label="What goes into Launch Control and what comes out" data-reveal><li><span>Input</span><strong>Launch sheet</strong><small>Assets, approvals, placements, URLs, names and UTM fields.</small></li><li class="flow-arrow" aria-hidden="true">→</li><li data-core><span>Launch Control</span><strong>Detect, route, decide</strong><small>Deterministic validation first. A named person decides every ambiguous case.</small></li><li class="flow-arrow" aria-hidden="true">→</li><li><span>Output</span><strong>Reviewed launch plan</strong><small>An owner, a next action and a decision receipt for every exception. You upload the reviewed plan through your normal Ads Manager process. Launch Control never needs access to your account.</small></li></ol>
           <div class="bento">
             <article class="feature-card" data-card="source" data-reveal><img class="icon" src="assets/icons/scan-line.svg" alt=""><h3>Check every launch field</h3><p>Each asset, approval, placement, destination, name and UTM stays connected to its source row.</p><div class="source-map" aria-hidden="true"><span></span><span></span><span></span></div></article>
             <article class="feature-card" data-card="route" data-reveal><img class="icon" src="assets/icons/route.svg" alt=""><h3>Route each failure to a named owner</h3><p>The issue, its evidence and the next action travel together.</p><div class="route-visual" aria-hidden="true"><span></span><b>ROUTE</b><span></span></div></article>
@@ -614,6 +660,7 @@ def render_product_landing_v30() -> str:
     </main>
     <footer><div class="container footer-row"><span>© Launch Control</span><span class="footer-links"><a href="https://github.com/mattyu-dev/creative-launch-workspace">Source</a><a href="brief-evidence.html">Evidence</a><a href="fix-lab.html">Fix lab</a></span></div></footer>
   </div>
+  <script id="demo-payload" type="application/json">__DEMO_PAYLOAD__</script>
   <script>
     (()=>{
       const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -626,6 +673,7 @@ def render_product_landing_v30() -> str:
         document.querySelectorAll('[data-reveal]').forEach((item)=>revealObserver.observe(item));
       }else{document.querySelectorAll('[data-reveal]').forEach((item)=>item.dataset.visible='true')}
 
+      const demo=JSON.parse(document.getElementById('demo-payload').textContent);
       const tablist=document.querySelector('[role="tablist"]');
       const tabs=[...tablist.querySelectorAll('[role="tab"]')];
       const pill=tablist.querySelector('.t-tabs-pill');
@@ -634,17 +682,122 @@ def render_product_landing_v30() -> str:
       movePill(tabs[0],true);
       tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>activateTab(tab));tab.addEventListener('keydown',(event)=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();let next=index;if(event.key==='ArrowLeft')next=(index-1+tabs.length)%tabs.length;if(event.key==='ArrowRight')next=(index+1)%tabs.length;if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;activateTab(tabs[next],true)})});
       new ResizeObserver(()=>movePill(tabs.find((tab)=>tab.getAttribute('aria-selected')==='true'),true)).observe(tablist);
-      document.querySelectorAll('[data-open-review]').forEach((row)=>row.addEventListener('click',()=>activateTab(tabs[1],true)));
 
-      const storageKey='launch-control-v3-demo';
+      const landingKey=`launch-control-demo:${demo.batch_id}`;
+      let decisions={};
+      try{decisions=JSON.parse(localStorage.getItem(landingKey)||'{}')||{}}catch(_e){decisions={}}
+      const rowsBySource={};
+      ['ready','needs_decision','blocked'].forEach((group)=>demo.queue[group].forEach((entry)=>{rowsBySource[entry.source_row]=entry}));
+      const SHORT_LABEL={confirm:'Confirmed',return:'Returned',block:'Blocked'};
+      const queueList=document.getElementById('queue-list');
+      const filters=[...document.querySelectorAll('.queue-filter')];
+      const receiptEmpty=document.getElementById('receipt-empty');
       const receipt=document.getElementById('receipt-card');
       const live=document.getElementById('decision-live');
-      const count=document.getElementById('decision-count');
-      const confirmed=()=>localStorage.getItem(storageKey)==='confirmed';
-      function showReceipt(fromDecision=false){receipt.dataset.live='true';count.textContent=fromDecision?'9 decisions remaining':'Decision saved locally.';activateTab(tabs[2],true)}
-      document.getElementById('confirm-decision').addEventListener('click',()=>{localStorage.setItem(storageKey,'confirmed');live.textContent='Decision saved locally. 9 decisions remaining.';showReceipt(true)});
-      document.getElementById('export-review').addEventListener('click',()=>{const data={state:'confirmed_ready',event:'row_decision_updated',creative:'cr_007',source:'row_007',reviewer:'Creative Ops Manager',dataset:'synthetic_fixture_only',storage:'Browser local',mutation_allowed:false,external_mutation:false,batch:'78f20843aea8a367',manifest_sha:'4b09268ddcb1f49020f66777d0bcdd734e22add2e77657578d68201ad38ccabf'};const link=document.createElement('a');link.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));link.download='review_state.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),0)});
-      tabs[2].addEventListener('click',()=>{receipt.dataset.live=confirmed()?'true':'false';count.textContent='Decision saved locally.'});
+      let activeFilter='needs_decision';
+      let currentRow=demo.walkthrough.exception.source_row;
+      let lastDecided=null;
+
+      function remainingCount(){return demo.counts.needs_decision-Object.keys(decisions).length}
+      function rowsFor(filter){if(filter==='all')return[...demo.queue.needs_decision.slice(0,2),demo.queue.ready[0],demo.queue.blocked[0]];return demo.queue[filter]||[]}
+      function rowHtml(entry){
+        const interactive=entry.batch_state==='needs_review';
+        const decided=decisions[entry.source_row];
+        const sub=entry.issue_title||'Passes offline checks';
+        const ownerStrong=entry.owner||'Validator';
+        const ownerSub=interactive?(decided?`${SHORT_LABEL[decided.kind]} in this session`:'Decision required'):entry.status_label;
+        const status=interactive?(decided?SHORT_LABEL[decided.kind]:'Review now'):entry.status_label;
+        const selected=entry.source_row===currentRow?' data-selected="true"':'';
+        const tag=interactive?'button':'div';
+        const attrs=interactive?` data-open-review data-source-row="${entry.source_row}" type="button"`:' data-static="true"';
+        return `<${tag} class="queue-row"${selected}${attrs}><span class="row-id">${entry.creative_id}</span><span class="row-name"><strong>${entry.name}</strong><span>${sub}</span></span><span class="row-owner"><strong>${ownerStrong}</strong><span>${ownerSub}</span></span><span class="row-status">${status}</span></${tag}>`;
+      }
+      function renderQueue(){const list=rowsFor(activeFilter);const shown=list.slice(0,4);const more=list.length>4?`<a class="queue-more" href="workspace.html?guided=1">${list.length-4} more in the workspace <span aria-hidden="true">→</span></a>`:'';queueList.innerHTML=shown.map(rowHtml).join('')+more}
+      filters.forEach((button)=>button.addEventListener('click',()=>{activeFilter=button.dataset.filter;filters.forEach((item)=>{if(item===button){item.dataset.active='true'}else{delete item.dataset.active}});renderQueue()}));
+
+      function openReview(sourceRow){
+        const entry=rowsBySource[sourceRow];
+        if(!entry||entry.batch_state!=='needs_review')return;
+        currentRow=entry.source_row;
+        document.getElementById('review-crumb').textContent=entry.creative_id;
+        document.getElementById('review-name').textContent=entry.name;
+        document.getElementById('review-meta').textContent=`${entry.creative_id} / row ${entry.source_row} / ${entry.format} / feed`;
+        document.getElementById('review-owner-badge').textContent=entry.owner;
+        document.getElementById('preview-hook').textContent=entry.primary_text;
+        document.getElementById('preview-name').textContent=entry.name;
+        document.getElementById('fact-campaign').textContent=entry.facts.campaign;
+        document.getElementById('fact-adset').textContent=entry.facts.adset;
+        document.getElementById('fact-market').textContent=entry.facts.market;
+        document.getElementById('fact-post-mode').textContent=entry.facts.post_mode;
+        document.getElementById('fact-post-id').textContent=entry.facts.post_id;
+        document.getElementById('fact-destination').textContent=entry.facts.destination;
+        document.getElementById('decision-title').textContent=entry.issue_title;
+        document.getElementById('decision-message').textContent=entry.issue_message;
+        document.getElementById('decision-fix').textContent=entry.proposed_fix;
+        document.getElementById('decision-owner').textContent=entry.owner;
+        renderQueue();
+        activateTab(tabs[1],true);
+      }
+      document.addEventListener('click',(event)=>{const trigger=event.target.closest('[data-open-review]');if(trigger)openReview(Number(trigger.dataset.sourceRow))});
+
+      function buildWorkspaceState(){
+        const rows={};
+        const audit=[];
+        Object.keys(decisions).forEach((sourceRow)=>{
+          const entry=rowsBySource[sourceRow];
+          const meta=demo.decisions[decisions[sourceRow].kind];
+          const at=decisions[sourceRow].updated_at;
+          rows[sourceRow]={review_status:meta.review_status,decision:meta.decision,note:'',updated_by_role:entry.owner,updated_at:at};
+          audit.unshift({event_id:`evt_local_${Date.parse(at)}_${sourceRow}`,event_type:'row_decision_updated',actor_role:entry.owner,source_row:Number(sourceRow),creative_id:entry.creative_id,decision:meta.decision,occurred_at:at});
+        });
+        return {product:'Launch Control',mode:'local_review_state_only',contract_version:demo.workspace_contract_version,batch_id:demo.batch_id,source_manifest:demo.source_manifest,source_manifest_sha256:demo.source_manifest_sha256,data_classification:demo.data_classification,mutation_allowed:false,meta_api_compatibility:'not_claimed',external_mutation:false,rows,audit};
+      }
+      function syncWorkspaceState(){localStorage.setItem(demo.workspace_storage_key,JSON.stringify(buildWorkspaceState(),null,2))}
+
+      const RECEIPT_SUBS={
+        confirm:(entry)=>`${entry.creative_id} is ready for dry-run export, the plan file you download instead of publishing.`,
+        return:(entry)=>`${entry.creative_id} goes back to its owner for a replacement asset.`,
+        block:(entry)=>`${entry.creative_id} stays out of the dry-run export.`
+      };
+      function renderReceipt(entry,kind,fromDecision){
+        const meta=demo.decisions[kind];
+        document.getElementById('receipt-title').textContent=meta.receipt_title;
+        document.getElementById('receipt-sub').textContent=RECEIPT_SUBS[kind](entry);
+        document.getElementById('timeline-issue').textContent=`${entry.issue_title} flagged`;
+        document.getElementById('timeline-decision').textContent=meta.timeline;
+        document.getElementById('timeline-owner').textContent=entry.owner;
+        document.getElementById('receipt-state').textContent=meta.review_status;
+        document.getElementById('receipt-creative').textContent=entry.creative_id;
+        document.getElementById('receipt-source').textContent=`row_${String(entry.source_row).padStart(3,'0')}`;
+        document.getElementById('receipt-reviewer').textContent=entry.owner;
+        const remaining=remainingCount();
+        document.getElementById('decision-count').textContent=`${remaining} decisions remaining`;
+        const bridge=document.getElementById('receipt-bridge');
+        bridge.innerHTML=remaining>0?`Decide the ${remaining} remaining in the workspace <span class="button-arrow" aria-hidden="true">→</span>`:'Open the workspace <span class="button-arrow" aria-hidden="true">→</span>';
+        receiptEmpty.hidden=true;
+        receipt.hidden=false;
+        receipt.dataset.live=fromDecision?'true':'false';
+      }
+      function decide(kind){
+        const entry=rowsBySource[currentRow];
+        if(!entry)return;
+        decisions[entry.source_row]={kind,updated_at:new Date().toISOString()};
+        localStorage.setItem(landingKey,JSON.stringify(decisions));
+        syncWorkspaceState();
+        lastDecided={sourceRow:entry.source_row,kind};
+        renderReceipt(entry,kind,true);
+        live.textContent=`Decision saved locally. ${remainingCount()} decisions remaining.`;
+        renderQueue();
+        activateTab(tabs[2],true);
+      }
+      document.getElementById('confirm-decision').addEventListener('click',()=>decide('confirm'));
+      document.getElementById('return-decision').addEventListener('click',()=>decide('return'));
+      document.getElementById('block-decision').addEventListener('click',()=>decide('block'));
+      document.getElementById('export-review').addEventListener('click',()=>{const link=document.createElement('a');link.href=URL.createObjectURL(new Blob([JSON.stringify(buildWorkspaceState(),null,2)],{type:'application/json'}));link.download='review_state.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),0)});
+
+      renderQueue();
+      const savedRows=Object.keys(decisions);
+      if(savedRows.length){const sourceRow=Number(savedRows[savedRows.length-1]);lastDecided={sourceRow,kind:decisions[sourceRow].kind};renderReceipt(rowsBySource[sourceRow],decisions[sourceRow].kind,false)}
 
       const title=document.querySelector('[data-wchar]');
       if(title&&!reduced.matches&&!window.matchMedia('(max-width: 360px)').matches){title.addEventListener('pointerenter',()=>{const label=title.textContent;title.setAttribute('aria-label',label);const fragment=document.createDocumentFragment();label.split(' ').forEach((word,index)=>{if(index)fragment.append(document.createTextNode(' '));const wordNode=document.createElement('span');wordNode.className='wchar-word';wordNode.setAttribute('aria-hidden','true');[...word].forEach((letter)=>{const charNode=document.createElement('span');charNode.className='wchar';charNode.textContent=letter;wordNode.append(charNode)});fragment.append(wordNode)});title.replaceChildren(fragment);const chars=[...title.querySelectorAll('.wchar')];let point=null;let raf=0;title.addEventListener('pointermove',(event)=>{point={x:event.clientX,y:event.clientY};if(raf)return;raf=requestAnimationFrame(()=>{chars.forEach((char)=>{const rect=char.getBoundingClientRect();const d=Math.hypot(point.x-(rect.left+rect.width/2),point.y-(rect.top+rect.height/2));const weight=d<200?600+(1-d/200)*300:600;char.style.fontVariationSettings=`'wght' ${Math.round(weight)}`});raf=0})});title.addEventListener('pointerleave',()=>chars.forEach((char)=>char.style.fontVariationSettings="'wght' 600"))},{once:true})}
@@ -656,7 +809,17 @@ def render_product_landing_v30() -> str:
   </script>
 </body>
 </html>
-""".replace("__PRODUCT_SHELL__", _product_shell().strip())
+""".replace("__PRODUCT_SHELL__", _product_shell(payload).strip())
+        .replace("__DEMO_PAYLOAD__", json.dumps(payload, sort_keys=True, separators=(",", ":")).replace("</", "<\\/"))
+        .replace("__FALLBACK_STRONG__", f"{exception['creative_id']} · {exception['issue_title']}")
+        .replace(
+            "__FALLBACK_SPAN__",
+            f"The issue is routed to {exception['owner']}, then recorded with a receipt after review.",
+        )
+        .replace("__COUNT_TOTAL__", str(counts["total"]))
+        .replace("__COUNT_READY__", str(counts["ready"]))
+        .replace("__COUNT_NEEDS__", str(counts["needs_decision"]))
+        .replace("__COUNT_BLOCKED__", str(counts["blocked"]))
     )
 
 

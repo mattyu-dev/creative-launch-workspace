@@ -17,6 +17,14 @@ LABELS = {
 }
 
 
+def _decision_class(review_status: str) -> str:
+    return "accepted" if review_status == "accepted" else "flagged"
+
+
+def _decision_mark(review_status: str) -> str:
+    return "&#10003;" if review_status == "accepted" else "&#9888;"
+
+
 def render_evidence_page(
     *,
     brief: str,
@@ -32,9 +40,9 @@ def render_evidence_page(
             f"<th scope='row'>{html.escape(LABELS[name])}</th>"
             f"<td data-label='Value'><code>{html.escape(field['value'])}</code></td>"
             f"<td data-label='Verbatim evidence'>&ldquo;{html.escape(field['evidence_quote'])}&rdquo;</td>"
-            "<td data-label='Evidence'><span class='evidence-strength'>Direct</span>"
+            f"<td data-label='Evidence'><span class='evidence-strength'>{html.escape(str(field.get('evidence_strength', 'direct'))).title()}</span>"
             f"<small>{html.escape(field['confidence_band']).title()} &middot; uncalibrated</small></td>"
-            f"<td data-label='Decision'><span class='accepted'>&#10003; {html.escape(field['review_status']).title()}</span></td>"
+            f"<td data-label='Decision'><span class='{_decision_class(field['review_status'])}'>{_decision_mark(field['review_status'])} {html.escape(field['review_status']).title()}</span></td>"
             "</tr>"
         )
     summary = materialization["validation_summary"]["batch_states"]
@@ -88,6 +96,7 @@ def render_evidence_page(
     small {{ display:block; margin-top:4px; color:var(--muted); }}
     .evidence-strength {{ display:inline-block; padding:3px 7px; border-radius:999px; color:var(--brand); background:var(--brand-soft); font-size:10px; font-weight:800; text-transform:uppercase; }}
     .accepted {{ color:var(--success); font-size:11px; font-weight:750; }}
+    .flagged {{ color:#9A5A12; font-size:11px; font-weight:750; }}
     .guardrail-behavior {{ margin-top:18px; border:1px solid var(--line); background:var(--paper); }}
     .guardrail-behavior h2 {{ margin:0; padding:14px 18px; border-bottom:1px solid var(--line); font-size:13px; }}
     .guardrail-grid {{ display:grid; grid-template-columns:repeat(3,1fr); }}
@@ -100,15 +109,15 @@ def render_evidence_page(
     .boundary {{ margin:20px 0 0; padding:14px 16px; border-left:3px solid var(--accent); background:var(--brand-soft); color:var(--body); }}
     .links {{ display:flex; flex-wrap:wrap; gap:14px; margin-top:20px; }}
     .links a {{ color:var(--brand); font-weight:700; }}
-    .creator-cta {{ display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:30px; padding:20px 22px; border-radius:14px; color:#fff; background:var(--brand); }}
-    .creator-cta p {{ margin:0; color:rgba(255,255,255,.82); }} .creator-cta strong {{ display:block; color:#fff; font-size:22px; font-weight:760; line-height:1.2; }}
-    .creator-cta a {{ flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:9px 12px; border:1px solid var(--action); border-radius:999px; color:#fff; background:var(--action); text-decoration:none; font-weight:750; }}
-    .creator-cta a:hover {{ border-color:var(--action-hover); background:var(--action-hover); }}
+    .continue-cta {{ display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:30px; padding:20px 22px; border-radius:14px; color:#fff; background:var(--brand); }}
+    .continue-cta p {{ margin:0; color:rgba(255,255,255,.82); }} .continue-cta strong {{ display:block; color:#fff; font-size:22px; font-weight:760; line-height:1.2; }}
+    .continue-cta a {{ flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; padding:9px 12px; border:1px solid var(--action); border-radius:999px; color:#fff; background:var(--action); text-decoration:none; font-weight:750; }}
+    .continue-cta a:hover {{ border-color:var(--action-hover); background:var(--action-hover); }}
     @media(max-width:760px) {{
       main {{ padding-top:30px; }} .grid {{ grid-template-columns:1fr; }} .source-rail {{ position:static; }} h1 {{ font-size:38px; }}
       .flow {{ grid-template-columns:1fr 1fr; }} .flow div:nth-child(2) {{ border-right:0; }} .flow div:nth-child(-n+2) {{ border-bottom:1px solid var(--line); }}
       .proof,.guardrail-grid {{ grid-template-columns:1fr; }} .proof div,.guardrail-grid div {{ border-right:0; border-bottom:1px solid var(--line); }} .proof div:last-child,.guardrail-grid div:last-child {{ border-bottom:0; }}
-      .creator-cta {{ align-items:flex-start; flex-direction:column; }}
+      .continue-cta {{ align-items:flex-start; flex-direction:column; }}
     }}
     @media(max-width:700px) {{
       thead {{ display:none; }} tbody,tr,td,th {{ display:block; }} tbody tr {{ padding:13px 0; border-bottom:1px solid var(--line); }} tbody tr:last-child {{ border-bottom:0; }}
@@ -136,7 +145,7 @@ def render_evidence_page(
     </div>
     <p class="boundary"><strong>No live inference occurs on this page.</strong> This is a committed baseline artifact. Confidence bands are explicitly uncalibrated, the browser has no API key, and every export remains non-executable.</p>
     <div class="links"><a href="evidence/brief-proposal-example.json">Raw proposal JSON</a><a href="evidence/brief-review-example.json">Review receipt JSON</a><a href="evidence/reviewed-manifest-validation.json">Validation JSON</a><a href="evidence/brief-mapping-baseline-eval.json">36-case baseline eval</a></div>
-    <aside class="creator-cta"><p><strong>Continue in the product</strong>Return to launch control or open the full review queue.</p><a href="index.html">Back to product</a></aside>
+    <aside class="continue-cta"><p><strong>Continue in the product</strong>Return to launch control or open the full review queue.</p><a href="index.html">Back to the overview</a></aside>
   </main>
 </body>
 </html>

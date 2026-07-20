@@ -1,6 +1,6 @@
 {
   "contract_version": "workspace_runtime_qa.v20",
-  "tested_at": "2026-07-16T17:28:49.589Z",
+  "tested_at": "2026-07-16T18:29:16.261Z",
   "source": "scripts/workspace_runtime_qa.mjs",
   "viewports": [
     {
@@ -103,7 +103,7 @@
       "role": "Creative Ops Manager",
       "event": "row_decision_updated",
       "creative": "cr_007",
-      "occurredAt": "2026-07-16T17:27:32.513Z",
+      "occurredAt": "2026-07-16T18:27:58.376Z",
       "summary": "Decision recorded in browser-local state. No external system was changed. Technical receipt: mutation_allowed:false.",
       "brandHref": "index.html",
       "returnHref": "index.html",
@@ -111,13 +111,13 @@
       "primaryBeforeReturn": true,
       "persistedStatus": "confirmed_ready",
       "latestAudit": {
-        "event_id": "evt_local_1784222852513_8",
+        "event_id": "evt_local_1784226478376_8",
         "event_type": "row_decision_updated",
         "actor_role": "Creative Ops Manager",
         "source_row": 8,
         "creative_id": "cr_007",
         "decision": "approved_for_dry_run_export",
-        "occurred_at": "2026-07-16T17:27:32.513Z"
+        "occurred_at": "2026-07-16T18:27:58.376Z"
       }
     },
     "request_violations": [],
@@ -254,7 +254,7 @@
     "hasWorkspaceCta": true,
     "hasCaseStudyLink": false,
     "mainSectionCount": 6,
-    "visibleWordCount": 710,
+    "visibleWordCount": 722,
     "scrollHeight": 5209,
     "copyFreeze": {
       "boundary": true,
@@ -399,7 +399,7 @@
       "selectedTab": "Receipt",
       "visiblePanel": "panel-receipt",
       "focused": "tab-receipt",
-      "localState": "confirmed",
+      "localState": "confirm",
       "liveRegion": "Decision saved locally. 9 decisions remaining.",
       "remaining": "9 decisions remaining",
       "receiptLive": "true"
@@ -424,7 +424,7 @@
     "legacyScreenshotReferences": [],
     "activePanel": "panel-queue",
     "touchTargetFailures": [],
-    "scrollHeight": 8128,
+    "scrollHeight": 8203,
     "bodyFontPx": 16,
     "meshMounted": false,
     "tokenVisible": true,
@@ -476,7 +476,7 @@
     "fileAbsent": true,
     "excludedFromSitemap": true,
     "httpStatus": 404,
-    "destination": "http://127.0.0.1:64726/docs/case-study.html",
+    "destination": "http://127.0.0.1:50216/docs/case-study.html",
     "consoleMessages": [
       "Failed to load resource: the server responded with a status of 404 (Not Found)"
     ]
@@ -565,7 +565,7 @@
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 502,
+      "lcpMs": 481,
       "cls": 0.00005708399001838718,
       "tbtMs": 0
     },
@@ -573,7 +573,7 @@
       "performanceScore": 1,
       "bestPracticesScore": 1,
       "seoScore": 1,
-      "lcpMs": 1802,
+      "lcpMs": 1801,
       "cls": 0.00182003358652326,
       "tbtMs": 0
     }

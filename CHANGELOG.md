@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.1.0 — 2026-07-16
+
+- Renamed every public surface to Launch Control and removed all personal attribution from the product pages; ownership lives in the README and the repository.
+- Replaced the Three.js r128 WebGL token with a CSS clip-path token that travels the Detect, Route, Prove rail; deleted the 504KB lazy chunk and the `three` dependency.
+- Introduced `meta_importer/demo_payload.py` as the single truth source for the landing, the walkthrough and the receipt: names, statuses, owners, counts, batch id and the real manifest SHA-256 are derived from the launch plan instead of being retyped.
+- Made the landing demo honest: queue filters render real rows per status, each exception opens its own review, the receipt starts empty until a decision is recorded, and Confirm/Return/Block all write a `workspace_review_state.v1` payload that the workspace actually loads, so the bridge CTA lands on nine remaining decisions.
+- Repositioned the landing copy: stakes section grounded in the shipped validators, launch-sheet lexicon, run-proof led by a value metric, demo mentions cut to one per screen and a market-signal channel through GitHub Discussions.
+- Scroll reveals now animate transform only, so full-page captures, print and no-JS render every section.
+- Reduced-motion, documentation and QA contracts were realigned with the shipped behaviour.
+
 ## 4.0.0 — 2026-07-15
 
 - Removed the unrelated industrial raster, its preload and every generated format from the landing and social preview.

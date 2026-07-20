@@ -657,7 +657,7 @@ const productPage = await page.evaluate(() => ({
     concreteHero: document.body.textContent.includes("Catch creative launch mistakes before Ads Manager"),
     concreteProblem: document.body.textContent.includes("10 creatives need a decision"),
     concreteWorkflow: document.body.textContent.includes("From launch sheet")
-      && document.body.textContent.includes("Check, route, review")
+      && document.body.textContent.includes("Detect, route, decide")
       && document.body.textContent.includes("Reviewed launch plan"),
     directEvidence: document.body.textContent.includes("Proof you can inspect")
   },
@@ -689,14 +689,22 @@ const productPage = await page.evaluate(() => ({
   legacyScreenshotReferences: [...document.querySelectorAll("img,source")]
     .map((item) => item.getAttribute("src") || item.getAttribute("srcset") || "")
     .filter((src) => /(workspace-(?:mobile-hero|desktop)|guided-review|brief-evidence)/.test(src)),
-  exactFixture: document.body.textContent.includes("Batch 78f20843aea8a367")
-    && document.querySelector('.run-strip')?.getAttribute("aria-label") === "30 ready, 10 need a human decision, 60 blocked"
-    && document.body.textContent.includes("cr_007")
-    && document.body.textContent.includes("synthetic fixture"),
-  exactReceipt: Boolean(document.querySelector("#panel-receipt")?.textContent.includes("confirmed_ready")
-    && document.querySelector("#panel-receipt")?.textContent.includes("row_decision_updated")
-    && document.querySelector("#panel-receipt")?.textContent.includes("Creative Ops Manager")
-    && document.querySelector('#panel-receipt [title="4b09268ddcb1f49020f66777d0bcdd734e22add2e77657578d68201ad38ccabf"]')),
+  exactFixture: (() => {
+    const demo = JSON.parse(document.getElementById("demo-payload").textContent);
+    const counts = demo.counts;
+    return document.body.textContent.includes(`Batch ${demo.batch_id}`)
+      && document.querySelector('.run-strip')?.getAttribute("aria-label") === `${counts.ready} ready, ${counts.needs_decision} need a human decision, ${counts.blocked} blocked`
+      && document.body.textContent.includes(demo.walkthrough.exception.creative_id)
+      && document.body.textContent.includes("synthetic fixture")
+      && counts.ready + counts.needs_decision + counts.blocked === counts.total;
+  })(),
+  exactReceipt: (() => {
+    const demo = JSON.parse(document.getElementById("demo-payload").textContent);
+    return Boolean(document.querySelector("#panel-receipt")?.textContent.includes("row_decision_updated")
+      && /^[0-9a-f]{64}$/.test(demo.source_manifest_sha256)
+      && document.querySelector(`#panel-receipt [title="${demo.source_manifest_sha256}"]`)
+      && document.querySelector("#receipt-empty"));
+  })(),
   singlePrimaryReviewAction: document.querySelectorAll('#panel-review .button[data-variant="orange"]').length === 1,
   primaryCtaVisible: document.querySelector(".hero-copy .button")?.getBoundingClientRect().top < innerHeight,
   heroProductVisible: document.querySelector(".hero-motion-host")?.getBoundingClientRect().top < innerHeight,
@@ -824,7 +832,11 @@ const productDecision = await page.evaluate(() => ({
   selectedTab: document.querySelector('[role="tab"][aria-selected="true"]')?.textContent.trim(),
   visiblePanel: [...document.querySelectorAll('.app-shell [role="tabpanel"]')].find((panel) => !panel.hidden)?.id,
   focused: document.activeElement?.id,
-  localState: localStorage.getItem("launch-control-v3-demo"),
+  localState: (() => {
+    const demo = JSON.parse(document.getElementById("demo-payload").textContent);
+    const saved = JSON.parse(localStorage.getItem(`launch-control-demo:${demo.batch_id}`) || "{}");
+    return saved[demo.walkthrough.exception.source_row]?.kind || null;
+  })(),
   liveRegion: document.querySelector("#decision-live")?.textContent.trim(),
   remaining: document.querySelector("#decision-count")?.textContent.trim(),
   receiptLive: document.querySelector("#receipt-card")?.dataset.live
@@ -836,6 +848,23 @@ const receiptBridge = await page.evaluate(() => {
     label: bridge?.textContent.trim()
   };
 });
+const bridgeWorkspaceUrl = `${baseUrl}/docs/workspace.html`;
+await page.goto(bridgeWorkspaceUrl, { waitUntil: "load" });
+const bridgeState = await page.evaluate(() => ({
+  focusTitle: document.getElementById("focus-title")?.textContent.trim(),
+  decidedRowStatus: JSON.parse(localStorage.getItem(JSON.parse(document.getElementById("workspace-data").textContent).local_storage_key) || "{}")?.rows?.["8"]?.review_status,
+  visibleReviewRows: document.querySelectorAll("tbody tr").length
+}));
+if (
+  bridgeState.focusTitle !== "9 creatives need a human decision."
+  || bridgeState.decidedRowStatus !== "confirmed_ready"
+) {
+  throw new Error(`Landing to workspace bridge contract failed: ${JSON.stringify(bridgeState)}`);
+}
+await page.evaluate(() => localStorage.clear());
+await page.goto(productUrl, { waitUntil: "load" });
+await page.waitForFunction(() => window.__launchControlMotion?.ready === true, { timeout: 15000 });
+await page.evaluate(() => localStorage.clear());
 await page.click("#tab-queue");
 const productBackNavigation = await page.evaluate(() => ({
   selectedTab: document.querySelector('[role="tab"][aria-selected="true"]')?.textContent.trim(),
@@ -856,7 +885,7 @@ if (
   || productDecision.selectedTab !== "Receipt"
   || productDecision.visiblePanel !== "panel-receipt"
   || productDecision.focused !== "tab-receipt"
-  || productDecision.localState !== "confirmed"
+  || productDecision.localState !== "confirm"
   || productDecision.liveRegion !== "Decision saved locally. 9 decisions remaining."
   || productDecision.remaining !== "9 decisions remaining"
   || productDecision.receiptLive !== "true"
@@ -869,6 +898,12 @@ if (
   throw new Error(`Native product interaction contract failed: ${JSON.stringify({ productInitialInteraction, productArrowNavigation, productRowNavigation, productDecision, productBackNavigation })}`);
 }
 await page.evaluate(async () => {
+  for (const reveal of document.querySelectorAll("[data-reveal]")) {
+    reveal.scrollIntoView({ block: "center" });
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  }
+  const stillHidden = [...document.querySelectorAll("[data-reveal]")].filter((item) => Number(getComputedStyle(item).opacity) < 1).length;
+  if (stillHidden) throw new Error(`hidden reveals before capture: ${stillHidden}`);
   const visibleImages = [...document.images].filter((image) => !image.closest("[hidden]"));
   for (const image of visibleImages) {
     image.scrollIntoView({ block: "center" });
@@ -970,6 +1005,12 @@ if (routeBlackPixelRatio > 0.02 || proveBlackPixelRatio > 0.02) {
   throw new Error(`Product compositor corruption detected: ${JSON.stringify(productCompositor)}`);
 }
 await page.evaluate(async () => {
+  for (const reveal of document.querySelectorAll("[data-reveal]")) {
+    reveal.scrollIntoView({ block: "center" });
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  }
+  const stillHidden = [...document.querySelectorAll("[data-reveal]")].filter((item) => Number(getComputedStyle(item).opacity) < 1).length;
+  if (stillHidden) throw new Error(`hidden reveals before capture: ${stillHidden}`);
   const visibleImages = [...document.images].filter((image) => !image.closest("[hidden]"));
   for (const image of visibleImages) {
     image.scrollIntoView({ block: "center" });

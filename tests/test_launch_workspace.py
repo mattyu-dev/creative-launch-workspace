@@ -143,7 +143,7 @@ class LaunchWorkspaceTests(unittest.TestCase):
         plan = build_launch_plan(rows, source_manifest=str(V2_FIXTURE))
         html = render_html_workspace(plan)
 
-        self.assertIn('content="Creative Launch Product UI v3"', html)
+        self.assertIn('content="Launch Control Product UI v4"', html)
         self.assertIn('class="focus-panel"', html)
         self.assertIn("creatives need a human decision", html)
         self.assertIn('let activeFilter = "needs_review"', html)

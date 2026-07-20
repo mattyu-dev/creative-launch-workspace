@@ -45,7 +45,7 @@ The static GitHub Pages workspace and the SQLite adapter are deliberately separa
 
 ## Public proof surfaces
 
-- `index.html`: canonical SaaS product entry with a product-first hero, real workspace captures, governed review controls, reproducible fixture evidence and explicit limits.
+- `index.html`: canonical SaaS product entry with a product-first hero, native interactive product states generated from the same launch plan as the workspace, reproducible fixture evidence and explicit limits.
 - `workspace.html`: interactive 100-row operator queue using guarded browser-local state, plus an ephemeral three-step guide that reuses the same decision and audit functions.
 - `fix-lab.html`: correction/revalidation rehearsal over committed Python golden scenarios.
 - `brief-evidence.html`: deterministic intake evidence, human decisions and fail-closed behaviors.

@@ -6,6 +6,7 @@ import {ProgressBar} from '@astryxdesign/core/ProgressBar';
 import {StatusDot} from '@astryxdesign/core/StatusDot';
 import {Theme} from '@astryxdesign/core/theme';
 import {launchControlTheme} from './generated/launch-control.js';
+import demo from './demo-payload.json';
 import '@astryxdesign/core/reset.css';
 import '@astryxdesign/core/astryx.css';
 import './generated/launch-control-theme.css';
@@ -35,24 +36,25 @@ function useReducedMotion() {
 }
 
 function DetectPanel() {
+  const exception = demo.walkthrough.exception;
   return <div className="trace-panel trace-detect" data-panel="detect">
-    <div className="trace-panel-head"><div><small>Validator pass</small><strong>100 creative rows checked</strong></div><span>0.8 s</span></div>
+    <div className="trace-panel-head"><div><small>Validator pass</small><strong>{demo.counts.total} creative rows checked</strong></div><span>offline pass</span></div>
     <div className="trace-rows" role="presentation">
-      <div className="trace-row"><code>cr_004</code><span>Summer feed 04</span><em>Ready</em></div>
-      <div className="trace-row is-exception"><code>cr_007</code><span>Launch offer 07</span><Badge label="Needs decision" variant="warning" /></div>
-      <div className="trace-row"><code>cr_010</code><span>Stories cut 10</span><em>Ready</em></div>
+      {demo.walkthrough.rows.map((row) => row.creative_id === exception.creative_id
+        ? <div key={row.creative_id} className="trace-row is-exception"><code>{row.creative_id}</code><span>{row.name}</span><Badge label={row.status_label} variant="warning" /></div>
+        : <div key={row.creative_id} className="trace-row"><code>{row.creative_id}</code><span>{row.name}</span><em>{row.status_label}</em></div>)}
     </div>
-    <p className="trace-reason"><span aria-hidden="true">↳</span> Possible duplicate found before launch.</p>
+    <p className="trace-reason"><span aria-hidden="true">↳</span> {exception.issue_title} found before launch.</p>
   </div>;
 }
 
 function RoutePanel() {
   return <div className="trace-panel trace-route" data-panel="route">
-    <div className="trace-panel-head"><div><small>Exception route</small><strong>cr_007 needs a named owner</strong></div><Badge label="Review" variant="warning" /></div>
+    <div className="trace-panel-head"><div><small>Exception route</small><strong>{demo.walkthrough.exception.creative_id} needs a named owner</strong></div><Badge label="Review" variant="warning" /></div>
     <div className="trace-route-grid">
-      <div><small>Why it stopped</small><strong>Possible duplicate</strong><span>Same destination and offer, different asset.</span></div>
+      <div><small>Why it stopped</small><strong>{demo.walkthrough.exception.issue_title}</strong><span>{demo.walkthrough.exception.issue_message}</span></div>
       <div className="trace-arrow" aria-hidden="true">→</div>
-      <div><small>Decision owner</small><strong>Creative Ops Manager</strong><span>Ambiguous intent stays human.</span></div>
+      <div><small>Decision owner</small><strong>{demo.walkthrough.exception.owner}</strong><span>Ambiguous intent stays human.</span></div>
     </div>
   </div>;
 }
@@ -61,7 +63,7 @@ function ProvePanel() {
   return <div className="trace-panel trace-prove" data-panel="prove">
     <div className="trace-receipt-mark" aria-hidden="true">✓</div>
     <div className="trace-receipt-copy"><small>Recorded decision</small><strong>Human confirmed · Keep both</strong><span>Saved locally with an inspectable receipt.</span></div>
-    <dl className="trace-receipt-data"><div><dt>creative</dt><dd>cr_007</dd></div><div><dt>remaining</dt><dd>9</dd></div><div><dt>batch</dt><dd>78f20843aea8a367</dd></div></dl>
+    <dl className="trace-receipt-data"><div><dt>creative</dt><dd>{demo.walkthrough.exception.creative_id}</dd></div><div><dt>remaining</dt><dd>{demo.counts.needs_decision - 1}</dd></div><div><dt>batch</dt><dd>{demo.batch_id}</dd></div></dl>
   </div>;
 }
 
@@ -165,7 +167,7 @@ function RecordedTrace() {
     <Theme theme={launchControlTheme} mode="light">
       <Card className="trace-card" padding={0} minHeight={430}>
         <div className="trace-topbar">
-          <div className="trace-run-state"><StatusDot variant="accent" label="Live product walkthrough" /><span>Live product walkthrough</span></div>
+          <div className="trace-run-state"><StatusDot variant="accent" label="Recorded product walkthrough" /><span>Recorded product walkthrough</span></div>
           <span className="trace-boundary">Automatic loop · local data</span>
         </div>
         <div className="trace-progress"><ProgressBar value={progress} label="Product walkthrough progress" isLabelHidden /></div>

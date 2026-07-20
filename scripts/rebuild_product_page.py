@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from meta_importer.demo_payload import demo_payload_json
 from meta_importer.product_page import (
     render_not_found_page,
     render_product_page,
@@ -17,6 +18,7 @@ from meta_importer.product_page import (
 
 
 def main() -> int:
+    (ROOT / "frontend/demo-payload.json").write_text(demo_payload_json() + "\n")
     (ROOT / "docs/index.html").write_text(render_product_page())
     (ROOT / "docs/case-study.html").unlink(missing_ok=True)
     (ROOT / "docs/social-card.html").write_text(render_social_card_page())

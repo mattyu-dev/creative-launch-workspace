@@ -40,7 +40,7 @@ Automation may propose structured source context. Deterministic rules verify all
 - Primary action: **Try the live workspace**.
 - Desktop secondary action: **See how it works**.
 - Proof links: contracts, deterministic replay, CI and architecture.
-- Belief sequence: Detect, Route, Prove.
+- Belief sequence: Detect, Route, Prove. Inside the workspace the human step is labelled Decide because routing has already happened; Decide is the human half of Route.
 
 ## Brand behavior
 

@@ -75,7 +75,7 @@ Tabs use WAI-ARIA semantics, arrow-key navigation and a Transitions.dev sliding 
 - Receipt timeline: 260ms with 60ms stagger.
 - Button press: scale .98 for 100ms.
 
-No `transition: all`, ease-in entrance, autoplay carousel, permanent drift or decorative parallax. Reduced-motion mode renders the final receipt in one static WebGL frame and runs no RAF loop.
+No `transition: all`, ease-in entrance, autoplay carousel, permanent drift or decorative parallax. Reduced-motion mode holds the walkthrough on the final Prove state with the CSS token resting on the last rail node, and runs no loop.
 
 ## Content and conversion
 
