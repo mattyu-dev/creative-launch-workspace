@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 from .demo_payload import build_demo_payload
 
@@ -459,7 +460,7 @@ def _finish(template: str) -> str:
     )
 
 
-def _queue_row_html(entry: dict, interactive: bool) -> str:
+def _queue_row_html(entry: dict[str, Any], interactive: bool) -> str:
     sub = entry["issue_title"] or "Passes offline checks"
     owner_line = (
         f'<span class="row-owner"><strong>{entry["owner"]}</strong><span>Decision required</span></span>'
@@ -483,7 +484,7 @@ def _queue_row_html(entry: dict, interactive: bool) -> str:
     )
 
 
-def _product_shell(payload: dict) -> str:
+def _product_shell(payload: dict[str, Any]) -> str:
     counts = payload["counts"]
     exception = payload["walkthrough"]["exception"]
     facts = exception["facts"]
@@ -565,7 +566,7 @@ def _product_shell(payload: dict) -> str:
     """
 
 
-def render_product_landing_v30(payload: dict | None = None) -> str:
+def render_product_landing_v30(payload: dict[str, Any] | None = None) -> str:
     payload = payload or build_demo_payload()
     exception = payload["walkthrough"]["exception"]
     counts = payload["counts"]

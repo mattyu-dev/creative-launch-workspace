@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 from .launch_workspace import build_launch_plan, read_manifest
 from .workspace_state import export_workspace_state_dict
@@ -44,7 +45,7 @@ DECISIONS = {
 }
 
 
-def _issue_title(review_state: dict[str, object]) -> str:
+def _issue_title(review_state: dict[str, Any]) -> str:
     codes = review_state["issue_codes"]
     return ISSUE_TITLES.get(codes[0], codes[0].replace("_", " ").title()) if codes else ""
 
@@ -53,7 +54,7 @@ def _display_destination(url: str) -> str:
     return url.removeprefix("https://").removeprefix("http://")
 
 
-def _queue_entry(review_state: dict[str, object], rows_by_source: dict[int, object]) -> dict[str, object]:
+def _queue_entry(review_state: dict[str, Any], rows_by_source: dict[int, object]) -> dict[str, Any]:
     row = rows_by_source[review_state["source_row"]]
     return {
         "source_row": review_state["source_row"],
@@ -78,7 +79,7 @@ def _queue_entry(review_state: dict[str, object], rows_by_source: dict[int, obje
     }
 
 
-def build_demo_payload(fixture: str = DEMO_FIXTURE) -> dict[str, object]:
+def build_demo_payload(fixture: str = DEMO_FIXTURE) -> dict[str, Any]:
     """One truth source for every demo surface (landing, walkthrough, receipt).
 
     Everything shown by the public demo is derived from the real launch plan of
@@ -91,7 +92,7 @@ def build_demo_payload(fixture: str = DEMO_FIXTURE) -> dict[str, object]:
     state = export_workspace_state_dict(plan)
     rows_by_source = {row.source_row: row for row in plan.rows}
 
-    by_state: dict[str, list[dict[str, object]]] = {
+    by_state: dict[str, list[dict[str, Any]]] = {
         "launch_ready": [],
         "needs_review": [],
         "blocked": [],
