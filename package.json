@@ -13,7 +13,7 @@
     "qa:frontend": "npm run build:landing-ui && node scripts/workspace_runtime_qa.mjs"
   },
   "devDependencies": {
-    "@astryxdesign/cli": "0.1.6",
+    "@astryxdesign/cli": "0.1.8",
     "@astryxdesign/core": "0.1.6",
     "@astryxdesign/theme-neutral": "0.1.6",
     "@fontsource-variable/geist": "^5.2.9",
