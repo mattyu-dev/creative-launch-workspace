@@ -26,7 +26,7 @@ Homepage = "https://mattyu-dev.github.io/creative-launch-workspace/"
 Repository = "https://github.com/mattyu-dev/creative-launch-workspace"
 
 [project.optional-dependencies]
-ai = ["openai>=2.0,<3"]
+ai = ["openai>=2.0,<4"]
 dev = [
   "coverage[toml]>=7.6,<8",
   "mypy>=1.15,<3",
